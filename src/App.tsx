@@ -232,20 +232,25 @@ const canCheckout = hasDesign && (isBlankSelected || selectedPlacements.length >
       />
       
       <CheckoutModal
-        isOpen={showCheckoutModal}
-        onClose={() => setShowCheckoutModal(false)}
-        orderDetails={{
-          productName: currentProduct.name,
-          size: selectedSize,
-          color: currentColor.name,
-          quantity: quantity,
-          designType: uploadedFile ? 'Custom Upload' : 'Gallery Design',
-          placements: selectedPlacementObjects.map(p => p.label),
-          basePrice: basePrice,
-          placementPrice: placementPrice,
-          totalPrice: totalPrice,
-        }}
-      />
+  isOpen={showCheckoutModal}
+  onClose={() => setShowCheckoutModal(false)}
+  orderDetails={{
+    productName: currentProduct.name,
+    productId: currentProduct.id,
+    size: selectedSize!,
+    color: selectedColor,
+    quantity,
+    designType: uploadedFile ? 'custom' : 'gallery',
+    designId: selectedDesign || undefined,
+    placements: selectedPlacementObjects,
+    basePrice,
+    placementPrice,
+    subtotal,
+    shippingCost,
+    totalPrice,
+  }}
+  customDesignFile={uploadedFile}
+/>
     </div>
   );
 }
