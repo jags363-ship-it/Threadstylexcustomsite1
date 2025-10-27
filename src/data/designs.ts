@@ -1,75 +1,68 @@
-export interface Design {
-  id: string;
-  name: string;
-  thumbnailSrc: string;
-  fullSrc: string;
-}
-
 export const designs: Design[] = [
   {
     id: 'ghost-ramen',
     name: 'Ghost Ramen',
-    thumbnailSrc: '/designs/ghost-ramen.jpg',
-    fullSrc: '/designs/ghost-ramen.jpg',
+    thumbnailSrc: '/GLOBAL-2.JPG',
+    fullSrc: '/GLOBAL-2.JPG',
   },
   {
     id: 'ghost-skateboard',
     name: 'Skateboarding Ghost',
-    thumbnailSrc: '/designs/ghost-skateboard.jpg',
-    fullSrc: '/designs/ghost-skateboard.jpg',
+    thumbnailSrc: '/GLOBAL-1.JPG',
+    fullSrc: '/GLOBAL-1.JPG',
   },
   {
     id: 'ghost-cauldron',
     name: 'Cauldron Ghost',
-    thumbnailSrc: '/designs/ghost-cauldron.jpg',
-    fullSrc: '/designs/ghost-cauldron.jpg',
+    thumbnailSrc: '/GLOBAL-3.JPG',
+    fullSrc: '/GLOBAL-3.JPG',
   },
   {
     id: 'grim-reaper',
     name: 'Grim Reaper',
-    thumbnailSrc: '/designs/grim-reaper.jpg',
-    fullSrc: '/designs/grim-reaper.jpg',
+    thumbnailSrc: '/OUTPUT-1.JPG',
+    fullSrc: '/OUTPUT-1.JPG',
   },
   {
     id: 'scarecrow',
     name: 'Spooky Scarecrow',
-    thumbnailSrc: '/designs/scarecrow.jpg',
-    fullSrc: '/designs/scarecrow.jpg',
+    thumbnailSrc: '/OUTPUT-3.JPG',
+    fullSrc: '/OUTPUT-3.JPG',
   },
   {
     id: 'ghost-beanie',
     name: 'Beanie Ghost',
-    thumbnailSrc: '/designs/ghost-beanie.jpg',
-    fullSrc: '/designs/ghost-beanie.jpg',
+    thumbnailSrc: '/ST7771-1.JPG',
+    fullSrc: '/ST7771-1.JPG',
   },
   {
     id: 'halloween-trio',
     name: 'Halloween Trio',
-    thumbnailSrc: '/designs/halloween-trio.jpg',
-    fullSrc: '/designs/halloween-trio.jpg',
+    thumbnailSrc: '/ST9B80-1.JPG',
+    fullSrc: '/ST9B80-1.JPG',
   },
   {
     id: 'witch-ghost',
     name: 'Witch Ghost',
-    thumbnailSrc: '/designs/witch-ghost.jpg',
-    fullSrc: '/designs/witch-ghost.jpg',
+    thumbnailSrc: '/ST7F17-1.JPG',
+    fullSrc: '/ST7F17-1.JPG',
   },
   {
     id: 'ghost-cat-pumpkin',
     name: 'Ghost & Cat',
-    thumbnailSrc: '/designs/ghost-cat-pumpkin.jpg',
-    fullSrc: '/designs/ghost-cat-pumpkin.jpg',
+    thumbnailSrc: '/STYLE__3.JPG',
+    fullSrc: '/STYLE__3.JPG',
   },
   {
     id: 'pumpkin-baby',
     name: 'Pumpkin Baby',
-    thumbnailSrc: '/designs/pumpkin-baby.jpg',
-    fullSrc: '/designs/pumpkin-baby.jpg',
+    thumbnailSrc: '/STYLE__2.JPG',
+    fullSrc: '/STYLE__2.JPG',
   },
   {
     id: 'ghost-pumpkin-latte',
     name: 'Pumpkin Spice Ghost',
-    thumbnailSrc: '/designs/ghost-pumpkin-latte.jpg',
-    fullSrc: '/designs/ghost-pumpkin-latte.jpg',
+    thumbnailSrc: '/STYLE__1.JPG',
+    fullSrc: '/STYLE__1.JPG',
   },
 ];
