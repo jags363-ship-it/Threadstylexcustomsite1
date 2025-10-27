@@ -1,4 +1,19 @@
+export interface Design {
+  id: string;
+  name: string;
+  thumbnailSrc: string;
+  fullSrc: string;
+  isBlank?: boolean;
+}
+
 export const designs: Design[] = [
+  {
+    id: 'blank',
+    name: 'No Design (Blank)',
+    thumbnailSrc: '/blank-placeholder.svg',
+    fullSrc: '/blank-placeholder.svg',
+    isBlank: true,
+  },
   {
     id: 'ghost-ramen',
     name: 'Ghost Ramen',
