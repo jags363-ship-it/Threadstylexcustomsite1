@@ -115,8 +115,9 @@ const handleCheckout = () => {
         <span>${basePrice.toFixed(2)}</span>
       </div>
       {selectedDesign === 'blank' ? (
-        <div className="text-sm text-gray-500 dark:text-gray-400 italic">
-          No design - blank apparel
+        <div className="flex justify-between text-gray-500 dark:text-gray-400 text-sm italic">
+          <span>No design - blank apparel</span>
+          <span>$0.00</span>
         </div>
       ) : (
         selectedPlacementObjects.map((placement) => (
