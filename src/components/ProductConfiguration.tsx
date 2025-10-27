@@ -563,11 +563,11 @@ export function ProductConfiguration({
                       </div>
                       <div className="text-center">
                         <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                          {product.name.includes('Hoodie') ? 'Hooded Sweatshirt' :
-                           product.name.includes('Crewneck') ? 'Sweatshirt' :
-                           product.name.includes('Sweatpants') ? 'Sweatpants' :
-                           product.name.includes('Essential') ? 'Essential Tee' : 'Heavy Tee'}
-                        </div>
+  {product.name.includes('Hoodie') || product.name.includes('Hooded') ? 'Hooded Sweatshirt' :
+   product.name.includes('Crewneck') ? 'Sweatshirt' :
+   product.name.includes('Sweatpants') ? 'Sweatpants' :
+   product.name.includes('Essential') ? 'Essential Tee' : product.name}
+</div>
                         <div className={`text-sm font-bold ${
                           selectedProduct === product.id 
                             ? 'text-orange-600' 
