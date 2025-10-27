@@ -30,9 +30,17 @@ function App() {
   const currentProduct = products.find(p => p.id === selectedProduct) || products[0];
   const currentColor = currentProduct.colors.find(c => c.id === selectedColor) || currentProduct.colors[0];
   const selectedPlacementObjects = placements.filter(p => selectedPlacements.includes(p.key));
-  const placementPrice = selectedPlacementObjects.reduce((sum, p) => sum + p.addOn, 0);
-  const basePrice = currentProduct.price * quantity;
-  const totalPrice = basePrice + placementPrice;
+const basePrice = currentProduct.price * quantity;
+const placementPrice = selectedPlacementObjects.reduce((sum, p) => sum + p.addOn, 0);
+const subtotal = basePrice + placementPrice;
+
+// Shipping calculation
+const SHIPPING_THRESHOLD = 35;
+const SHIPPING_FEE = 7.99;
+const shippingCost = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+const totalPrice = subtotal + shippingCost;
+
+const qualifiesForFreeShipping = subtotal >= SHIPPING_THRESHOLD;
 
 const handleCheckout = () => {
   setError(null);
