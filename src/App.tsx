@@ -101,32 +101,38 @@ const handleCheckout = () => {
                 )}
               </AnimatePresence>
 
-              {/* Price Breakdown */}
-              {hasDesign && selectedPlacements.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6 shadow-lg"
-                >
-                  <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Order Summary</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-gray-700 dark:text-gray-300">
-                      <span>{currentProduct.name} ({quantity}x)</span>
-                      <span>${basePrice.toFixed(2)}</span>
-                    </div>
-                    {selectedPlacementObjects.map((placement) => (
-                      <div key={placement.key} className="flex justify-between text-gray-700 dark:text-gray-300">
-                        <span>{placement.label}</span>
-                        <span>+${placement.addOn.toFixed(2)}</span>
-                      </div>
-                    ))}
-                    <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-xl font-bold text-gray-900 dark:text-white">
-                      <span>Total</span>
-                      <span>${totalPrice.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+{/* Price Breakdown */}
+{hasDesign && (selectedDesign === 'blank' || selectedPlacements.length > 0) && (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6 shadow-lg"
+  >
+    <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Order Summary</h3>
+    <div className="space-y-3">
+      <div className="flex justify-between text-gray-700 dark:text-gray-300">
+        <span>{currentProduct.name} ({quantity}x)</span>
+        <span>${basePrice.toFixed(2)}</span>
+      </div>
+      {selectedDesign === 'blank' ? (
+        <div className="text-sm text-gray-500 dark:text-gray-400 italic">
+          No design - blank apparel
+        </div>
+      ) : (
+        selectedPlacementObjects.map((placement) => (
+          <div key={placement.key} className="flex justify-between text-gray-700 dark:text-gray-300">
+            <span>{placement.label}</span>
+            <span>+${placement.addOn.toFixed(2)}</span>
+          </div>
+        ))
+      )}
+      <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-xl font-bold text-gray-900 dark:text-white">
+        <span>Total</span>
+        <span>${totalPrice.toFixed(2)}</span>
+      </div>
+    </div>
+  </motion.div>
+)}
 
               <motion.button
                 whileHover={{ scale: hasDesign && selectedPlacements.length > 0 ? 1.02 : 1 }}
