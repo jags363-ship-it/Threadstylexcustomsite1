@@ -563,7 +563,7 @@ export function ProductConfiguration({
                       </div>
                       <div className="text-center">
                         <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                          {product.name.includes('Hoodie') ? 'Hoodie' : 
+                          {product.name.includes('Hoodie') ? 'Hooded Sweatshirt' :
                            product.name.includes('Crewneck') ? 'Sweatshirt' :
                            product.name.includes('Sweatpants') ? 'Sweatpants' :
                            product.name.includes('Essential') ? 'Essential Tee' : 'Heavy Tee'}
