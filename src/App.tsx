@@ -137,7 +137,47 @@ const canCheckout = hasDesign && (isBlankSelected || selectedPlacements.length >
           </div>
         ))
       )}
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-xl font-bold text-gray-900 dark:text-white">
+      
+      {/* Subtotal */}
+      <div className="flex justify-between text-gray-700 dark:text-gray-300 pt-2 border-t border-gray-200 dark:border-gray-700">
+        <span>Subtotal</span>
+        <span>${subtotal.toFixed(2)}</span>
+      </div>
+      
+      {/* Shipping */}
+      <div className="flex justify-between text-gray-700 dark:text-gray-300">
+        <span className="flex items-center gap-2">
+          Shipping (US)
+          {qualifiesForFreeShipping && (
+            <span className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded-full font-semibold">
+              FREE
+            </span>
+          )}
+        </span>
+        <span className={qualifiesForFreeShipping ? 'text-green-600 dark:text-green-400 font-semibold' : ''}>
+          {qualifiesForFreeShipping ? 'FREE' : `$${shippingCost.toFixed(2)}`}
+        </span>
+      </div>
+      
+      {/* Free shipping banner */}
+      {!qualifiesForFreeShipping && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+          <p className="text-sm text-blue-700 dark:text-blue-300 font-semibold">
+            🚚 Add ${(SHIPPING_THRESHOLD - subtotal).toFixed(2)} more for FREE shipping!
+          </p>
+        </div>
+      )}
+      
+      {qualifiesForFreeShipping && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+          <p className="text-sm text-green-700 dark:text-green-300 font-semibold">
+            🎉 You qualify for FREE shipping!
+          </p>
+        </div>
+      )}
+      
+      {/* Total */}
+      <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-3 flex justify-between text-xl font-bold text-gray-900 dark:text-white">
         <span>Total</span>
         <span>${totalPrice.toFixed(2)}</span>
       </div>
