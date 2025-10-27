@@ -527,62 +527,6 @@ export function ProductConfiguration({
                   </p>
                 </motion.div>
               )}
-                  <div className="p-4 space-y-2 max-h-80 overflow-y-auto">
-                    {getPlacementsForProduct(selectedProduct).map((placement) => {
-                      const isSelected = selectedPlacements.includes(placement.key);
-                      return (
-                        <motion.button
-                          key={placement.key}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => togglePlacement(placement.key)}
-                          className={`w-full text-left p-3 rounded-xl transition-all ${
-                            isSelected
-                              ? 'bg-gradient-to-br from-orange-50 to-purple-50 dark:from-orange-900/20 dark:to-purple-900/20 ring-2 ring-orange-600'
-                              : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                {isSelected && (
-                                  <Check className="w-4 h-4 text-orange-600 flex-shrink-0" />
-                                )}
-                                <div className={`font-bold text-sm ${
-                                  isSelected 
-                                    ? 'text-orange-600' 
-                                    : 'text-gray-900 dark:text-white'
-                                }`}>
-                                  {placement.label}
-                                </div>
-                              </div>
-                              <div className="text-xs text-gray-600 dark:text-gray-400">
-                                {placement.description}
-                              </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                                Max: {placement.maxW}" × {placement.maxH}"
-                              </div>
-                            </div>
-                            <div className={`text-sm font-bold ${
-                              isSelected 
-                                ? 'text-orange-600' 
-                                : 'text-gray-700 dark:text-gray-300'
-                            }`}>
-                              +${placement.addOn.toFixed(2)}
-                            </div>
-                          </div>
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-
-                  {selectedPlacements.length === 0 && (
-                    <div className="p-4 text-center text-orange-600 dark:text-orange-400 text-sm font-semibold">
-                      Select at least one placement 🎃
-                    </div>
-                  )}
-                </motion.div>
-              )}
             </div>
 
             {/* Right Side - Product Configuration */}
