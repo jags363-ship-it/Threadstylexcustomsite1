@@ -134,31 +134,31 @@ const handleCheckout = () => {
   </motion.div>
 )}
 
-              <motion.button
-                whileHover={{ scale: hasDesign && selectedPlacements.length > 0 ? 1.02 : 1 }}
-                whileTap={{ scale: hasDesign && selectedPlacements.length > 0 ? 0.98 : 1 }}
-                onClick={handleCheckout}
-                disabled={!hasDesign || selectedPlacements.length === 0 || isLoading}
-                className={`w-full flex items-center justify-center gap-3 px-8 py-6 rounded-2xl font-bold text-xl shadow-xl transition-all ${
-                  hasDesign && selectedPlacements.length > 0 && !isLoading
-                    ? 'bg-gradient-to-r from-orange-600 to-purple-600 text-white hover:shadow-2xl'
-                    : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                <ShoppingCart className="w-6 h-6" />
-                {isLoading ? 'Processing Your Order...' : `Checkout - $${totalPrice.toFixed(2)}`}
-              </motion.button>
+<motion.button
+  whileHover={{ scale: hasDesign && (selectedDesign === 'blank' || selectedPlacements.length > 0) ? 1.02 : 1 }}
+  whileTap={{ scale: hasDesign && (selectedDesign === 'blank' || selectedPlacements.length > 0) ? 0.98 : 1 }}
+  onClick={handleCheckout}
+  disabled={!hasDesign || (selectedDesign !== 'blank' && selectedPlacements.length === 0) || isLoading}
+  className={`w-full flex items-center justify-center gap-3 px-8 py-6 rounded-2xl font-bold text-xl shadow-xl transition-all ${
+    hasDesign && (selectedDesign === 'blank' || selectedPlacements.length > 0) && !isLoading
+      ? 'bg-gradient-to-r from-orange-600 to-purple-600 text-white hover:shadow-2xl'
+      : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+  }`}
+>
+  <ShoppingCart className="w-6 h-6" />
+  {isLoading ? 'Processing Your Order...' : `Checkout - $${totalPrice.toFixed(2)}`}
+</motion.button>
 
-              {!hasDesign && (
-                <p className="text-center text-gray-600 dark:text-gray-400 mt-4 text-sm">
-                  Select a design above to continue
-                </p>
-              )}
-              {hasDesign && selectedPlacements.length === 0 && (
-                <p className="text-center text-orange-600 dark:text-orange-400 mt-4 text-sm font-semibold">
-                  Choose a print placement to continue 🎃
-                </p>
-              )}
+{!hasDesign && (
+  <p className="text-center text-gray-600 dark:text-gray-400 mt-4 text-sm">
+    Select a design or blank apparel to continue
+  </p>
+)}
+{hasDesign && selectedDesign !== 'blank' && selectedPlacements.length === 0 && (
+  <p className="text-center text-orange-600 dark:text-orange-400 mt-4 text-sm font-semibold">
+    Choose a print placement to continue 🎃
+  </p>
+)}
             </div>
           </div>
         </section>
