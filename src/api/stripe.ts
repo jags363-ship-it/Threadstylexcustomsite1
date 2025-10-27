@@ -78,19 +78,21 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     }
 
     // Prepare order data
-    const order = {
-      orderNumber,
-      orderId: `order_${Date.now()}`,
-      orderDate: new Date().toISOString(),
-      paymentStatus: 'completed',
-      orderStatus: 'pending',
-      shippingStatus: 'pending',
-      trackingNumber: '',
-      ...data,
-      designUrl,
-      // Format placements as comma-separated string for easy reading
-      placementsFormatted: data.placements.map(p => p.label).join(', '),
-    };
+const order = {
+  orderNumber,
+  orderId: `order_${Date.now()}`,
+  orderDate: new Date().toISOString(),
+  paymentStatus: 'completed',
+  orderStatus: 'pending',
+  shippingStatus: 'pending',
+  trackingNumber: '',
+  ...data,
+  subtotal: data.subtotal,           // ← ADD
+  shippingCost: data.shippingCost,   // ← ADD
+  totalPrice: data.totalPrice,
+  designUrl,
+  placementsFormatted: data.placements.map(p => p.label).join(', '),
+};
     
     // Save to localStorage
     localStorage.setItem('lastOrder', JSON.stringify(order));
