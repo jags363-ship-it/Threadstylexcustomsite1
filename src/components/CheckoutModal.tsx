@@ -16,6 +16,8 @@ interface CheckoutModalProps {
     placements: string[];
     basePrice: number;
     placementPrice: number;
+    subtotal: number;       
+  shippingCost: number;    
     totalPrice: number;
   };
 }
