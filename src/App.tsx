@@ -58,6 +58,8 @@ const handleCheckout = () => {
 };
 
   const hasDesign = selectedDesign !== null || uploadedFile !== null;
+const isBlankSelected = selectedDesign === 'blank';
+const canCheckout = hasDesign && (isBlankSelected || selectedPlacements.length > 0);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
