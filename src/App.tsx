@@ -34,24 +34,28 @@ function App() {
   const basePrice = currentProduct.price * quantity;
   const totalPrice = basePrice + placementPrice;
 
-  const handleCheckout = () => {
-    setError(null);
+const handleCheckout = () => {
+  setError(null);
 
-    if (!selectedDesign && !uploadedFile) {
-      setError('Pick a spooky design first! 🎃');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+  // Check if blank design is selected
+  const isBlankSelected = selectedDesign === 'blank';
 
-    if (selectedPlacements.length === 0) {
-      setError('Choose where to print your design! 📍');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+  if (!selectedDesign && !uploadedFile) {
+    setError('Pick a design or select blank apparel! 🎃');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
 
-    // Open checkout modal
-    setShowCheckoutModal(true);
-  };
+  // Skip placement check if blank is selected
+  if (!isBlankSelected && selectedPlacements.length === 0) {
+    setError('Choose where to print your design! 📍');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+
+  // Open checkout modal
+  setShowCheckoutModal(true);
+};
 
   const hasDesign = selectedDesign !== null || uploadedFile !== null;
 
