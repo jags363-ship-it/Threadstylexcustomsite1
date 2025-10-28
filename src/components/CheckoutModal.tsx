@@ -140,17 +140,12 @@ const handleSubmit = async (e: React.FormEvent) => {
     // Create checkout session
     const result = await createCheckoutSession(checkoutData);
 
-    if (result.success) {
-      // Send confirmation email
-  await sendOrderConfirmation({
-    ...checkoutData,
-    orderNumber: result.orderNumber,
-  });
-
+if (result.success) {
   setIsProcessing(false);
   onClose();
   
-  window.location.href = `/order-success?order_id=${result.orderId}`;
+  // Redirect to success page with order ID
+  window.location.href = `/order-success?order_id=${result.orderId}&order_number=${result.orderNumber}`;
 }
 // Add this redirect:
 window.location.href = `/order-success?order_id=${result.orderId}`;
