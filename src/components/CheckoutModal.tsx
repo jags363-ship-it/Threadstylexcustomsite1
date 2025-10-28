@@ -8,19 +8,24 @@ import { X, CheckCircle, Download, ExternalLink } from 'lucide-react';
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  orderDetails: {
-    productName: string;
-    size: string;
-    color: string;
-    quantity: number;
-    designType: string;
-    placements: string[];
-    basePrice: number;
-    placementPrice: number;
-    subtotal: number;       
-  shippingCost: number;    
-    totalPrice: number;
-  };
+OrderDetails {
+  productName: string;
+  productId: string;
+  size: string;
+  color: string;
+  quantity: number;
+  designType: 'gallery' | 'custom' | 'blank';
+  designId?: string;
+  placements: Array<{
+    key: string;
+    label: string;
+    price: number;
+  }>;
+  basePrice: number;
+  placementPrice: number;
+  subtotal: number;
+  shippingCost: number;
+  totalPrice: number;
 }
 
 export function CheckoutModal({ isOpen, onClose, orderDetails }: CheckoutModalProps) {
