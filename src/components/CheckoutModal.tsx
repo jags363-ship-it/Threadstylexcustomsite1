@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Truck, Lock, Check } from 'lucide-react';
 import { useState } from 'react';
 import { createCheckoutSession, CheckoutData } from '../api/stripe';
+import { CheckoutModal } from './components/CheckoutModal';
 import { sendOrderConfirmation } from '../api/email';
 
 interface CheckoutModalProps {
