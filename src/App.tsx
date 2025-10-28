@@ -45,7 +45,6 @@ const qualifiesForFreeShipping = subtotal >= SHIPPING_THRESHOLD;
 const handleCheckout = () => {
   setError(null);
 
-  // Check if blank design is selected
   const isBlankSelected = selectedDesign === 'blank';
 
   if (!selectedDesign && !uploadedFile) {
@@ -54,14 +53,20 @@ const handleCheckout = () => {
     return;
   }
 
-  // Skip placement check if blank is selected
   if (!isBlankSelected && selectedPlacements.length === 0) {
     setError('Choose where to print your design! 📍');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
 
-  // Open checkout modal
+  console.log('Opening checkout modal...'); // ← ADD THIS
+  console.log('Order details:', {
+    productName: currentProduct.name,
+    size: selectedSize,
+    color: selectedColor,
+    total: totalPrice
+  }); // ← ADD THIS
+  
   setShowCheckoutModal(true);
 };
 
