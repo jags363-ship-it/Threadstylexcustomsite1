@@ -142,13 +142,16 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     if (result.success) {
       // Send confirmation email
-      await sendOrderConfirmation({
-        ...checkoutData,
-        orderNumber: result.orderNumber,
-      });
-setIsProcessing(false);
-onClose();
+  await sendOrderConfirmation({
+    ...checkoutData,
+    orderNumber: result.orderNumber,
+  });
 
+  setIsProcessing(false);
+  onClose();
+  
+  window.location.href = `/order-success?order_id=${result.orderId}`;
+}
 // Add this redirect:
 window.location.href = `/order-success?order_id=${result.orderId}`;
       
