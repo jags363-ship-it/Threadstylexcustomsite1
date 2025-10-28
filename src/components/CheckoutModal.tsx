@@ -3,6 +3,7 @@ import { X, CreditCard, Truck, Lock, Check } from 'lucide-react';
 import { useState } from 'react';
 import { createCheckoutSession, CheckoutData } from '../api/stripe';
 import { sendOrderConfirmation } from '../api/email';
+import { X, CheckCircle, Download, ExternalLink } from 'lucide-react';
 
 interface CheckoutModalProps {
   isOpen: boolean;
