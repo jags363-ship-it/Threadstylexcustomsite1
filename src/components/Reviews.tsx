@@ -118,7 +118,7 @@ export function Reviews() {
                     {[...Array(review.rating)].map((_, i) => (
                       <Star
                         key={i}
-                        className="w-5 h-5 text-orange-600 fill-orange-600"
+                        className="w-5 h-5 text-blue-600 fill-blue-600"
                       />
                     ))}
                   </div>
@@ -130,7 +130,7 @@ export function Reviews() {
                       <p className="font-semibold text-gray-900 dark:text-white">{review.name}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{review.date}</p>
                     </div>
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-600 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold text-lg">
                       {review.name.charAt(0)}
                     </div>
                   </div>

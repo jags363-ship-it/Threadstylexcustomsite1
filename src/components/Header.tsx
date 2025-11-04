@@ -32,16 +32,16 @@ export function Header() {
           {/* Navigation */}
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex items-center gap-6">
-              <a href="#products" className="text-gray-700 hover:text-orange-600 transition-colors font-medium">
+              <a href="#products" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Products
               </a>
-              <a href="#designs" className="text-gray-700 hover:text-orange-600 transition-colors font-medium">
+              <a href="#designs" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Designs
               </a>
-              <a href="#reviews" className="text-gray-700 hover:text-orange-600 transition-colors font-medium">
+              <a href="#reviews" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Reviews
               </a>
-              <a href="#faq" className="text-gray-700 hover:text-orange-600 transition-colors font-medium">
+              <a href="#faq" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 FAQ
               </a>
             </nav>
@@ -56,7 +56,7 @@ export function Header() {
               animate={{ opacity: 1, x: 0 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
             >
               <span className="hidden sm:inline">Visit Main Site</span>
               <span className="sm:hidden">Main Site</span>

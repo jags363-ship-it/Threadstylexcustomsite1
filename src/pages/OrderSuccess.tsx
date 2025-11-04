@@ -66,7 +66,7 @@ export function OrderSuccess() {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading your order...</p>
         </div>
       </div>
@@ -80,7 +80,7 @@ export function OrderSuccess() {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Order Not Found</h2>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-3 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-semibold"
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold"
           >
             Back to Home
           </button>
@@ -128,7 +128,7 @@ export function OrderSuccess() {
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total</p>
-                <p className="text-3xl font-bold text-orange-600">${order.totalPrice.toFixed(2)}</p>
+                <p className="text-3xl font-bold text-blue-600">${order.totalPrice.toFixed(2)}</p>
               </div>
             </div>
 
@@ -163,7 +163,7 @@ export function OrderSuccess() {
                         {order.placements.map((placement, index) => (
                           <span
                             key={index}
-                            className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full text-xs font-semibold"
+                            className="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-blue-600 dark:text-cyan-400 rounded-full text-xs font-semibold"
                           >
                             {placement.label}
                           </span>
@@ -212,7 +212,7 @@ export function OrderSuccess() {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">What's Next?</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   1
                 </div>
                 <div>
@@ -221,7 +221,7 @@ export function OrderSuccess() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   2
                 </div>
                 <div>
@@ -230,7 +230,7 @@ export function OrderSuccess() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-600 to-purple-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   3
                 </div>
                 <div>
@@ -250,7 +250,7 @@ export function OrderSuccess() {
           >
             <button
               onClick={() => window.print()}
-              className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:border-orange-600 transition-all"
+              className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:border-blue-600 transition-all"
             >
               <Download className="w-5 h-5" />
               Download Receipt
@@ -268,7 +268,7 @@ export function OrderSuccess() {
 
             <button
               onClick={() => navigate('/')}
-              className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+              className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
             >
               Continue Shopping
             </button>

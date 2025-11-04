@@ -11,7 +11,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">TS</span>
               </div>
               <div>
@@ -104,7 +104,7 @@ export function Footer() {
               href="https://threadstylez.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-purple-600 rounded-lg font-semibold text-sm hover:shadow-lg transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg font-semibold text-sm hover:shadow-lg transition-all"
             >
               Visit ThreadStylez.com
               <ExternalLink className="w-4 h-4" />

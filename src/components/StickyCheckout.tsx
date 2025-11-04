@@ -74,7 +74,7 @@ export function StickyCheckout({
                 disabled={!hasDesign || isLoading}
                 className={`flex items-center gap-2 px-6 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all ${
                   hasDesign && !isLoading
-                    ? 'bg-gradient-to-r from-orange-600 to-purple-600 text-white hover:shadow-xl'
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:shadow-xl'
                     : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                 }`}
               >

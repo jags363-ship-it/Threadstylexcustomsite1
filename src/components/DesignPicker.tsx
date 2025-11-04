@@ -183,7 +183,7 @@ export function DesignPicker({
                 onClick={() => setActiveTab('designs')}
                 className={`flex-1 py-4 px-6 font-semibold text-lg transition-all ${
                   activeTab === 'designs'
-                    ? 'bg-gradient-to-r from-orange-600 to-purple-600 text-white'
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
@@ -193,7 +193,7 @@ export function DesignPicker({
                 onClick={() => setActiveTab('upload')}
                 className={`flex-1 py-4 px-6 font-semibold text-lg transition-all ${
                   activeTab === 'upload'
-                    ? 'bg-gradient-to-r from-orange-600 to-purple-600 text-white'
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
@@ -220,7 +220,7 @@ export function DesignPicker({
                           onClick={() => handleDesignSelect(design.id)}
                           className={`relative aspect-square rounded-xl overflow-hidden transition-all ${
                             selectedDesign === design.id
-                              ? 'ring-4 ring-orange-600 shadow-xl'
+                              ? 'ring-4 ring-blue-600 shadow-xl'
                               : 'ring-2 ring-gray-200 dark:ring-gray-600 hover:ring-gray-300 dark:hover:ring-gray-500'
                           }`}
                         >
@@ -234,7 +234,7 @@ export function DesignPicker({
                             <motion.div
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="absolute inset-0 bg-gradient-to-br from-orange-600/90 to-purple-600/90 flex items-center justify-center"
+                              className="absolute inset-0 bg-gradient-to-br from-blue-600/90 to-cyan-500/90 flex items-center justify-center"
                             >
                               <Check className="w-12 h-12 text-white" />
                             </motion.div>
@@ -262,7 +262,7 @@ export function DesignPicker({
                       onDragLeave={handleDragLeave}
                       className={`relative border-3 border-dashed rounded-2xl p-8 md:p-12 text-center transition-all ${
                         isDragging
-                          ? 'border-orange-600 bg-orange-50 dark:bg-orange-900/20'
+                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
                           : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                       }`}
                     >
@@ -278,7 +278,7 @@ export function DesignPicker({
                         <div className="space-y-4">
                           <motion.div
                             whileHover={{ scale: 1.1 }}
-                            className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-orange-600 to-purple-600 text-white mx-auto"
+                            className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white mx-auto"
                           >
                             <Upload className="w-8 h-8" />
                           </motion.div>
@@ -293,7 +293,7 @@ export function DesignPicker({
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => fileInputRef.current?.click()}
-                              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-shadow"
+                              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-shadow"
                               disabled={isProcessing}
                             >
                               {isProcessing ? 'Processing...' : 'Select File'}
@@ -357,7 +357,7 @@ export function DesignPicker({
                 className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 transition-colors"
               >
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-600 to-purple-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center">
                     <MapPin className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -381,7 +381,7 @@ export function DesignPicker({
                         onClick={() => togglePlacement(placement.key)}
                         className={`relative p-4 rounded-xl text-left transition-all ${
                           isSelected
-                            ? 'bg-gradient-to-br from-orange-50 to-purple-50 dark:from-orange-900/20 dark:to-purple-900/20 ring-4 ring-orange-600 shadow-lg'
+                            ? 'bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 ring-4 ring-blue-600 shadow-lg'
                             : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                         }`}
                       >
@@ -400,7 +400,7 @@ export function DesignPicker({
                           <div className="flex flex-col items-end gap-2">
                             <div className={`text-lg font-bold ${
                               isSelected
-                                ? 'text-orange-600' 
+                                ? 'text-blue-600' 
                                 : 'text-gray-700 dark:text-gray-300'
                             }`}>
                               +${placement.addOn.toFixed(2)}
@@ -409,7 +409,7 @@ export function DesignPicker({
                               <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                className="w-6 h-6 rounded-full bg-orange-600 flex items-center justify-center"
+                                className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center"
                               >
                                 <Check className="w-4 h-4 text-white" />
                               </motion.div>
@@ -437,7 +437,7 @@ export function DesignPicker({
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-center text-orange-600 font-semibold mt-4"
+                    className="text-center text-blue-600 font-semibold mt-4"
                   >
                     Please select at least one placement to continue 🎃
                   </motion.p>

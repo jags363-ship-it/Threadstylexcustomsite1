@@ -73,7 +73,7 @@ export function AdminDashboard() {
             className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <TrendingUp className="w-8 h-8 text-orange-600" />
+              <TrendingUp className="w-8 h-8 text-blue-600" />
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats.pendingOrders}
               </span>

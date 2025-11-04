@@ -197,7 +197,7 @@ const canCheckout = hasDesign && (isBlankSelected || selectedPlacements.length >
   disabled={!canCheckout || isLoading}
   className={`w-full flex items-center justify-center gap-3 px-8 py-6 rounded-2xl font-bold text-xl shadow-xl transition-all ${
     canCheckout && !isLoading
-      ? 'bg-gradient-to-r from-orange-600 to-purple-600 text-white hover:shadow-2xl'
+      ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:shadow-2xl'
       : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
   }`}
 >
@@ -211,7 +211,7 @@ const canCheckout = hasDesign && (isBlankSelected || selectedPlacements.length >
   </p>
 )}
 {hasDesign && !isBlankSelected && selectedPlacements.length === 0 && (
-  <p className="text-center text-orange-600 dark:text-orange-400 mt-4 text-sm font-semibold">
+  <p className="text-center text-blue-600 dark:text-cyan-400 mt-4 text-sm font-semibold">
     Choose a print placement to continue 🎃
   </p>
 )}

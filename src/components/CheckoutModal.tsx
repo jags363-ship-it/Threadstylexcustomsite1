@@ -202,7 +202,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors ${
                     step >= s
-                      ? 'bg-orange-600 text-white'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-gray-200 dark:bg-gray-600 text-gray-500'
                   }`}
                 >
@@ -211,7 +211,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                 {s < 3 && (
                   <div
                     className={`w-16 h-1 mx-2 transition-colors ${
-                      step > s ? 'bg-orange-600' : 'bg-gray-200 dark:bg-gray-600'
+                      step > s ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
                     }`}
                   />
                 )}
@@ -231,7 +231,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                     className="space-y-4"
                   >
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                      <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm">
                         1
                       </div>
                       Contact Information
@@ -246,7 +246,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="email"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                           placeholder="you@example.com"
                         />
                         {errors.email && (
@@ -262,7 +262,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '') })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                           placeholder="1234567890"
                           maxLength={10}
                         />
@@ -275,7 +275,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="w-full py-4 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all"
+                      className="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all"
                     >
                       Continue to Shipping
                     </button>
@@ -290,7 +290,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                     className="space-y-4"
                   >
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                      <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm">
                         2
                       </div>
                       Shipping Address
@@ -305,7 +305,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="text"
                           value={formData.firstName}
                           onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                         />
                         {errors.firstName && (
                           <p className="text-red-600 text-sm mt-1">{errors.firstName}</p>
@@ -320,7 +320,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="text"
                           value={formData.lastName}
                           onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                         />
                         {errors.lastName && (
                           <p className="text-red-600 text-sm mt-1">{errors.lastName}</p>
@@ -336,7 +336,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                         type="text"
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                       />
                       {errors.address && (
                         <p className="text-red-600 text-sm mt-1">{errors.address}</p>
@@ -351,7 +351,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                         type="text"
                         value={formData.apartment}
                         onChange={(e) => setFormData({ ...formData, apartment: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                       />
                     </div>
 
@@ -364,7 +364,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="text"
                           value={formData.city}
                           onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                         />
                         {errors.city && (
                           <p className="text-red-600 text-sm mt-1">{errors.city}</p>
@@ -379,7 +379,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="text"
                           value={formData.state}
                           onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                           maxLength={2}
                         />
                         {errors.state && (
@@ -395,7 +395,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                           type="text"
                           value={formData.zipCode}
                           onChange={(e) => setFormData({ ...formData, zipCode: e.target.value.replace(/\D/g, '') })}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                           maxLength={5}
                         />
                         {errors.zipCode && (
@@ -415,7 +415,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                       <button
                         type="button"
                         onClick={handleNext}
-                        className="flex-1 py-4 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all"
+                        className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all"
                       >
                         Continue to Payment
                       </button>
@@ -431,7 +431,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                     className="space-y-4"
                   >
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                      <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm">
                         3
                       </div>
                       Payment Method
@@ -444,7 +444,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                         onClick={() => setPaymentMethod('card')}
                         className={`p-4 rounded-xl border-2 transition-all ${
                           paymentMethod === 'card'
-                            ? 'border-orange-600 bg-orange-50 dark:bg-orange-900/20'
+                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
                             : 'border-gray-300 dark:border-gray-600'
                         }`}
                       >
@@ -457,7 +457,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                         onClick={() => setPaymentMethod('paypal')}
                         className={`p-4 rounded-xl border-2 transition-all ${
                           paymentMethod === 'paypal'
-                            ? 'border-orange-600 bg-orange-50 dark:bg-orange-900/20'
+                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
                             : 'border-gray-300 dark:border-gray-600'
                         }`}
                       >
@@ -477,7 +477,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                             type="text"
                             value={formData.cardNumber}
                             onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value.replace(/\D/g, '') })}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                             placeholder="4242 4242 4242 4242"
                             maxLength={16}
                           />
@@ -494,7 +494,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                             type="text"
                             value={formData.cardName}
                             onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                           />
                           {errors.cardName && (
                             <p className="text-red-600 text-sm mt-1">{errors.cardName}</p>
@@ -516,7 +516,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                                 }
                                 setFormData({ ...formData, expiry: value });
                               }}
-                              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                               placeholder="MM/YY"
                               maxLength={5}
                             />
@@ -533,7 +533,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                               type="text"
                               value={formData.cvv}
                               onChange={(e) => setFormData({ ...formData, cvv: e.target.value.replace(/\D/g, '') })}
-                              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-600 outline-none"
+                              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
                               placeholder="123"
                               maxLength={3}
                             />
@@ -563,7 +563,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                       <button
                         type="submit"
                         disabled={isProcessing}
-                        className="flex-1 py-4 bg-gradient-to-r from-orange-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50"
+                        className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50"
                       >
                         {isProcessing ? 'Processing...' : 'Complete Order'}
                       </button>
@@ -628,7 +628,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                   
                   <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-2 flex justify-between">
                     <span className="font-bold text-gray-900 dark:text-white">Total:</span>
-                    <span className="font-bold text-2xl text-orange-600">${orderDetails.totalPrice.toFixed(2)}</span>
+                    <span className="font-bold text-2xl text-blue-600">${orderDetails.totalPrice.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
