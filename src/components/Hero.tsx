@@ -12,7 +12,7 @@ export function Hero() {
   'https://i.pinimg.com/736x/61/63/e4/6163e40fddce19517288b4b3757a7e5b.jpg',
     'https://i.pinimg.com/1200x/74/3d/56/743d56ada745492a776a73c0423d8442.jpg',
   'https://i.pinimg.com/736x/6b/61/c3/6b61c3d9ddc2ead7fb9cb1d83e4e15f2.jpg',
-    'https://i.pinimg.com/1200x/64/07/86/64078626f2744ec46a9c7c08fbec2601.jpg',
+    'https://i.pinimg.com/1200x/94/37/df/9437df4ffab3bca7ae410797430ef4ad.jpg',
     'https://i.pinimg.com/1200x/00/c7/28/00c72863fc8ca97ed285add5dc615bd5.jpg',
 
   ];
