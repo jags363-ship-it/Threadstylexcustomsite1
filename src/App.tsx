@@ -48,7 +48,7 @@ const handleCheckout = () => {
   const isBlankSelected = selectedDesign === 'blank';
 
   if (!selectedDesign && !uploadedFile) {
-    setError('Pick a design or select blank apparel! 🎃');
+    setError('Pick a design or select blank apparel! ❄️');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
@@ -212,7 +212,7 @@ const canCheckout = hasDesign && (isBlankSelected || selectedPlacements.length >
 )}
 {hasDesign && !isBlankSelected && selectedPlacements.length === 0 && (
   <p className="text-center text-blue-600 dark:text-cyan-400 mt-4 text-sm font-semibold">
-    Choose a print placement to continue 🎃
+    Choose a print placement to continue ❄️
   </p>
 )}
             </div>
