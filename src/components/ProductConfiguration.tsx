@@ -509,7 +509,7 @@ export function ProductConfiguration({
 
                   {selectedPlacements.length === 0 && (
                     <div className="p-4 text-center text-blue-600 dark:text-cyan-400 text-sm font-semibold">
-                      Select at least one placement 🎃
+                      Select at least one placement ❄️
                     </div>
                   )}
                 </motion.div>
