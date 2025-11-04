@@ -65,14 +65,14 @@ export const designs: Design[] = [
   {
     id: 'Cozy Bear Mug',
     name: 'Cozy Bear Mug',
-    thumbnailSrc: '/WI-9.JPG',
-    fullSrc: '/WI-9.JPG',
+    thumbnailSrc: '/WI-9.png',
+    fullSrc: '/WI-9.png',
   },
   {
     id: 'City Fireworks Toast',
     name: 'City Fireworks Toast',
-    thumbnailSrc: '/WI-10.JPG',
-    fullSrc: '/WI-10.JPG',
+    thumbnailSrc: '/WI-10.png',
+    fullSrc: '/WI-10.png',
   },
   {
     id: 'ghost-pumpkin-latte',
