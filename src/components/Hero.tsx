@@ -13,7 +13,7 @@ export function Hero() {
     'https://i.pinimg.com/1200x/74/3d/56/743d56ada745492a776a73c0423d8442.jpg',
   'https://i.pinimg.com/736x/6b/61/c3/6b61c3d9ddc2ead7fb9cb1d83e4e15f2.jpg',
     'https://i.pinimg.com/1200x/94/37/df/9437df4ffab3bca7ae410797430ef4ad.jpg',
-    'https://i.pinimg.com/1200x/00/c7/28/00c72863fc8ca97ed285add5dc615bd5.jpg',
+    'https://i.pinimg.com/1200x/49/d9/be/49d9be9080ad0d42672bf819d307ca71.jpg',
 
   ];
 
