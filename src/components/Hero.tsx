@@ -7,7 +7,7 @@ export function Hero() {
 
   const modelImages = [
         'https://i.pinimg.com/1200x/92/a1/de/92a1de7f8954d6e792e51d497731667d.jpg',
-    'https://i.pinimg.com/1200x/4b/28/3f/4b283f5d723c3988a64e1aafd21ec7c4.jpg',
+    'https://i.pinimg.com/1200x/ed/97/a8/ed97a8760267151a22dff862e7d53ca3.jpg',
        'https://i.pinimg.com/1200x/18/07/8e/18078eede2dcac62a5c38136a09f8ff5.jpg',
   'https://i.pinimg.com/736x/61/63/e4/6163e40fddce19517288b4b3757a7e5b.jpg',
     'https://i.pinimg.com/1200x/74/3d/56/743d56ada745492a776a73c0423d8442.jpg',
