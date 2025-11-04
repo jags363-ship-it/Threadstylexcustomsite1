@@ -3,7 +3,6 @@ import { Snowflake, Package, ShieldCheck, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function Hero() {
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft());
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const modelImages = [
@@ -18,14 +17,6 @@ export function Hero() {
 
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   // Auto-rotate carousel every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,23 +25,6 @@ export function Hero() {
     
     return () => clearInterval(interval);
   }, [modelImages.length]);
-
-  function getTimeLeft() {
-    const targetDate = new Date('2025-10-31T23:59:59').getTime();
-    const now = new Date().getTime();
-    const difference = targetDate - now;
-
-    if (difference <= 0) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-      minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
-      seconds: Math.floor((difference % (1000 * 60)) / 1000)
-    };
-  }
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 md:py-24 transition-colors">
@@ -159,25 +133,6 @@ export function Hero() {
           >
             Design your perfect winter wardrobe with custom prints. Stay warm, stay stylish! ⛄
           </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl mb-8 max-w-2xl mx-auto transition-colors"
-          >
-            <p className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">Sale ends in:</p>
-            <div className="grid grid-cols-4 gap-3 md:gap-6">
-              {Object.entries(timeLeft).map(([unit, value]) => (
-                <div key={unit} className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 transition-colors">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                    {String(value).padStart(2, '0')}
-                  </div>
-                  <div className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1 capitalize">{unit}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
