@@ -12,6 +12,8 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { useUTM } from './hooks/useUTM';
 import { products } from './data/products';
 import { placements } from './data/placements';
+import { useCart } from './context/CartContext';
+import { CartModal } from './components/CartModal';
 import { CheckoutModal } from './components/CheckoutModal';
 
 function App() {
