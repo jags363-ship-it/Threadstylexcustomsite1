@@ -92,7 +92,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-6 py-2 rounded-full mb-6 shadow-lg"
           >
             <Snowflake className="w-4 h-4" />
-            <span className="font-semibold">Winter Collection 2024 ❄️</span>
+            <span className="font-semibold">Winter Collection 2025 ❄️</span>
             <Snowflake className="w-4 h-4" />
           </motion.div>
 
