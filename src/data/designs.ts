@@ -65,14 +65,14 @@ export const designs: Design[] = [
   {
     id: 'ghost-cat-pumpkin',
     name: 'Ghost & Cat',
-    thumbnailSrc: '/STYLE__3.JPG',
-    fullSrc: '/STYLE__3.JPG',
+    thumbnailSrc: '/WI-9.JPG',
+    fullSrc: '/WI-9.JPG',
   },
   {
     id: 'pumpkin-baby',
     name: 'Pumpkin Baby',
-    thumbnailSrc: '/STYLE__2.JPG',
-    fullSrc: '/STYLE__2.JPG',
+    thumbnailSrc: '/WI-10.JPG',
+    fullSrc: '/WI-10.JPG',
   },
   {
     id: 'ghost-pumpkin-latte',
