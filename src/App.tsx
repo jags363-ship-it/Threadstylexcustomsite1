@@ -29,7 +29,7 @@ function App() {
   const [selectedPlacements, setSelectedPlacements] = useState<string[]>([]);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [showCart, setShowCart] = useState(false);
-
+const { addToCart, cart, cartSubtotal, cartShipping, cartTotal } = useCart();
   const { addToCart } = useCart();
   const utmParams = useUTM();
   const currentProduct = products.find(p => p.id === selectedProduct) || products[0];
