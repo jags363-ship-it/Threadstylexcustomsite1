@@ -77,7 +77,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       console.log('✅ Design uploaded:', designUrl);
     }
 
-    // Prepare order data
+    // Prepare order data with all items
 const order = {
   orderNumber,
   orderId: `order_${Date.now()}`,
@@ -86,12 +86,12 @@ const order = {
   orderStatus: 'pending',
   shippingStatus: 'pending',
   trackingNumber: '',
-  ...data,
-  subtotal: data.subtotal,           // ← ADD
-  shippingCost: data.shippingCost,   // ← ADD
+  items: data.items, // Array of all cart items
+  customerInfo: data.customerInfo,
+  subtotal: data.subtotal,
+  shippingCost: data.shippingCost,
   totalPrice: data.totalPrice,
-  designUrl,
-  placementsFormatted: data.placements.map(p => p.label).join(', '),
+  paymentMethod: data.paymentMethod,
 };
     
     // Save to localStorage
