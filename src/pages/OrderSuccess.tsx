@@ -161,7 +161,7 @@ export function OrderSuccess() {
   transition={{ delay: 0.5 }}
   className="text-center mt-8"
 >
-  
+  <a
     href="/"
     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
   >
@@ -172,39 +172,3 @@ export function OrderSuccess() {
     </div>
   );
 }
-```
-
----
-
-## **FIX 3: Update N8n Workflow Email Template**
-
-In your N8n workflow, update the **customer email template** to include all items:
-```
-Hi {{$json.customerInfo.firstName}},
-
-We've received your order and we're getting it ready. You'll receive another email with tracking details once it ships.
-
-Order Summary
-
-{{#each $json.items}}
-Item: {{this.productName}}
-Options: Size: {{this.size}} • Color: {{this.color}}
-Design: {{this.designName}}
-{{#if this.placements}}
-Placements: {{#each this.placements}}{{this.label}}{{#unless @last}}, {{/unless}}{{/each}}
-{{/if}}
-Qty: {{this.quantity}}
-Total: ${{this.itemTotal}}
-
-{{/each}}
-
-Subtotal: ${{$json.subtotal}}
-Shipping: {{#if (eq $json.shippingCost 0)}}FREE{{else}}${{$json.shippingCost}}{{/if}}
-Total: ${{$json.totalPrice}}
-
-Shipping To
-
-{{$json.customerInfo.firstName}} {{$json.customerInfo.lastName}}
-{{$json.customerInfo.address}}
-{{#if $json.customerInfo.apartment}}{{$json.customerInfo.apartment}}{{/if}}
-{{$json.customerInfo.city}}, {{$json.customerInfo.state}} {{$json.customerInfo.zipCode}}
