@@ -48,64 +48,76 @@ function App() {
 
   const qualifiesForFreeShipping = subtotal >= SHIPPING_THRESHOLD;
 
-  const handleAddToCart = () => {
-    setError(null);
+const handleAddToCart = () => {
+  setError(null);
 
-    const isBlankSelected = selectedDesign === 'blank';
+  const isBlankSelected = selectedDesign === 'blank';
 
-    if (!selectedDesign && !uploadedFile) {
-      setError('Pick a design or select blank apparel! ❄️');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+  if (!selectedDesign && !uploadedFile) {
+    setError('Pick a design or select blank apparel! ❄️');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
 
-    if (!isBlankSelected && selectedPlacements.length === 0) {
-      setError('Choose where to print your design! 📍');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+  if (!isBlankSelected && selectedPlacements.length === 0) {
+    setError('Choose where to print your design! 📍');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
 
-    // Get design name
-    const designName = selectedDesign 
-      ? designs.find(d => d.id === selectedDesign)?.name 
-      : 'Custom Design';
+  console.log('Adding to cart...'); // Debug
 
-    // Get product image
-    const productImage = currentProduct.images[selectedColor] || Object.values(currentProduct.images)[0];
+  // Get design name
+  const designName = selectedDesign 
+    ? designs.find(d => d.id === selectedDesign)?.name 
+    : 'Custom Design';
 
-    // Create cart item
-    const cartItem = {
-      id: `cart_${Date.now()}_${Math.random()}`,
-      productId: currentProduct.id,
-      productName: currentProduct.name,
-      productImage,
-      size: selectedSize!,
-      color: selectedColor,
-      quantity,
-      designType: uploadedFile ? 'custom' as const : isBlankSelected ? 'blank' as const : 'gallery' as const,
-      designId: selectedDesign || undefined,
-      designName,
-      customDesignFile: uploadedFile || undefined,
-      placements: selectedPlacementObjects,
-      basePrice,
-      placementPrice,
-      itemTotal: basePrice + placementPrice,
-    };
+  // Get product image
+  const productImage = currentProduct.images[selectedColor] || Object.values(currentProduct.images)[0];
 
+  console.log('Product image:', productImage); // Debug
+
+  // Create cart item
+  const cartItem = {
+    id: `cart_${Date.now()}_${Math.random()}`,
+    productId: currentProduct.id,
+    productName: currentProduct.name,
+    productImage,
+    size: selectedSize!,
+    color: selectedColor,
+    quantity,
+    designType: uploadedFile ? 'custom' as const : isBlankSelected ? 'blank' as const : 'gallery' as const,
+    designId: selectedDesign || undefined,
+    designName,
+    customDesignFile: uploadedFile || undefined,
+    placements: selectedPlacementObjects,
+    basePrice,
+    placementPrice,
+    itemTotal: basePrice + placementPrice,
+  };
+
+  console.log('Cart item to add:', cartItem); // Debug
+
+  try {
     addToCart(cartItem);
+    console.log('Item added to cart successfully!'); // Debug
     
-    // Show success message
-    setError(null);
+    // Show success feedback with alert
+    alert('✅ Added to cart! Click the cart icon to view.');
     
-    // Show cart briefly
+    // Open cart automatically
     setShowCart(true);
     
-    // Reset selections to configure next item
+    // Reset selections
     setSelectedDesign(null);
     setUploadedFile(null);
     setSelectedPlacements([]);
     setQuantity(1);
-  };
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    setError('Failed to add to cart. Please try again.');
+  }
+};
 
   const hasDesign = selectedDesign !== null || uploadedFile !== null;
   const isBlankSelected = selectedDesign === 'blank';
