@@ -101,8 +101,7 @@ console.log('Product image:', productImage); // Debug
     addToCart(cartItem);
     console.log('Item added to cart successfully!'); // Debug
     
-    // Show success feedback with alert
-    alert('✅ Added to cart! Click the cart icon to view.');
+    
     
     // Open cart automatically
     setShowCart(true);
