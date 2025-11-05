@@ -29,8 +29,8 @@ function App() {
   const [selectedPlacements, setSelectedPlacements] = useState<string[]>([]);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [showCart, setShowCart] = useState(false);
-const { addToCart, cart, cartSubtotal, cartShipping, cartTotal } = useCart();
-  const { addToCart } = useCart();
+
+  const { addToCart, cart, cartSubtotal, cartShipping, cartTotal } = useCart();
   const utmParams = useUTM();
   const currentProduct = products.find(p => p.id === selectedProduct) || products[0];
   const currentColor = currentProduct.colors.find(c => c.id === selectedColor) || currentProduct.colors[0];
@@ -48,74 +48,67 @@ const { addToCart, cart, cartSubtotal, cartShipping, cartTotal } = useCart();
 
   const qualifiesForFreeShipping = subtotal >= SHIPPING_THRESHOLD;
 
-const handleAddToCart = () => {
-  setError(null);
+  const handleAddToCart = () => {
+    setError(null);
 
-  const isBlankSelected = selectedDesign === 'blank';
+    const isBlankSelected = selectedDesign === 'blank';
 
-  if (!selectedDesign && !uploadedFile) {
-    setError('Pick a design or select blank apparel! ❄️');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
+    if (!selectedDesign && !uploadedFile) {
+      setError('Pick a design or select blank apparel! ❄️');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
-  if (!isBlankSelected && selectedPlacements.length === 0) {
-    setError('Choose where to print your design! 📍');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    return;
-  }
+    if (!isBlankSelected && selectedPlacements.length === 0) {
+      setError('Choose where to print your design! 📍');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
-  console.log('Adding to cart...'); // Debug
+    // Get design name
+    const designName = selectedDesign 
+      ? designs.find(d => d.id === selectedDesign)?.name 
+      : 'Custom Design';
 
-  // Get design name
-  const designName = selectedDesign 
-    ? designs.find(d => d.id === selectedDesign)?.name 
-    : 'Custom Design';
+    // Get product image from colors array
+    const selectedColorObj = currentProduct.colors.find(c => c.id === selectedColor);
+    const productImage = selectedColorObj?.image || currentProduct.colors[0]?.image || 'https://via.placeholder.com/150?text=Product';
 
-// Get product image from colors array
-const selectedColorObj = currentProduct.colors.find(c => c.id === selectedColor);
-const productImage = selectedColorObj?.image || currentProduct.colors[0]?.image || 'https://via.placeholder.com/150?text=Product';
-console.log('Product image:', productImage); // Debug
-  // Create cart item
-  const cartItem = {
-    id: `cart_${Date.now()}_${Math.random()}`,
-    productId: currentProduct.id,
-    productName: currentProduct.name,
-    productImage,
-    size: selectedSize!,
-    color: selectedColor,
-    quantity,
-    designType: uploadedFile ? 'custom' as const : isBlankSelected ? 'blank' as const : 'gallery' as const,
-    designId: selectedDesign || undefined,
-    designName,
-    customDesignFile: uploadedFile || undefined,
-    placements: selectedPlacementObjects,
-    basePrice,
-    placementPrice,
-    itemTotal: basePrice + placementPrice,
+    // Create cart item
+    const cartItem = {
+      id: `cart_${Date.now()}_${Math.random()}`,
+      productId: currentProduct.id,
+      productName: currentProduct.name,
+      productImage,
+      size: selectedSize!,
+      color: selectedColor,
+      quantity,
+      designType: uploadedFile ? 'custom' as const : isBlankSelected ? 'blank' as const : 'gallery' as const,
+      designId: selectedDesign || undefined,
+      designName,
+      customDesignFile: uploadedFile || undefined,
+      placements: selectedPlacementObjects,
+      basePrice,
+      placementPrice,
+      itemTotal: basePrice + placementPrice,
+    };
+
+    try {
+      addToCart(cartItem);
+      
+      // Open cart automatically
+      setShowCart(true);
+      
+      // Reset selections
+      setSelectedDesign(null);
+      setUploadedFile(null);
+      setSelectedPlacements([]);
+      setQuantity(1);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setError('Failed to add to cart. Please try again.');
+    }
   };
-
-  console.log('Cart item to add:', cartItem); // Debug
-
-  try {
-    addToCart(cartItem);
-    console.log('Item added to cart successfully!'); // Debug
-    
-    
-    
-    // Open cart automatically
-    setShowCart(true);
-    
-    // Reset selections
-    setSelectedDesign(null);
-    setUploadedFile(null);
-    setSelectedPlacements([]);
-    setQuantity(1);
-  } catch (error) {
-    console.error('Error adding to cart:', error);
-    setError('Failed to add to cart. Please try again.');
-  }
-};
 
   const hasDesign = selectedDesign !== null || uploadedFile !== null;
   const isBlankSelected = selectedDesign === 'blank';
@@ -253,14 +246,15 @@ console.log('Product image:', productImage); // Debug
         }}
       />
 
+      {/* Checkout Modal */}
       <CheckoutModal
-  isOpen={showCheckoutModal}
-  onClose={() => setShowCheckoutModal(false)}
-  cartItems={cart}
-  cartSubtotal={cartSubtotal}
-  cartShipping={cartShipping}
-  cartTotal={cartTotal}
-/>
+        isOpen={showCheckoutModal}
+        onClose={() => setShowCheckoutModal(false)}
+        cartItems={cart}
+        cartSubtotal={cartSubtotal}
+        cartShipping={cartShipping}
+        cartTotal={cartTotal}
+      />
     </div>
   );
 }
