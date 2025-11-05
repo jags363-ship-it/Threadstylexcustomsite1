@@ -253,27 +253,14 @@ console.log('Product image:', productImage); // Debug
         }}
       />
 
-      {/* Checkout Modal */}
       <CheckoutModal
-        isOpen={showCheckoutModal}
-        onClose={() => setShowCheckoutModal(false)}
-        orderDetails={{
-          productName: currentProduct.name,
-          productId: currentProduct.id,
-          size: selectedSize!,
-          color: selectedColor,
-          quantity,
-          designType: uploadedFile ? 'custom' : selectedDesign === 'blank' ? 'blank' : 'gallery',
-          designId: selectedDesign || undefined,
-          placements: selectedPlacementObjects,
-          basePrice,
-          placementPrice,
-          subtotal,
-          shippingCost,
-          totalPrice,
-        }}
-        customDesignFile={uploadedFile}
-      />
+  isOpen={showCheckoutModal}
+  onClose={() => setShowCheckoutModal(false)}
+  cartItems={cart}
+  cartSubtotal={cartSubtotal}
+  cartShipping={cartShipping}
+  cartTotal={cartTotal}
+/>
     </div>
   );
 }
