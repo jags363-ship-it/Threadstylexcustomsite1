@@ -1,25 +1,9 @@
 import { loadStripe } from '@stripe/stripe-js';
-import { uploadCustomDesign } from './fileUpload';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 export interface CheckoutData {
-  productId: string;
-  productName: string;
-  size: string;
-  color: string;
-  quantity: number;
-  designType: 'gallery' | 'custom';
-  designId?: string;
-  customDesignFile?: File;
-  placements: Array<{
-    key: string;
-    label: string;
-    price: number;
-  }>;
-  basePrice: number;
-  placementPrice: number;
-  totalPrice: number;
+  items: any[];
   customerInfo: {
     email: string;
     phone: string;
@@ -33,11 +17,9 @@ export interface CheckoutData {
     country: string;
   };
   paymentMethod: 'card' | 'paypal';
-  utmParams?: {
-    utm_source?: string;
-    utm_medium?: string;
-    utm_campaign?: string;
-  };
+  subtotal: number;
+  shippingCost: number;
+  totalPrice: number;
 }
 
 // Send order to N8n webhook
@@ -70,38 +52,59 @@ export const createCheckoutSession = async (data: CheckoutData) => {
   try {
     const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     
-    // Upload custom design if provided
-    let designUrl = '';
-    if (data.customDesignFile) {
-      designUrl = await uploadCustomDesign(data.customDesignFile);
-      console.log('✅ Design uploaded:', designUrl);
-    }
+    // Format items for better readability
+    const formattedItems = data.items.map(item => ({
+      productId: item.productId,
+      productName: item.productName,
+      productImage: item.productImage,
+      size: item.size,
+      color: item.color,
+      quantity: item.quantity,
+      designType: item.designType,
+      designName: item.designName || item.designType,
+      placements: item.placements.map((p: any) => ({
+        label: p.label,
+        price: p.price
+      })),
+      basePrice: item.basePrice,
+      placementPrice: item.placementPrice,
+      itemTotal: item.itemTotal,
+    }));
 
-    // Prepare order data with all items
-const order = {
-  orderNumber,
-  orderId: `order_${Date.now()}`,
-  orderDate: new Date().toISOString(),
-  paymentStatus: 'completed',
-  orderStatus: 'pending',
-  shippingStatus: 'pending',
-  trackingNumber: '',
-  items: data.items, // Array of all cart items
-  customerInfo: data.customerInfo,
-  subtotal: data.subtotal,
-  shippingCost: data.shippingCost,
-  totalPrice: data.totalPrice,
-  paymentMethod: data.paymentMethod,
-};
+    // Prepare order data for N8n
+    const order = {
+      orderNumber,
+      orderId: `order_${Date.now()}`,
+      orderDate: new Date().toISOString(),
+      paymentStatus: 'completed',
+      orderStatus: 'pending',
+      shippingStatus: 'pending',
+      trackingNumber: '',
+      
+      // Customer info
+      customerInfo: data.customerInfo,
+      
+      // All items
+      items: formattedItems,
+      itemCount: formattedItems.length,
+      
+      // Pricing
+      subtotal: data.subtotal,
+      shippingCost: data.shippingCost,
+      totalPrice: data.totalPrice,
+      
+      // Payment
+      paymentMethod: data.paymentMethod,
+    };
     
-    // Save to localStorage
+    // Save to localStorage for success page
     localStorage.setItem('lastOrder', JSON.stringify(order));
     
     // Send to N8n workflow
     await sendOrderToN8n(order);
     
     // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     return {
       success: true,
