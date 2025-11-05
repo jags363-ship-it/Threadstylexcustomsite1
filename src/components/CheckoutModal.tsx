@@ -37,6 +37,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal'>('card');
+  const { clearCart } = useCart();
   
   const [formData, setFormData] = useState({
     email: '',
