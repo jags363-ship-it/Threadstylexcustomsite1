@@ -1,39 +1,19 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, Lock, CheckCircle, Download, ExternalLink } from 'lucide-react';
-import { createCheckoutSession, CheckoutData } from '../api/stripe';
+import { X, CreditCard, Lock } from 'lucide-react';
+import { createCheckoutSession } from '../api/stripe';
 import { useCart } from '../context/CartContext';
-
-interface OrderDetails {
-  productName: string;
-  productId: string;
-  size: string;
-  color: string;
-  quantity: number;
-  designType: 'gallery' | 'custom' | 'blank';
-  designId?: string;
-  placements: Array<{
-    key: string;
-    label: string;
-    price: number;
-  }>;
-  basePrice: number;
-  placementPrice: number;
-  subtotal: number;
-  shippingCost: number;
-  totalPrice: number;
-}
 
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  cartItems: any[]; // Array of cart items
+  cartItems: any[];
   cartSubtotal: number;
   cartShipping: number;
   cartTotal: number;
 }
 
-export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile }: CheckoutModalProps) {
+export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartShipping, cartTotal }: CheckoutModalProps) {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal'>('card');
@@ -123,35 +103,8 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
     setIsProcessing(true);
 
     try {
- const checkoutData = {
-  items: cartItems, // All cart items
-  customerInfo: {
-    email: formData.email,
-    phone: formData.phone,
-    firstName: formData.firstName,
-    lastName: formData.lastName,
-    address: formData.address,
-    apartment: formData.apartment,
-    city: formData.city,
-    state: formData.state,
-    zipCode: formData.zipCode,
-    country: formData.country,
-  },
-  paymentMethod: paymentMethod,
-  subtotal: cartSubtotal,
-  shippingCost: cartShipping,
-  totalPrice: cartTotal,
-};
-        size: orderDetails.size,
-        color: orderDetails.color,
-        quantity: orderDetails.quantity,
-        designType: orderDetails.designType,
-        designId: orderDetails.designId,
-        customDesignFile: customDesignFile || undefined,
-        placements: orderDetails.placements,
-        basePrice: orderDetails.basePrice,
-        placementPrice: orderDetails.placementPrice,
-        totalPrice: orderDetails.totalPrice,
+      const checkoutData = {
+        items: cartItems,
         customerInfo: {
           email: formData.email,
           phone: formData.phone,
@@ -165,15 +118,18 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
           country: formData.country,
         },
         paymentMethod: paymentMethod,
+        subtotal: cartSubtotal,
+        shippingCost: cartShipping,
+        totalPrice: cartTotal,
       };
 
       const result = await createCheckoutSession(checkoutData);
 
       if (result.success) {
+        clearCart(); // Clear cart after successful order
         setIsProcessing(false);
         onClose();
         
-        // Redirect to success page
         window.location.href = `/order-success?order_id=${result.orderId}&order_number=${result.orderNumber}`;
       }
     } catch (error) {
@@ -186,7 +142,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -195,14 +150,12 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
           className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         />
 
-        {/* Modal */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className="relative w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden my-8"
         >
-          {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               Checkout
@@ -215,7 +168,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
             </button>
           </div>
 
-          {/* Progress Steps */}
           <div className="flex items-center justify-center gap-4 p-6 bg-gray-50 dark:bg-gray-700/50">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center">
@@ -241,9 +193,7 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
 
           <form onSubmit={handleSubmit} className="p-6">
             <div className="grid md:grid-cols-3 gap-6">
-              {/* Left Column - Form */}
               <div className="md:col-span-2 space-y-6">
-                {/* Step 1: Contact Information */}
                 {step === 1 && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -302,7 +252,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                   </motion.div>
                 )}
 
-                {/* Step 2: Shipping Address */}
                 {step === 2 && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -443,7 +392,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                   </motion.div>
                 )}
 
-                {/* Step 3: Payment Method */}
                 {step === 3 && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -457,7 +405,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                       Payment Method
                     </h3>
 
-                    {/* Payment Method Selection */}
                     <div className="grid md:grid-cols-2 gap-4">
                       <button
                         type="button"
@@ -486,7 +433,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                       </button>
                     </div>
 
-                    {/* Card Details */}
                     {paymentMethod === 'card' && (
                       <div className="space-y-4">
                         <div>
@@ -565,7 +511,6 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                       </div>
                     )}
 
-                    {/* Security Badge */}
                     <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
                       <Lock className="w-4 h-4" />
                       <span>Secure checkout • SSL encrypted</span>
@@ -592,67 +537,65 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                 )}
               </div>
 
-            {/* Right Column - Order Summary */}
-<div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl h-fit sticky top-6">
-  <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Order Summary</h3>
-  
-  {/* Cart Items */}
-  <div className="space-y-4 mb-4 max-h-64 overflow-y-auto">
-    {cartItems.map((item, index) => (
-      <div key={item.id} className="pb-3 border-b border-gray-200 dark:border-gray-600 last:border-0">
-        <div className="flex gap-3">
-          <img 
-            src={item.productImage} 
-            alt={item.productName}
-            className="w-16 h-16 object-cover rounded-lg bg-white"
-          />
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">
-              {item.productName}
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Size: {item.size} • {item.color}
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Qty: {item.quantity}
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Design: {item.designName || item.designType}
-            </p>
-            {item.placements.length > 0 && (
-              <p className="text-xs text-gray-500 dark:text-gray-500">
-                {item.placements.length} placement{item.placements.length > 1 ? 's' : ''}
-              </p>
-            )}
-            <p className="text-sm font-bold text-blue-600 dark:text-cyan-400 mt-1">
-              ${item.itemTotal.toFixed(2)}
-            </p>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
+              {/* Right Column - Order Summary */}
+              <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl h-fit sticky top-6">
+                <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Order Summary</h3>
+                
+                <div className="space-y-4 mb-4 max-h-64 overflow-y-auto">
+                  {cartItems.map((item) => (
+                    <div key={item.id} className="pb-3 border-b border-gray-200 dark:border-gray-600 last:border-0">
+                      <div className="flex gap-3">
+                        <img 
+                          src={item.productImage} 
+                          alt={item.productName}
+                          className="w-16 h-16 object-cover rounded-lg bg-white"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">
+                            {item.productName}
+                          </p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            Size: {item.size} • {item.color}
+                          </p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            Qty: {item.quantity}
+                          </p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                            Design: {item.designName || item.designType}
+                          </p>
+                          {item.placements && item.placements.length > 0 && (
+                            <p className="text-xs text-gray-500 dark:text-gray-500">
+                              {item.placements.length} placement{item.placements.length > 1 ? 's' : ''}
+                            </p>
+                          )}
+                          <p className="text-sm font-bold text-blue-600 dark:text-cyan-400 mt-1">
+                            ${item.itemTotal.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
 
-  {/* Totals */}
-  <div className="border-t border-gray-200 dark:border-gray-600 pt-4 space-y-2">
-    <div className="flex justify-between text-sm">
-      <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
-      <span className="text-gray-900 dark:text-white">${cartSubtotal.toFixed(2)}</span>
-    </div>
-    
-    <div className="flex justify-between text-sm">
-      <span className="text-gray-600 dark:text-gray-400">Shipping:</span>
-      <span className={cartShipping === 0 ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-900 dark:text-white'}>
-        {cartShipping === 0 ? 'FREE' : `$${cartShipping.toFixed(2)}`}
-      </span>
-    </div>
-    
-    <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-2 flex justify-between">
-      <span className="font-bold text-gray-900 dark:text-white">Total:</span>
-      <span className="font-bold text-2xl text-blue-600 dark:text-cyan-400">${cartTotal.toFixed(2)}</span>
-    </div>
-  </div>
-</div>
+                <div className="border-t border-gray-200 dark:border-gray-600 pt-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
+                    <span className="text-gray-900 dark:text-white">${cartSubtotal.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 dark:text-gray-400">Shipping:</span>
+                    <span className={cartShipping === 0 ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-900 dark:text-white'}>
+                      {cartShipping === 0 ? 'FREE' : `$${cartShipping.toFixed(2)}`}
+                    </span>
+                  </div>
+                  
+                  <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-2 flex justify-between">
+                    <span className="font-bold text-gray-900 dark:text-white">Total:</span>
+                    <span className="font-bold text-2xl text-blue-600 dark:text-cyan-400">${cartTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </motion.div>
