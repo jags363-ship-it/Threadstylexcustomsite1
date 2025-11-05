@@ -72,26 +72,10 @@ const handleAddToCart = () => {
     ? designs.find(d => d.id === selectedDesign)?.name 
     : 'Custom Design';
 
-  // Get product image
-  // Get product image safely
-let productImage = '';
-if (currentProduct.images) {
-  if (typeof currentProduct.images === 'object') {
-    // Images is an object with color keys
-    productImage = currentProduct.images[selectedColor] || Object.values(currentProduct.images)[0] || '';
-  } else if (typeof currentProduct.images === 'string') {
-    // Images is a string URL
-    productImage = currentProduct.images;
-  }
-}
-
-// Fallback to a placeholder if no image found
-if (!productImage) {
-  productImage = '/placeholder-product.png';
-}
-
-  console.log('Product image:', productImage); // Debug
-
+// Get product image from colors array
+const selectedColorObj = currentProduct.colors.find(c => c.id === selectedColor);
+const productImage = selectedColorObj?.image || currentProduct.colors[0]?.image || 'https://via.placeholder.com/150?text=Product';
+console.log('Product image:', productImage); // Debug
   // Create cart item
   const cartItem = {
     id: `cart_${Date.now()}_${Math.random()}`,
