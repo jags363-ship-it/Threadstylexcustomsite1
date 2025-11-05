@@ -121,9 +121,25 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
     setIsProcessing(true);
 
     try {
-      const checkoutData: CheckoutData = {
-        productId: orderDetails.productId,
-        productName: orderDetails.productName,
+ const checkoutData = {
+  items: cartItems, // All cart items
+  customerInfo: {
+    email: formData.email,
+    phone: formData.phone,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    address: formData.address,
+    apartment: formData.apartment,
+    city: formData.city,
+    state: formData.state,
+    zipCode: formData.zipCode,
+    country: formData.country,
+  },
+  paymentMethod: paymentMethod,
+  subtotal: cartSubtotal,
+  shippingCost: cartShipping,
+  totalPrice: cartTotal,
+};
         size: orderDetails.size,
         color: orderDetails.color,
         quantity: orderDetails.quantity,
