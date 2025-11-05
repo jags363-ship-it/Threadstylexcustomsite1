@@ -574,66 +574,67 @@ export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile 
                 )}
               </div>
 
-              {/* Right Column - Order Summary */}
-              <div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl h-fit sticky top-6">
-                <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Order Summary</h3>
-                
-                <div className="space-y-3 mb-4">
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-white">{orderDetails.productName}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Size: {orderDetails.size} • Color: {orderDetails.color}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Quantity: {orderDetails.quantity}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Design: {orderDetails.designType === 'blank' ? 'No Design' : orderDetails.designType}
-                    </p>
-                    {orderDetails.placements.length > 0 && (
-                      <div className="mt-2">
-                        <p className="text-xs text-gray-500 dark:text-gray-500">Placements:</p>
-                        {orderDetails.placements.map((p) => (
-                          <p key={p.key} className="text-xs text-gray-600 dark:text-gray-400">
-                            • {p.label}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+            {/* Right Column - Order Summary */}
+<div className="bg-gray-50 dark:bg-gray-700/50 p-6 rounded-xl h-fit sticky top-6">
+  <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Order Summary</h3>
+  
+  {/* Cart Items */}
+  <div className="space-y-4 mb-4 max-h-64 overflow-y-auto">
+    {cartItems.map((item, index) => (
+      <div key={item.id} className="pb-3 border-b border-gray-200 dark:border-gray-600 last:border-0">
+        <div className="flex gap-3">
+          <img 
+            src={item.productImage} 
+            alt={item.productName}
+            className="w-16 h-16 object-cover rounded-lg bg-white"
+          />
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-gray-900 dark:text-white text-sm truncate">
+              {item.productName}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Size: {item.size} • {item.color}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Qty: {item.quantity}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Design: {item.designName || item.designType}
+            </p>
+            {item.placements.length > 0 && (
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                {item.placements.length} placement{item.placements.length > 1 ? 's' : ''}
+              </p>
+            )}
+            <p className="text-sm font-bold text-blue-600 dark:text-cyan-400 mt-1">
+              ${item.itemTotal.toFixed(2)}
+            </p>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
 
-                <div className="border-t border-gray-200 dark:border-gray-600 pt-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Base Price:</span>
-                    <span className="text-gray-900 dark:text-white">${orderDetails.basePrice.toFixed(2)}</span>
-                  </div>
-                  
-                  {orderDetails.placements && orderDetails.placements.length > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Placements:</span>
-                      <span className="text-gray-900 dark:text-white">+${orderDetails.placementPrice.toFixed(2)}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex justify-between text-sm border-t border-gray-200 dark:border-gray-600 pt-2">
-                    <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
-                    <span className="text-gray-900 dark:text-white">${orderDetails.subtotal.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">Shipping:</span>
-                    <span className={orderDetails.shippingCost === 0 ? 'text-green-600 font-semibold' : 'text-gray-900 dark:text-white'}>
-                      {orderDetails.shippingCost === 0 ? 'FREE' : `$${orderDetails.shippingCost.toFixed(2)}`}
-                    </span>
-                  </div>
-                  
-                  <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-2 flex justify-between">
-                    <span className="font-bold text-gray-900 dark:text-white">Total:</span>
-                    <span className="font-bold text-2xl text-blue-600">${orderDetails.totalPrice.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
+  {/* Totals */}
+  <div className="border-t border-gray-200 dark:border-gray-600 pt-4 space-y-2">
+    <div className="flex justify-between text-sm">
+      <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
+      <span className="text-gray-900 dark:text-white">${cartSubtotal.toFixed(2)}</span>
+    </div>
+    
+    <div className="flex justify-between text-sm">
+      <span className="text-gray-600 dark:text-gray-400">Shipping:</span>
+      <span className={cartShipping === 0 ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-900 dark:text-white'}>
+        {cartShipping === 0 ? 'FREE' : `$${cartShipping.toFixed(2)}`}
+      </span>
+    </div>
+    
+    <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-2 flex justify-between">
+      <span className="font-bold text-gray-900 dark:text-white">Total:</span>
+      <span className="font-bold text-2xl text-blue-600 dark:text-cyan-400">${cartTotal.toFixed(2)}</span>
+    </div>
+  </div>
+</div>
             </div>
           </form>
         </motion.div>
