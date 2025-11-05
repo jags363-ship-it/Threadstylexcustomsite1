@@ -26,8 +26,10 @@ interface OrderDetails {
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
-  orderDetails: OrderDetails;
-  customDesignFile?: File | null;
+  cartItems: any[]; // Array of cart items
+  cartSubtotal: number;
+  cartShipping: number;
+  cartTotal: number;
 }
 
 export function CheckoutModal({ isOpen, onClose, orderDetails, customDesignFile }: CheckoutModalProps) {
