@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Lock, CheckCircle, Download, ExternalLink } from 'lucide-react';
 import { createCheckoutSession, CheckoutData } from '../api/stripe';
+import { useCart } from '../context/CartContext';
 
 interface OrderDetails {
   productName: string;
