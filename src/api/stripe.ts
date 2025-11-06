@@ -36,15 +36,16 @@ const sendOrderToN8n = async (orderData: any) => {
     });
 
     if (!response.ok) {
-      throw new Error(`N8n webhook failed: ${response.status}`);
+      console.warn(`⚠️ N8n webhook returned ${response.status} - continuing anyway`);
+      return { success: false, error: `HTTP ${response.status}` };
     }
 
     const result = await response.json();
     console.log('✅ Order sent to N8n:', result);
-    return result;
+    return { success: true, data: result };
   } catch (error) {
-    console.error('❌ N8n webhook error:', error);
-    throw error;
+    console.error('❌ N8n webhook error (continuing anyway):', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
 
@@ -71,7 +72,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       itemTotal: item.itemTotal,
     }));
 
-    // Prepare order data for N8n
+    // Prepare order data
     const order = {
       orderNumber,
       orderId: `order_${Date.now()}`,
@@ -81,35 +82,35 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       shippingStatus: 'pending',
       trackingNumber: '',
       
-      // Customer info
       customerInfo: data.customerInfo,
-      
-      // All items
       items: formattedItems,
       itemCount: formattedItems.length,
       
-      // Pricing
       subtotal: data.subtotal,
       shippingCost: data.shippingCost,
       totalPrice: data.totalPrice,
       
-      // Payment
       paymentMethod: data.paymentMethod,
     };
     
     // Save to localStorage for success page
     localStorage.setItem('lastOrder', JSON.stringify(order));
+    console.log('💾 Order saved to localStorage:', order);
     
-    // Send to N8n workflow
-    await sendOrderToN8n(order);
+    // **N8n DISABLED FOR TESTING**
+    console.log('⚠️ N8n temporarily disabled for testing');
+    // await sendOrderToN8n(order);
     
     // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    console.log('✅ Order processing complete, returning success');
     
     return {
       success: true,
       orderId: order.orderId,
       orderNumber: order.orderNumber,
+      n8nStatus: 'disabled',
     };
   } catch (error) {
     console.error('Checkout error:', error);
