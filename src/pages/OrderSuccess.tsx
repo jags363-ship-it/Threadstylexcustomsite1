@@ -222,22 +222,22 @@ Thank you for your order!
           </button>
 
           {/* Continue Shopping */}
+          
+            href="/"
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            Continue Shopping
+          </a>
 
-  href="/"
-  className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
->
-  <ShoppingBag className="w-5 h-5" />
-  Continue Shopping
-</a>
-
-{/* Back to Home */}
-
-  href="/"
-  className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
->
-  <Home className="w-5 h-5" />
-  Back to Home
-</a>
+          {/* Back to Home */}
+          
+            href="/"
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
+          >
+            <Home className="w-5 h-5" />
+            Back to Home
+          </a>
         </motion.div>
       </div>
     </div>
