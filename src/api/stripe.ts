@@ -36,7 +36,7 @@ const sendOrderToN8n = async (orderData: any) => {
     });
 
     if (!response.ok) {
-      console.warn(`⚠️ N8n webhook returned ${response.status} - continuing anyway`);
+      console.warn(`⚠️ N8n webhook returned ${response.status}`);
       return { success: false, error: `HTTP ${response.status}` };
     }
 
@@ -44,7 +44,7 @@ const sendOrderToN8n = async (orderData: any) => {
     console.log('✅ Order sent to N8n:', result);
     return { success: true, data: result };
   } catch (error) {
-    console.error('❌ N8n webhook error (continuing anyway):', error);
+    console.error('❌ N8n webhook error:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
@@ -95,22 +95,31 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     // Save to localStorage for success page
     localStorage.setItem('lastOrder', JSON.stringify(order));
-    console.log('💾 Order saved to localStorage:', order);
+    console.log('💾 Order saved to localStorage');
     
-    // **N8n DISABLED FOR TESTING**
-    console.log('⚠️ N8n temporarily disabled for testing');
-    // await sendOrderToN8n(order);
+    // Send to N8n (with timeout protection)
+    const n8nPromise = sendOrderToN8n(order);
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('N8n timeout')), 5000)
+    );
+    
+    try {
+      const n8nResult = await Promise.race([n8nPromise, timeoutPromise]);
+      console.log('✅ N8n notification sent:', n8nResult);
+    } catch (n8nError) {
+      console.warn('⚠️ N8n notification failed (continuing anyway):', n8nError);
+      // Continue checkout even if N8n fails
+    }
     
     // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    console.log('✅ Order processing complete, returning success');
+    console.log('✅ Order processing complete');
     
     return {
       success: true,
       orderId: order.orderId,
       orderNumber: order.orderNumber,
-      n8nStatus: 'disabled',
     };
   } catch (error) {
     console.error('Checkout error:', error);
