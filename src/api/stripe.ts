@@ -1,6 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY |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| '');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 export interface CheckoutData {
   items: any[];
