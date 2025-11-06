@@ -10,7 +10,6 @@ export function OrderSuccess() {
   const orderNumber = searchParams.get('order_number');
 
   useEffect(() => {
-    // Get order from localStorage
     const lastOrder = localStorage.getItem('lastOrder');
     if (lastOrder) {
       setOrderData(JSON.parse(lastOrder));
@@ -20,7 +19,6 @@ export function OrderSuccess() {
   const handleDownloadInvoice = () => {
     if (!orderData) return;
 
-    // Generate invoice text
     const invoiceText = `
 INVOICE
 Order #${orderData.orderNumber}
@@ -53,7 +51,6 @@ Payment Status: ${orderData.paymentStatus}
 Thank you for your order!
     `;
 
-    // Create and download file
     const blob = new Blob([invoiceText], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -79,7 +76,7 @@ Thank you for your order!
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white dark:from-gray-900 dark:via-blue-900/20 dark:to-gray-900 py-12 px-4">
       <div className="max-w-3xl mx-auto">
-        {/* Success Header */}
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -101,14 +98,12 @@ Thank you for your order!
           </p>
         </motion.div>
 
-        {/* Order Details Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-6"
         >
-          {/* Order Number & Total */}
           <div className="flex justify-between items-start mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Order Number</p>
@@ -120,7 +115,6 @@ Thank you for your order!
             </div>
           </div>
 
-          {/* Order Items */}
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-4">
               <Package className="w-5 h-5 text-blue-600 dark:text-cyan-400" />
@@ -153,7 +147,6 @@ Thank you for your order!
               ))}
             </div>
 
-            {/* Price Breakdown */}
             <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-2">
               <div className="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>Subtotal</span>
@@ -172,7 +165,6 @@ Thank you for your order!
             </div>
           </div>
 
-          {/* Shipping Address */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Truck className="w-5 h-5 text-blue-600 dark:text-cyan-400" />
@@ -187,7 +179,6 @@ Thank you for your order!
           </div>
         </motion.div>
 
-        {/* Confirmation Email Notice */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -205,14 +196,12 @@ Thank you for your order!
           </div>
         </motion.div>
 
-        {/* Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="grid md:grid-cols-3 gap-4"
         >
-          {/* Download Invoice */}
           <button
             onClick={handleDownloadInvoice}
             className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
@@ -221,7 +210,6 @@ Thank you for your order!
             Download Invoice
           </button>
 
-          {/* Continue Shopping */}
           
             href="/"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
@@ -230,7 +218,6 @@ Thank you for your order!
             Continue Shopping
           </a>
 
-          {/* Back to Home */}
           
             href="/"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
@@ -239,6 +226,7 @@ Thank you for your order!
             Back to Home
           </a>
         </motion.div>
+
       </div>
     </div>
   );
