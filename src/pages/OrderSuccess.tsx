@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Package, Truck, Mail } from 'lucide-react';
+import { CheckCircle, Package, Truck, Mail, Download, ShoppingBag, Home } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 export function OrderSuccess() {
@@ -17,10 +17,61 @@ export function OrderSuccess() {
     }
   }, []);
 
+  const handleDownloadInvoice = () => {
+    if (!orderData) return;
+
+    // Generate invoice text
+    const invoiceText = `
+INVOICE
+Order #${orderData.orderNumber}
+Date: ${new Date(orderData.orderDate).toLocaleDateString()}
+
+BILL TO:
+${orderData.customerInfo.firstName} ${orderData.customerInfo.lastName}
+${orderData.customerInfo.address}
+${orderData.customerInfo.apartment ? orderData.customerInfo.apartment + '\n' : ''}${orderData.customerInfo.city}, ${orderData.customerInfo.state} ${orderData.customerInfo.zipCode}
+Email: ${orderData.customerInfo.email}
+Phone: ${orderData.customerInfo.phone}
+
+ITEMS:
+${orderData.items.map((item: any, index: number) => `
+${index + 1}. ${item.productName}
+   Size: ${item.size} | Color: ${item.color}
+   Design: ${item.designName}
+   Quantity: ${item.quantity}
+   Price: $${item.itemTotal.toFixed(2)}
+`).join('\n')}
+
+SUMMARY:
+Subtotal: $${orderData.subtotal.toFixed(2)}
+Shipping: ${orderData.shippingCost === 0 ? 'FREE' : '$' + orderData.shippingCost.toFixed(2)}
+Total: $${orderData.totalPrice.toFixed(2)}
+
+Payment Method: ${orderData.paymentMethod === 'card' ? 'Credit Card' : 'PayPal'}
+Payment Status: ${orderData.paymentStatus}
+
+Thank you for your order!
+    `;
+
+    // Create and download file
+    const blob = new Blob([invoiceText], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Invoice-${orderData.orderNumber}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
   if (!orderData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading order details...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-cyan-50 to-white dark:from-gray-900 dark:via-blue-900/20 dark:to-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading order details...</p>
+        </div>
       </div>
     );
   }
@@ -141,7 +192,7 @@ export function OrderSuccess() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6"
+          className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-6"
         >
           <div className="flex items-start gap-3">
             <Mail className="w-6 h-6 text-blue-600 dark:text-cyan-400 flex-shrink-0 mt-1" />
@@ -154,20 +205,40 @@ export function OrderSuccess() {
           </div>
         </motion.div>
 
-        {/* Next Steps */}
+        {/* Action Buttons */}
         <motion.div
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ delay: 0.5 }}
-  className="text-center mt-8"
->
-  <a
-    href="/"
-    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
-  >
-    Continue Shopping
-  </a>
-</motion.div>
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="grid md:grid-cols-3 gap-4"
+        >
+          {/* Download Invoice */}
+          <button
+            onClick={handleDownloadInvoice}
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
+          >
+            <Download className="w-5 h-5" />
+            Download Invoice
+          </button>
+
+          {/* Continue Shopping */}
+          
+            href="/"
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            Continue Shopping
+          </a>
+
+          {/* Back to Home */}
+          
+            href="/"
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
+          >
+            <Home className="w-5 h-5" />
+            Back to Home
+          </a>
+        </motion.div>
       </div>
     </div>
   );
