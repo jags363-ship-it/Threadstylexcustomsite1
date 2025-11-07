@@ -93,6 +93,9 @@ export const createCheckoutSession = async (data: CheckoutData) => {
   try {
     console.log('🛒 Starting checkout session...');
     
+    // Helper to format numbers like working payload
+    const formatNumber = (num: number): number => Number(num.toFixed(1));
+    
     // Generate order identifiers
     const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     const orderId = `OID-${new Date().toISOString().split('T')[0].replace(/-/g, '')}`;
@@ -112,14 +115,12 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     console.log('📍 Full Address:', fullAddress);
     
-    // Format items array - EXACTLY matching n8n structure
+    // Format items array
     const formattedItems = data.items.map((item, index) => {
-      // Convert placements array to comma-separated string
       const placementsStr = item.placements && item.placements.length > 0
         ? item.placements.map((p: any) => p.label).join(', ')
         : '';
       
-      // Determine design URLs based on design type
       let designImageUrl = '';
       let designUrl = '';
       
@@ -140,9 +141,9 @@ export const createCheckoutSession = async (data: CheckoutData) => {
         quantity: item.quantity || 1,
         designName: item.designName || '',
         placementsStr: placementsStr,
-basePrice: Number((item.basePrice || 0).toFixed(2)),
-placementFee: Number((item.placementPrice || 0).toFixed(2)),
-itemTotal: Number((item.itemTotal || 0).toFixed(2)),
+        basePrice: formatNumber(item.basePrice || 0),
+        placementFee: formatNumber(item.placementPrice || 0),
+        itemTotal: formatNumber(item.itemTotal || 0),
         designImageUrl: designImageUrl,
         designUrl: designUrl
       };
@@ -150,7 +151,7 @@ itemTotal: Number((item.itemTotal || 0).toFixed(2)),
     
     console.log('📦 Formatted Items:', formattedItems);
     
-    // Prepare order payload in EXACT n8n format
+    // Prepare order payload
     const n8nOrderPayload = {
       orderNumber: orderNumber,
       orderId: orderId,
@@ -159,9 +160,9 @@ itemTotal: Number((item.itemTotal || 0).toFixed(2)),
       email: data.customerInfo.email,
       phone: data.customerInfo.phone,
       address: fullAddress,
-subtotal: Number(data.subtotal.toFixed(2)),
-shipping: Number(data.shippingCost.toFixed(2)),
-totalPrice: Number(data.totalPrice.toFixed(2)),
+      subtotal: formatNumber(data.subtotal),
+      shipping: formatNumber(data.shippingCost),
+      totalPrice: formatNumber(data.totalPrice),
       orderStatus: 'Pending',
       trackingNumber: '',
       shippedDate: '',
@@ -171,7 +172,7 @@ totalPrice: Number(data.totalPrice.toFixed(2)),
     
     console.log('✅ Final N8n Payload:', JSON.stringify(n8nOrderPayload, null, 2));
     
-    // Save order for success page
+    // Save for success page
     const appOrder = {
       orderNumber,
       orderId,
@@ -192,7 +193,7 @@ totalPrice: Number(data.totalPrice.toFixed(2)),
     localStorage.setItem('lastOrder', JSON.stringify(appOrder));
     console.log('💾 Order saved to localStorage');
     
-    // Send to N8n webhook
+    // Send to N8n
     console.log('📤 Sending to N8n...');
     const n8nPromise = sendOrderToN8n(n8nOrderPayload);
     const timeoutPromise = new Promise((_, reject) => 
