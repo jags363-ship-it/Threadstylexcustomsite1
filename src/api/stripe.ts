@@ -18,14 +18,21 @@ export interface CheckoutData {
   totalPrice: number;
 }
 
-// Send order to N8n webhook
+// Send order to N8n webhook with MAXIMUM debugging
 const sendOrderToN8n = async (orderData: any) => {
   const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
   
-  console.log('📤 Sending order to N8n webhook:', webhookUrl);
-  console.log('📦 Payload:', JSON.stringify(orderData, null, 2));
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('🔵 N8N WEBHOOK DEBUG START');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('📍 Webhook URL:', webhookUrl);
+  console.log('📦 Full Payload:');
+  console.log(JSON.stringify(orderData, null, 2));
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   
   try {
+    console.log('⏳ Making fetch request...');
+    
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
@@ -34,19 +41,50 @@ const sendOrderToN8n = async (orderData: any) => {
       body: JSON.stringify(orderData),
     });
 
-    console.log('📥 N8n Response Status:', response.status);
+    console.log('✓ Fetch completed!');
+    console.log('📊 Response Status:', response.status);
+    console.log('📊 Response OK:', response.ok);
+    console.log('📊 Response Headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ N8n webhook failed:', errorText);
+      console.error('❌ BAD RESPONSE:');
+      console.error('Status:', response.status);
+      console.error('Body:', errorText);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       return { success: false, error: `HTTP ${response.status}: ${errorText}` };
     }
 
-    const result = await response.json();
-    console.log('✅ N8n webhook success! Response:', result);
+    let result;
+    const contentType = response.headers.get('content-type');
+    console.log('📄 Content-Type:', contentType);
+    
+    if (contentType && contentType.includes('application/json')) {
+      result = await response.json();
+      console.log('✅ JSON Response:', result);
+    } else {
+      result = await response.text();
+      console.log('✅ Text Response:', result);
+    }
+    
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🎉 N8N WEBHOOK SUCCESS');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
     return { success: true, data: result };
+    
   } catch (error) {
-    console.error('❌ N8n webhook error:', error);
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('💥 N8N WEBHOOK EXCEPTION');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('Error Type:', error instanceof Error ? error.constructor.name : typeof error);
+    console.error('Error Message:', error instanceof Error ? error.message : String(error));
+    console.error('Full Error:', error);
+    if (error instanceof Error && error.stack) {
+      console.error('Stack Trace:', error.stack);
+    }
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
