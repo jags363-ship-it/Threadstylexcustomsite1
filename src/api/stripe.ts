@@ -1,14 +1,3 @@
-import { loadStripe } from '@stripe/stripe-js';
-
-// Get Stripe public key from environment
-const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-
-if (!STRIPE_PUBLIC_KEY) {
-  console.error('❌ VITE_STRIPE_PUBLIC_KEY is not set in .env file!');
-}
-
-const stripePromise = STRIPE_PUBLIC_KEY ? loadStripe(STRIPE_PUBLIC_KEY) : null;
-
 export interface CheckoutData {
   items: any[];
   customerInfo: {
@@ -73,7 +62,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     console.log('🔢 Order Number:', orderNumber);
     console.log('🔢 Order ID:', orderId);
     
-    // Build full address string (single line)
+    // Build full address string
     const addressParts = [
       data.customerInfo.address,
       data.customerInfo.apartment,
@@ -97,15 +86,12 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       let designUrl = '';
       
       if (item.designType === 'gallery' && item.designId) {
-        // Gallery design - construct URLs from design ID
         designImageUrl = `https://threadstylez.com/designs/${item.designId}.jpg`;
         designUrl = `https://threadstylez.com/designs/${item.designId}`;
       } else if (item.designType === 'custom') {
-        // Custom upload - set placeholder (file will be attached separately if needed)
         designImageUrl = 'Custom Upload';
         designUrl = 'Custom Upload';
       }
-      // else blank design - leave empty strings
       
       return {
         lineNumber: index + 1,
@@ -147,7 +133,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     console.log('✅ Final N8n Payload:', JSON.stringify(n8nOrderPayload, null, 2));
     
-    // Save order for success page (app format)
+    // Save order for success page
     const appOrder = {
       orderNumber,
       orderId,
@@ -168,25 +154,23 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     localStorage.setItem('lastOrder', JSON.stringify(appOrder));
     console.log('💾 Order saved to localStorage');
     
-    // Send to N8n webhook with timeout
+    // Send to N8n webhook
     console.log('📤 Sending to N8n...');
     const n8nPromise = sendOrderToN8n(n8nOrderPayload);
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('N8n request timeout (10s)')), 10000)
+      setTimeout(() => reject(new Error('N8n timeout')), 10000)
     );
     
     try {
-      const n8nResult = await Promise.race([n8nPromise, timeoutPromise]);
-      console.log('✅ N8n notification sent successfully:', n8nResult);
+      await Promise.race([n8nPromise, timeoutPromise]);
+      console.log('✅ N8n notification sent');
     } catch (n8nError) {
-      console.warn('⚠️ N8n notification failed, but order still processed:', n8nError);
-      // Continue - don't fail checkout if N8n is down
+      console.warn('⚠️ N8n failed (order still processed):', n8nError);
     }
     
-    // Simulate payment processing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    console.log('✅ Checkout session completed successfully');
+    console.log('✅ Checkout complete');
     
     return {
       success: true,
@@ -195,9 +179,10 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     };
     
   } catch (error) {
-    console.error('💥 Checkout session failed:', error);
+    console.error('💥 Checkout error:', error);
     throw error;
   }
 };
 
-export const getStripe = () => stripePromise;
+// Remove Stripe completely
+export const getStripe = () => null;
