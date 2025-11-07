@@ -1,6 +1,13 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+// Get Stripe public key from environment
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+
+if (!STRIPE_PUBLIC_KEY) {
+  console.error('❌ VITE_STRIPE_PUBLIC_KEY is not set in .env file!');
+}
+
+const stripePromise = STRIPE_PUBLIC_KEY ? loadStripe(STRIPE_PUBLIC_KEY) : null;
 
 export interface CheckoutData {
   items: any[];
