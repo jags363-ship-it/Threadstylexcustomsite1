@@ -26,8 +26,8 @@ export interface CheckoutData {
 const sendOrderToN8n = async (orderData: any) => {
   const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
   
-  console.log('🔵 Sending to N8n:', webhookUrl);
-  console.log('🔵 Payload:', JSON.stringify(orderData, null, 2));
+  console.log('📤 Sending order to N8n webhook:', webhookUrl);
+  console.log('📦 Payload:', JSON.stringify(orderData, null, 2));
   
   try {
     const response = await fetch(webhookUrl, {
@@ -38,39 +38,35 @@ const sendOrderToN8n = async (orderData: any) => {
       body: JSON.stringify(orderData),
     });
 
-    console.log('🔵 N8n Response status:', response.status);
+    console.log('📥 N8n Response Status:', response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ N8n webhook failed:', response.status, errorText);
-      return { success: false, error: `HTTP ${response.status}` };
+      console.error('❌ N8n webhook failed:', errorText);
+      return { success: false, error: `HTTP ${response.status}: ${errorText}` };
     }
 
     const result = await response.json();
-    console.log('✅ N8n success:', result);
+    console.log('✅ N8n webhook success! Response:', result);
     return { success: true, data: result };
   } catch (error) {
-    console.error('❌ N8n error:', error);
+    console.error('❌ N8n webhook error:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
 
-// Helper to convert File to base64
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = error => reject(error);
-  });
-};
-
 export const createCheckoutSession = async (data: CheckoutData) => {
   try {
-    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-    const orderId = `order_${Date.now()}`;
+    console.log('🛒 Starting checkout session...');
     
-    // Build full address string
+    // Generate order identifiers
+    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const orderId = `OID-${new Date().toISOString().split('T')[0].replace(/-/g, '')}`;
+    
+    console.log('🔢 Order Number:', orderNumber);
+    console.log('🔢 Order ID:', orderId);
+    
+    // Build full address string (single line)
     const addressParts = [
       data.customerInfo.address,
       data.customerInfo.apartment,
@@ -80,62 +76,53 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     ].filter(Boolean);
     const fullAddress = addressParts.join(', ');
     
-    // Format items for N8n with ALL required fields
-    const formattedItemsPromises = data.items.map(async (item, index) => {
+    console.log('📍 Full Address:', fullAddress);
+    
+    // Format items array - EXACTLY matching n8n structure
+    const formattedItems = data.items.map((item, index) => {
       // Convert placements array to comma-separated string
       const placementsStr = item.placements && item.placements.length > 0
         ? item.placements.map((p: any) => p.label).join(', ')
         : '';
       
-      // Get design image URL based on design type
+      // Determine design URLs based on design type
       let designImageUrl = '';
       let designUrl = '';
       
       if (item.designType === 'gallery' && item.designId) {
-        // For gallery designs - construct URLs
+        // Gallery design - construct URLs from design ID
         designImageUrl = `https://threadstylez.com/designs/${item.designId}.jpg`;
         designUrl = `https://threadstylez.com/designs/${item.designId}`;
-      } else if (item.designType === 'custom' && item.customDesignFile) {
-        // For custom uploads - convert to base64
-        designImageUrl = await fileToBase64(item.customDesignFile);
+      } else if (item.designType === 'custom') {
+        // Custom upload - set placeholder (file will be attached separately if needed)
+        designImageUrl = 'Custom Upload';
         designUrl = 'Custom Upload';
-      } else {
-        // Blank design
-        designImageUrl = '';
-        designUrl = '';
       }
+      // else blank design - leave empty strings
       
       return {
         lineNumber: index + 1,
-        productName: item.productName,
-        productImage: item.productImage || 'https://via.placeholder.com/200?text=Product',
-        size: item.size,
-        color: item.color,
-        quantity: item.quantity,
-        designName: item.designName || 'No Design',
+        productName: item.productName || 'Product',
+        productImage: item.productImage || '',
+        size: item.size || '',
+        color: item.color || '',
+        quantity: item.quantity || 1,
+        designName: item.designName || '',
         placementsStr: placementsStr,
-        basePrice: parseFloat(item.basePrice.toFixed(2)),
+        basePrice: parseFloat((item.basePrice || 0).toFixed(2)),
         placementFee: parseFloat((item.placementPrice || 0).toFixed(2)),
-        itemTotal: parseFloat(item.itemTotal.toFixed(2)),
+        itemTotal: parseFloat((item.itemTotal || 0).toFixed(2)),
         designImageUrl: designImageUrl,
         designUrl: designUrl
       };
     });
-
-    const formattedItems = await Promise.all(formattedItemsPromises);
-
-    // Check if any item has custom design file for attachment
-    const customDesignFiles = data.items
-      .filter(item => item.customDesignFile)
-      .map(item => ({
-        filename: `custom-design-${item.productName.replace(/\s+/g, '-')}.${item.customDesignFile.name.split('.').pop()}`,
-        content: item.customDesignFile
-      }));
-
-    // Prepare order in N8n format
-    const n8nOrder = {
-      orderNumber,
-      orderId,
+    
+    console.log('📦 Formatted Items:', formattedItems);
+    
+    // Prepare order payload in EXACT n8n format
+    const n8nOrderPayload = {
+      orderNumber: orderNumber,
+      orderId: orderId,
       date: new Date().toISOString(),
       customerName: `${data.customerInfo.firstName} ${data.customerInfo.lastName}`,
       email: data.customerInfo.email,
@@ -148,14 +135,12 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       trackingNumber: '',
       shippedDate: '',
       markAsShippedUrl: `https://threadstylez.com/orders/${orderNumber}`,
-      items: formattedItems,
-      // Include custom design attachments if any
-      customDesignAttachments: customDesignFiles.length > 0 ? customDesignFiles : undefined
+      items: formattedItems
     };
     
-    console.log('🟢 Order formatted for N8n:', JSON.stringify(n8nOrder, null, 2));
+    console.log('✅ Final N8n Payload:', JSON.stringify(n8nOrderPayload, null, 2));
     
-    // Also save in app format for success page
+    // Save order for success page (app format)
     const appOrder = {
       orderNumber,
       orderId,
@@ -173,36 +158,37 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       paymentMethod: data.paymentMethod,
     };
     
-    // Save to localStorage for success page
     localStorage.setItem('lastOrder', JSON.stringify(appOrder));
     console.log('💾 Order saved to localStorage');
     
-    // Send to N8n (with timeout protection)
-    console.log('🟢 Sending to N8n...');
-    const n8nPromise = sendOrderToN8n(n8nOrder);
+    // Send to N8n webhook with timeout
+    console.log('📤 Sending to N8n...');
+    const n8nPromise = sendOrderToN8n(n8nOrderPayload);
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('N8n timeout')), 10000)
+      setTimeout(() => reject(new Error('N8n request timeout (10s)')), 10000)
     );
     
     try {
-      await Promise.race([n8nPromise, timeoutPromise]);
-      console.log('✅ N8n notification sent');
+      const n8nResult = await Promise.race([n8nPromise, timeoutPromise]);
+      console.log('✅ N8n notification sent successfully:', n8nResult);
     } catch (n8nError) {
-      console.warn('⚠️ N8n failed (order still processed):', n8nError);
+      console.warn('⚠️ N8n notification failed, but order still processed:', n8nError);
+      // Continue - don't fail checkout if N8n is down
     }
     
-    // Simulate payment processing
+    // Simulate payment processing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    console.log('✅ Checkout complete');
+    console.log('✅ Checkout session completed successfully');
     
     return {
       success: true,
       orderId: orderId,
       orderNumber: orderNumber,
     };
+    
   } catch (error) {
-    console.error('💥 Checkout error:', error);
+    console.error('💥 Checkout session failed:', error);
     throw error;
   }
 };
