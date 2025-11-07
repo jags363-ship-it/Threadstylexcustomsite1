@@ -18,7 +18,7 @@ export interface CheckoutData {
   totalPrice: number;
 }
 
-// Send order to N8n webhook with MAXIMUM debugging
+// Send order to N8n webhook
 const sendOrderToN8n = async (orderData: any) => {
   const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
   
@@ -44,7 +44,6 @@ const sendOrderToN8n = async (orderData: any) => {
     console.log('✓ Fetch completed!');
     console.log('📊 Response Status:', response.status);
     console.log('📊 Response OK:', response.ok);
-    console.log('📊 Response Headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -56,13 +55,10 @@ const sendOrderToN8n = async (orderData: any) => {
     }
 
     let result;
-    const contentType = response.headers.get('content-type');
-    console.log('📄 Content-Type:', contentType);
-    
-    if (contentType && contentType.includes('application/json')) {
+    try {
       result = await response.json();
       console.log('✅ JSON Response:', result);
-    } else {
+    } catch {
       result = await response.text();
       console.log('✅ Text Response:', result);
     }
@@ -77,12 +73,7 @@ const sendOrderToN8n = async (orderData: any) => {
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('💥 N8N WEBHOOK EXCEPTION');
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.error('Error Type:', error instanceof Error ? error.constructor.name : typeof error);
-    console.error('Error Message:', error instanceof Error ? error.message : String(error));
-    console.error('Full Error:', error);
-    if (error instanceof Error && error.stack) {
-      console.error('Stack Trace:', error.stack);
-    }
+    console.error('Error:', error);
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
@@ -92,13 +83,11 @@ const sendOrderToN8n = async (orderData: any) => {
 export const createCheckoutSession = async (data: CheckoutData) => {
   try {
     console.log('🛒 Starting checkout session...');
-    
-    // Helper to format numbers like working payload
-    const formatNumber = (num: number): number => Number(num.toFixed(1));
+    console.log('📥 Received checkout data:', data);
     
     // Generate order identifiers
-    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-    const orderId = `OID-${new Date().toISOString().split('T')[0].replace(/-/g, '')}`;
+    const orderNumber = `TS-${Math.floor(10000 + Math.random() * 90000)}`;
+    const orderId = `OID-${Date.now().toString(36)}`;
     
     console.log('🔢 Order Number:', orderNumber);
     console.log('🔢 Order ID:', orderId);
@@ -115,7 +104,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     console.log('📍 Full Address:', fullAddress);
     
-    // Format items array
+    // Format items array - match EXACT working format
     const formattedItems = data.items.map((item, index) => {
       const placementsStr = item.placements && item.placements.length > 0
         ? item.placements.map((p: any) => p.label).join(', ')
@@ -125,25 +114,25 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       let designUrl = '';
       
       if (item.designType === 'gallery' && item.designId) {
-        designImageUrl = `https://threadstylez.com/designs/${item.designId}.jpg`;
+        designImageUrl = `https://picsum.photos/seed/${item.designId}/400/400`;
         designUrl = `https://threadstylez.com/designs/${item.designId}`;
       } else if (item.designType === 'custom') {
-        designImageUrl = 'Custom Upload';
-        designUrl = 'Custom Upload';
+        designImageUrl = '';
+        designUrl = '';
       }
       
       return {
         lineNumber: index + 1,
         productName: item.productName || 'Product',
-        productImage: item.productImage || '',
+        productImage: item.productImage || 'https://picsum.photos/seed/product/200/200',
         size: item.size || '',
         color: item.color || '',
         quantity: item.quantity || 1,
         designName: item.designName || '',
         placementsStr: placementsStr,
-        basePrice: formatNumber(item.basePrice || 0),
-        placementFee: formatNumber(item.placementPrice || 0),
-        itemTotal: formatNumber(item.itemTotal || 0),
+        basePrice: Number((item.basePrice || 0).toFixed(1)),
+        placementFee: Number((item.placementPrice || 0).toFixed(1)),
+        itemTotal: Number((item.itemTotal || 0).toFixed(1)),
         designImageUrl: designImageUrl,
         designUrl: designUrl
       };
@@ -151,7 +140,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     console.log('📦 Formatted Items:', formattedItems);
     
-    // Prepare order payload
+    // Prepare order payload - EXACT format as working Postman test
     const n8nOrderPayload = {
       orderNumber: orderNumber,
       orderId: orderId,
@@ -160,9 +149,9 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       email: data.customerInfo.email,
       phone: data.customerInfo.phone,
       address: fullAddress,
-      subtotal: formatNumber(data.subtotal),
-      shipping: formatNumber(data.shippingCost),
-      totalPrice: formatNumber(data.totalPrice),
+      subtotal: Number(data.subtotal.toFixed(1)),
+      shipping: Number(data.shippingCost.toFixed(1)),
+      totalPrice: Number(data.totalPrice.toFixed(1)),
       orderStatus: 'Pending',
       trackingNumber: '',
       shippedDate: '',
@@ -170,7 +159,8 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       items: formattedItems
     };
     
-    console.log('✅ Final N8n Payload:', JSON.stringify(n8nOrderPayload, null, 2));
+    console.log('✅ Final N8n Payload:');
+    console.log(JSON.stringify(n8nOrderPayload, null, 2));
     
     // Save for success page
     const appOrder = {
@@ -194,17 +184,14 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     console.log('💾 Order saved to localStorage');
     
     // Send to N8n
-    console.log('📤 Sending to N8n...');
-    const n8nPromise = sendOrderToN8n(n8nOrderPayload);
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('N8n timeout')), 10000)
-    );
+    console.log('📤 Calling N8n webhook...');
     
     try {
-      await Promise.race([n8nPromise, timeoutPromise]);
-      console.log('✅ N8n notification sent');
+      const n8nResult = await sendOrderToN8n(n8nOrderPayload);
+      console.log('✅ N8n result:', n8nResult);
     } catch (n8nError) {
-      console.warn('⚠️ N8n failed (order still processed):', n8nError);
+      console.error('⚠️ N8n failed:', n8nError);
+      // Continue anyway
     }
     
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -223,5 +210,4 @@ export const createCheckoutSession = async (data: CheckoutData) => {
   }
 };
 
-// Remove Stripe completely
 export const getStripe = () => null;
