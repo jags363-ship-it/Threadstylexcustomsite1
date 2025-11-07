@@ -55,12 +55,22 @@ const sendOrderToN8n = async (orderData: any) => {
   }
 };
 
+// Helper to convert File to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+};
+
 export const createCheckoutSession = async (data: CheckoutData) => {
   try {
     const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     const orderId = `order_${Date.now()}`;
     
-    // Build full address string (N8n format)
+    // Build full address string
     const addressParts = [
       data.customerInfo.address,
       data.customerInfo.apartment,
@@ -70,29 +80,57 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     ].filter(Boolean);
     const fullAddress = addressParts.join(', ');
     
-    // Format items for N8n (with lineNumber, placementsStr, etc)
-    const formattedItems = data.items.map((item, index) => {
+    // Format items for N8n with ALL required fields
+    const formattedItemsPromises = data.items.map(async (item, index) => {
       // Convert placements array to comma-separated string
       const placementsStr = item.placements && item.placements.length > 0
         ? item.placements.map((p: any) => p.label).join(', ')
         : '';
       
+      // Get design image URL based on design type
+      let designImageUrl = '';
+      let designUrl = '';
+      
+      if (item.designType === 'gallery' && item.designId) {
+        // For gallery designs - construct URLs
+        designImageUrl = `https://threadstylez.com/designs/${item.designId}.jpg`;
+        designUrl = `https://threadstylez.com/designs/${item.designId}`;
+      } else if (item.designType === 'custom' && item.customDesignFile) {
+        // For custom uploads - convert to base64
+        designImageUrl = await fileToBase64(item.customDesignFile);
+        designUrl = 'Custom Upload';
+      } else {
+        // Blank design
+        designImageUrl = '';
+        designUrl = '';
+      }
+      
       return {
         lineNumber: index + 1,
         productName: item.productName,
-        productImage: item.productImage,
+        productImage: item.productImage || 'https://via.placeholder.com/200?text=Product',
         size: item.size,
         color: item.color,
         quantity: item.quantity,
-        designName: item.designName || '',
+        designName: item.designName || 'No Design',
         placementsStr: placementsStr,
-        basePrice: item.basePrice,
-        placementFee: item.placementPrice || 0,
-        itemTotal: item.itemTotal,
-        designImageUrl: '', // Add if you have design images
-        designUrl: '' // Add if you have design URLs
+        basePrice: parseFloat(item.basePrice.toFixed(2)),
+        placementFee: parseFloat((item.placementPrice || 0).toFixed(2)),
+        itemTotal: parseFloat(item.itemTotal.toFixed(2)),
+        designImageUrl: designImageUrl,
+        designUrl: designUrl
       };
     });
+
+    const formattedItems = await Promise.all(formattedItemsPromises);
+
+    // Check if any item has custom design file for attachment
+    const customDesignFiles = data.items
+      .filter(item => item.customDesignFile)
+      .map(item => ({
+        filename: `custom-design-${item.productName.replace(/\s+/g, '-')}.${item.customDesignFile.name.split('.').pop()}`,
+        content: item.customDesignFile
+      }));
 
     // Prepare order in N8n format
     const n8nOrder = {
@@ -103,14 +141,16 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       email: data.customerInfo.email,
       phone: data.customerInfo.phone,
       address: fullAddress,
-      subtotal: data.subtotal,
-      shipping: data.shippingCost,
-      totalPrice: data.totalPrice,
+      subtotal: parseFloat(data.subtotal.toFixed(2)),
+      shipping: parseFloat(data.shippingCost.toFixed(2)),
+      totalPrice: parseFloat(data.totalPrice.toFixed(2)),
       orderStatus: 'Pending',
       trackingNumber: '',
       shippedDate: '',
       markAsShippedUrl: `https://threadstylez.com/orders/${orderNumber}`,
-      items: formattedItems
+      items: formattedItems,
+      // Include custom design attachments if any
+      customDesignAttachments: customDesignFiles.length > 0 ? customDesignFiles : undefined
     };
     
     console.log('🟢 Order formatted for N8n:', JSON.stringify(n8nOrder, null, 2));
@@ -141,7 +181,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     console.log('🟢 Sending to N8n...');
     const n8nPromise = sendOrderToN8n(n8nOrder);
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('N8n timeout')), 5000)
+      setTimeout(() => reject(new Error('N8n timeout')), 10000)
     );
     
     try {
