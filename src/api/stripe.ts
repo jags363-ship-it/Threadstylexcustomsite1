@@ -28,12 +28,10 @@ const sendOrderToN8n = async (orderData: any) => {
   
   try {
     const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData),
-    });
+        method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(orderPayload)   // your object
+});
 
     if (!response.ok) {
       console.warn(`⚠️ N8n webhook returned ${response.status}`);
