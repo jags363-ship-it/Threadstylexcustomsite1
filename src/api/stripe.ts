@@ -1,3 +1,13 @@
+import { loadStripe } from '@stripe/stripe-js';
+
+// Initialize Stripe (safe - won't break if key missing)
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = STRIPE_PUBLIC_KEY ? loadStripe(STRIPE_PUBLIC_KEY) : null;
+
+if (!STRIPE_PUBLIC_KEY) {
+  console.warn('⚠️ VITE_STRIPE_PUBLIC_KEY not found - Stripe payments disabled');
+}
+
 export interface CheckoutData {
   items: any[];
   customerInfo: {
@@ -18,7 +28,7 @@ export interface CheckoutData {
   totalPrice: number;
 }
 
-// Send order to N8n webhook
+// Send order to N8n webhook (UNCHANGED - WORKING VERSION)
 const sendOrderToN8n = async (orderData: any) => {
   const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
   
@@ -183,7 +193,91 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     localStorage.setItem('lastOrder', JSON.stringify(appOrder));
     console.log('💾 Order saved to localStorage');
     
-    // Send to N8n
+    // ═══════════════════════════════════════════════
+    // STRIPE PAYMENT INTEGRATION (NEW SECTION)
+    // ═══════════════════════════════════════════════
+    
+    const stripe = await stripePromise;
+    
+    if (!stripe) {
+      console.warn('⚠️ Stripe not initialized - processing without payment gateway');
+      // Fallback: Send to N8n directly (old behavior)
+      try {
+        const n8nResult = await sendOrderToN8n(n8nOrderPayload);
+        console.log('✅ N8n result:', n8nResult);
+      } catch (n8nError) {
+        console.error('⚠️ N8n failed:', n8nError);
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      return {
+        success: true,
+        orderId: orderId,
+        orderNumber: orderNumber,
+      };
+    }
+    
+    console.log('💳 Initializing Stripe Checkout...');
+    
+    // Add shipping as a line item if there's a shipping cost
+    const lineItems = data.items.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.productName,
+          description: `${item.size} | ${item.color}${item.designName ? ' | ' + item.designName : ''}`,
+          images: item.productImage ? [item.productImage] : [],
+        },
+        unit_amount: Math.round(item.itemTotal * 100), // Convert to cents
+      },
+      quantity: item.quantity,
+    }));
+    
+    // Add shipping as separate line item if cost > 0
+    if (data.shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Shipping',
+            description: 'Standard Shipping',
+          },
+          unit_amount: Math.round(data.shippingCost * 100),
+        },
+        quantity: 1,
+      });
+    }
+    
+    console.log('💳 Redirecting to Stripe...');
+    
+    // Redirect to Stripe Checkout
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: lineItems,
+      mode: 'payment',
+      successUrl: `${window.location.origin}/order-success?order_number=${orderNumber}`,
+      cancelUrl: `${window.location.origin}/checkout`,
+      customerEmail: data.customerInfo.email,
+      billingAddressCollection: 'required',
+      shippingAddressCollection: {
+        allowedCountries: ['US'],
+      },
+    });
+
+    if (error) {
+      console.error('❌ Stripe checkout error:', error);
+      
+      // Fallback: Still send to N8n even if Stripe fails
+      try {
+        await sendOrderToN8n(n8nOrderPayload);
+      } catch (n8nError) {
+        console.error('⚠️ N8n also failed:', n8nError);
+      }
+      
+      throw error;
+    }
+    
+    // Send to N8n (payment is being processed)
     console.log('📤 Calling N8n webhook...');
     
     try {
@@ -191,12 +285,10 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       console.log('✅ N8n result:', n8nResult);
     } catch (n8nError) {
       console.error('⚠️ N8n failed:', n8nError);
-      // Continue anyway
+      // Continue - payment is processing
     }
     
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log('✅ Checkout complete');
+    console.log('✅ Checkout complete - redirecting to Stripe');
     
     return {
       success: true,
@@ -210,4 +302,4 @@ export const createCheckoutSession = async (data: CheckoutData) => {
   }
 };
 
-export const getStripe = () => null;
+export const getStripe = () => stripePromise;
