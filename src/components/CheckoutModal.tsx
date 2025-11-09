@@ -97,9 +97,9 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateStep3()) return;
-    
+
     setIsProcessing(true);
 
     try {
@@ -123,15 +123,9 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
         totalPrice: cartTotal,
       };
 
-      const result = await createCheckoutSession(checkoutData);
+      clearCart();
+      await createCheckoutSession(checkoutData);
 
-      if (result.success) {
-        clearCart(); // Clear cart after successful order
-        setIsProcessing(false);
-        onClose();
-        
-        window.location.href = `/order-success?order_id=${result.orderId}&order_number=${result.orderNumber}`;
-      }
     } catch (error) {
       console.error('Checkout error:', error);
       setIsProcessing(false);

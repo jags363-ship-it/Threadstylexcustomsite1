@@ -5,13 +5,128 @@ import { useSearchParams } from 'react-router-dom';
 export function OrderSuccess() {
   const [searchParams] = useSearchParams();
   const [orderData, setOrderData] = useState<any>(null);
-  
+  const [isVerifying, setIsVerifying] = useState(true);
+
   useEffect(() => {
-    const lastOrder = localStorage.getItem('lastOrder');
-    if (lastOrder) {
-      setOrderData(JSON.parse(lastOrder));
-    }
-  }, []);
+    const verifyPayment = async () => {
+      const sessionId = searchParams.get('session_id');
+      const orderNumber = searchParams.get('order_number');
+
+      if (!sessionId || !orderNumber) {
+        const lastOrder = localStorage.getItem('lastOrder');
+        if (lastOrder) {
+          setOrderData(JSON.parse(lastOrder));
+        }
+        setIsVerifying(false);
+        return;
+      }
+
+      try {
+        const stripeSecretKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
+
+        const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
+          headers: {
+            'Authorization': `Bearer ${stripeSecretKey}`,
+          },
+        });
+
+        const session = await response.json();
+
+        if (session.payment_status === 'paid') {
+          const pendingOrder = localStorage.getItem('pendingOrder');
+          if (pendingOrder) {
+            const order = JSON.parse(pendingOrder);
+            order.paymentStatus = 'completed';
+            order.orderStatus = 'confirmed';
+
+            setOrderData(order);
+            localStorage.setItem('lastOrder', JSON.stringify(order));
+            localStorage.removeItem('pendingOrder');
+
+            const addressParts = [
+              order.customerInfo.address,
+              order.customerInfo.apartment,
+              order.customerInfo.city,
+              order.customerInfo.state,
+              order.customerInfo.zipCode
+            ].filter(Boolean);
+            const fullAddress = addressParts.join(', ');
+
+            const formattedItems = order.items.map((item: any, index: number) => {
+              const placementsStr = item.placements && item.placements.length > 0
+                ? item.placements.map((p: any) => p.label).join(', ')
+                : '';
+
+              let designImageUrl = '';
+              let designUrl = '';
+
+              if (item.designType === 'gallery' && item.designId) {
+                designImageUrl = `https://picsum.photos/seed/${item.designId}/400/400`;
+                designUrl = `https://threadstylez.com/designs/${item.designId}`;
+              }
+
+              return {
+                lineNumber: index + 1,
+                productName: item.productName || 'Product',
+                productImage: item.productImage || 'https://picsum.photos/seed/product/200/200',
+                size: item.size || '',
+                color: item.color || '',
+                quantity: item.quantity || 1,
+                designName: item.designName || '',
+                placementsStr: placementsStr,
+                basePrice: Number((item.basePrice || 0).toFixed(1)),
+                placementFee: Number((item.placementPrice || 0).toFixed(1)),
+                itemTotal: Number((item.itemTotal || 0).toFixed(1)),
+                designImageUrl: designImageUrl,
+                designUrl: designUrl
+              };
+            });
+
+            const n8nOrderPayload = {
+              orderNumber: order.orderNumber,
+              orderId: order.orderId,
+              date: new Date().toISOString(),
+              customerName: `${order.customerInfo.firstName} ${order.customerInfo.lastName}`,
+              email: order.customerInfo.email,
+              phone: order.customerInfo.phone,
+              address: fullAddress,
+              subtotal: Number(order.subtotal.toFixed(1)),
+              shipping: Number(order.shippingCost.toFixed(1)),
+              totalPrice: Number(order.totalPrice.toFixed(1)),
+              orderStatus: 'Confirmed',
+              trackingNumber: '',
+              shippedDate: '',
+              markAsShippedUrl: `https://threadstylez.com/orders/${order.orderNumber}`,
+              items: formattedItems
+            };
+
+            const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
+
+            try {
+              await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(n8nOrderPayload),
+              });
+            } catch (webhookError) {
+              console.error('N8n webhook error:', webhookError);
+            }
+          }
+        } else {
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Payment verification error:', error);
+        window.location.href = '/';
+      }
+
+      setIsVerifying(false);
+    };
+
+    verifyPayment();
+  }, [searchParams]);
 
   const handleDownloadInvoice = () => {
     if (!orderData) return;
@@ -59,12 +174,14 @@ Thank you for your order!
     window.URL.revokeObjectURL(url);
   };
 
-  if (!orderData) {
+  if (isVerifying || !orderData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-cyan-50 to-white dark:from-gray-900 dark:via-blue-900/20 dark:to-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading order details...</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            {isVerifying ? 'Verifying payment...' : 'Loading order details...'}
+          </p>
         </div>
       </div>
     );
