@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, Package, Truck, Mail, Download, ShoppingBag, Home } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
 
 export function OrderSuccess() {
   const [searchParams] = useSearchParams();
@@ -131,47 +132,225 @@ export function OrderSuccess() {
   const handleDownloadInvoice = () => {
     if (!orderData) return;
 
-    const invoiceText = `
-INVOICE
-Order #${orderData.orderNumber}
-Date: ${new Date(orderData.orderDate).toLocaleDateString()}
-
-BILL TO:
-${orderData.customerInfo.firstName} ${orderData.customerInfo.lastName}
-${orderData.customerInfo.address}
-${orderData.customerInfo.apartment ? orderData.customerInfo.apartment + '\n' : ''}${orderData.customerInfo.city}, ${orderData.customerInfo.state} ${orderData.customerInfo.zipCode}
-Email: ${orderData.customerInfo.email}
-Phone: ${orderData.customerInfo.phone}
-
-ITEMS:
-${orderData.items.map((item: any, index: number) => `
-${index + 1}. ${item.productName}
-   Size: ${item.size} | Color: ${item.color}
-   Design: ${item.designName}
-   Quantity: ${item.quantity}
-   Price: $${item.itemTotal.toFixed(2)}
-`).join('\n')}
-
-SUMMARY:
-Subtotal: $${orderData.subtotal.toFixed(2)}
-Shipping: ${orderData.shippingCost === 0 ? 'FREE' : '$' + orderData.shippingCost.toFixed(2)}
-Total: $${orderData.totalPrice.toFixed(2)}
-
-Payment Method: ${orderData.paymentMethod === 'card' ? 'Credit Card' : 'PayPal'}
-Payment Status: ${orderData.paymentStatus}
-
-Thank you for your order!
-    `;
-
-    const blob = new Blob([invoiceText], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Invoice-${orderData.orderNumber}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
+    const doc = new jsPDF();
+    
+    // ═══════════════════════════════════════
+    // HEADER - Blue Background with Company Name
+    // ═══════════════════════════════════════
+    doc.setFillColor(37, 99, 235); // Blue
+    doc.rect(0, 0, 210, 45, 'F');
+    
+    // Company Name
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ThreadStylez', 105, 20, { align: 'center' });
+    
+    // Tagline
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Premium Custom Apparel & Designs', 105, 28, { align: 'center' });
+    
+    // Website
+    doc.setFontSize(9);
+    doc.text('www.threadstylez.com | support@threadstylez.com', 105, 36, { align: 'center' });
+    
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+    
+    // ═══════════════════════════════════════
+    // INVOICE TITLE & ORDER INFO
+    // ═══════════════════════════════════════
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INVOICE', 20, 60);
+    
+    // Order Details Box
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(20, 68, 85, 25, 2, 2, 'F');
+    
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(60, 60, 60);
+    doc.text('Order Number:', 25, 75);
+    doc.text('Order Date:', 25, 82);
+    doc.text('Payment Status:', 25, 89);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text(orderData.orderNumber, 60, 75);
+    doc.text(new Date(orderData.orderDate).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    }), 60, 82);
+    
+    // Payment Status with color
+    if (orderData.paymentStatus === 'completed') {
+      doc.setTextColor(34, 197, 94); // Green
+      doc.setFont('helvetica', 'bold');
+      doc.text('PAID', 60, 89);
+    } else {
+      doc.text(orderData.paymentStatus.toUpperCase(), 60, 89);
+    }
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'normal');
+    
+    // ═══════════════════════════════════════
+    // CUSTOMER INFO (Right Side)
+    // ═══════════════════════════════════════
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('BILL TO:', 120, 60);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    const customerName = `${orderData.customerInfo.firstName} ${orderData.customerInfo.lastName}`;
+    doc.text(customerName, 120, 68);
+    doc.text(orderData.customerInfo.address, 120, 75);
+    
+    let yCustomer = 82;
+    if (orderData.customerInfo.apartment) {
+      doc.text(orderData.customerInfo.apartment, 120, yCustomer);
+      yCustomer += 7;
+    }
+    
+    doc.text(`${orderData.customerInfo.city}, ${orderData.customerInfo.state} ${orderData.customerInfo.zipCode}`, 120, yCustomer);
+    yCustomer += 7;
+    doc.text(orderData.customerInfo.email, 120, yCustomer);
+    yCustomer += 7;
+    doc.text(orderData.customerInfo.phone, 120, yCustomer);
+    
+    // ═══════════════════════════════════════
+    // LINE SEPARATOR
+    // ═══════════════════════════════════════
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.5);
+    doc.line(20, 105, 190, 105);
+    
+    // ═══════════════════════════════════════
+    // ITEMS TABLE HEADER
+    // ═══════════════════════════════════════
+    let yPos = 115;
+    doc.setFillColor(37, 99, 235);
+    doc.rect(20, yPos - 6, 170, 10, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.text('Item', 25, yPos);
+    doc.text('Size', 100, yPos);
+    doc.text('Color', 120, yPos);
+    doc.text('Qty', 150, yPos);
+    doc.text('Price', 175, yPos);
+    
+    yPos += 8;
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'normal');
+    
+    // ═══════════════════════════════════════
+    // ITEMS LIST
+    // ═══════════════════════════════════════
+    orderData.items.forEach((item: any, index: number) => {
+      if (yPos > 250) {
+        doc.addPage();
+        yPos = 20;
+      }
+      
+      // Alternate row background
+      if (index % 2 === 0) {
+        doc.setFillColor(250, 250, 250);
+        doc.rect(20, yPos - 4, 170, 16, 'F');
+      }
+      
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(item.productName, 25, yPos);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.text(item.size, 100, yPos);
+      doc.text(item.color, 120, yPos);
+      doc.text(item.quantity.toString(), 150, yPos);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`$${item.itemTotal.toFixed(2)}`, 175, yPos);
+      
+      yPos += 5;
+      
+      // Design details
+      if (item.designName) {
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Design: ${item.designName}`, 25, yPos);
+        yPos += 4;
+      }
+      
+      // Placements
+      if (item.placements && item.placements.length > 0) {
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        const placementText = item.placements.map((p: any) => p.label).join(', ');
+        doc.text(`Placements: ${placementText}`, 25, yPos);
+        yPos += 4;
+      }
+      
+      doc.setTextColor(0, 0, 0);
+      yPos += 7;
+    });
+    
+    // ═══════════════════════════════════════
+    // TOTALS SECTION
+    // ═══════════════════════════════════════
+    yPos += 5;
+    doc.setDrawColor(200, 200, 200);
+    doc.line(120, yPos, 190, yPos);
+    yPos += 8;
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    
+    // Subtotal
+    doc.text('Subtotal:', 130, yPos);
+    doc.text(`$${orderData.subtotal.toFixed(2)}`, 175, yPos, { align: 'right' });
+    yPos += 7;
+    
+    // Shipping
+    doc.text('Shipping:', 130, yPos);
+    if (orderData.shippingCost === 0) {
+      doc.setTextColor(34, 197, 94);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FREE', 175, yPos, { align: 'right' });
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+    } else {
+      doc.text(`$${orderData.shippingCost.toFixed(2)}`, 175, yPos, { align: 'right' });
+    }
+    yPos += 10;
+    
+    // Total
+    doc.setFillColor(37, 99, 235);
+    doc.rect(120, yPos - 5, 70, 12, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('TOTAL:', 130, yPos + 3);
+    doc.text(`$${orderData.totalPrice.toFixed(2)}`, 185, yPos + 3, { align: 'right' });
+    
+    // ═══════════════════════════════════════
+    // FOOTER
+    // ═══════════════════════════════════════
+    doc.setTextColor(100, 100, 100);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Thank you for your business!', 105, 275, { align: 'center' });
+    
+    doc.setFontSize(8);
+    doc.text('ThreadStylez | Premium Custom Apparel', 105, 282, { align: 'center' });
+    doc.text('Questions? Email support@threadstylez.com or visit www.threadstylez.com', 105, 287, { align: 'center' });
+    
+    // Save PDF
+    doc.save(`ThreadStylez-Invoice-${orderData.orderNumber}.pdf`);
   };
 
   if (isVerifying || !orderData) {
@@ -308,7 +487,7 @@ Thank you for your order!
             <span>Download Invoice</span>
           </button>
 
-          <a
+          
             href="/"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-xl transition-all"
           >
@@ -316,7 +495,7 @@ Thank you for your order!
             <span>Continue Shopping</span>
           </a>
 
-          <a
+          
             href="/"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl font-semibold hover:border-blue-600 dark:hover:border-cyan-400 hover:shadow-lg transition-all"
           >
