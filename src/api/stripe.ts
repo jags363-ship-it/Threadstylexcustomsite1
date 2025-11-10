@@ -1,3 +1,8 @@
+import { loadStripe } from '@stripe/stripe-js';
+
+const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = STRIPE_PUBLIC_KEY ? loadStripe(STRIPE_PUBLIC_KEY) : null;
+
 export interface CheckoutData {
   items: any[];
   customerInfo: {
@@ -20,7 +25,7 @@ export interface CheckoutData {
 
 const sendOrderToN8n = async (orderData: any) => {
   const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
-
+  
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('🔵 N8N WEBHOOK DEBUG START');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -28,10 +33,10 @@ const sendOrderToN8n = async (orderData: any) => {
   console.log('📦 Full Payload:');
   console.log(JSON.stringify(orderData, null, 2));
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
+  
   try {
     console.log('⏳ Making fetch request...');
-
+    
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
@@ -61,116 +66,101 @@ const sendOrderToN8n = async (orderData: any) => {
       result = await response.text();
       console.log('✅ Text Response:', result);
     }
-
+    
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('🎉 N8N WEBHOOK SUCCESS');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
+    
     return { success: true, data: result };
-
+    
   } catch (error) {
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('💥 N8N WEBHOOK EXCEPTION');
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('Error:', error);
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
+    
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 };
 
 export const createCheckoutSession = async (data: CheckoutData) => {
   try {
-    console.log('🛒 Starting Stripe checkout session...');
-
-    const stripeSecretKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
-
-    if (!stripeSecretKey) {
-      throw new Error('Stripe secret key not configured');
-    }
-
-    const lineItems = data.items.map((item) => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: item.productName,
-          description: `${item.size} • ${item.color} • ${item.designName || item.designType}`,
-          images: [item.productImage],
-        },
-        unit_amount: Math.round((item.itemTotal / item.quantity) * 100),
-      },
-      quantity: item.quantity,
-    }));
-
-    if (data.shippingCost > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'Shipping',
-            description: '',
-            images: [],
-          },
-          unit_amount: Math.round(data.shippingCost * 100),
-        },
-        quantity: 1,
-      });
-    }
-
+    console.log('🛒 Starting checkout session...');
+    
     const orderNumber = `TS-${Math.floor(10000 + Math.random() * 90000)}`;
     const orderId = `OID-${Date.now().toString(36)}`;
-
-    const urlParams = new URLSearchParams({
-      'mode': 'payment',
-      'success_url': `${window.location.origin}/order-success?session_id={CHECKOUT_SESSION_ID}&order_number=${orderNumber}`,
-      'cancel_url': `${window.location.origin}`,
-      'customer_email': data.customerInfo.email,
-      'metadata[order_number]': orderNumber,
-      'metadata[order_id]': orderId,
-      'metadata[customer_phone]': data.customerInfo.phone,
-      'metadata[shipping_address]': JSON.stringify({
-        firstName: data.customerInfo.firstName,
-        lastName: data.customerInfo.lastName,
-        address: data.customerInfo.address,
-        apartment: data.customerInfo.apartment,
-        city: data.customerInfo.city,
-        state: data.customerInfo.state,
-        zipCode: data.customerInfo.zipCode,
-        country: data.customerInfo.country,
-      }),
-    } as any);
-
-    lineItems.forEach((item, idx) => {
-      urlParams.append(`line_items[${idx}][price_data][currency]`, item.price_data.currency);
-      urlParams.append(`line_items[${idx}][price_data][product_data][name]`, item.price_data.product_data.name);
-      if (item.price_data.product_data.description) {
-        urlParams.append(`line_items[${idx}][price_data][product_data][description]`, item.price_data.product_data.description);
+    
+    console.log('🔢 Order Number:', orderNumber);
+    console.log('🔢 Order ID:', orderId);
+    
+    const addressParts = [
+      data.customerInfo.address,
+      data.customerInfo.apartment,
+      data.customerInfo.city,
+      data.customerInfo.state,
+      data.customerInfo.zipCode
+    ].filter(Boolean);
+    const fullAddress = addressParts.join(', ');
+    
+    const formattedItems = data.items.map((item, index) => {
+      const placementsStr = item.placements && item.placements.length > 0
+        ? item.placements.map((p: any) => p.label).join(', ')
+        : '';
+      
+      let designImageUrl = '';
+      let designUrl = '';
+      
+      if (item.designType === 'gallery' && item.designId) {
+        designImageUrl = `https://picsum.photos/seed/${item.designId}/400/400`;
+        designUrl = `https://threadstylez.com/designs/${item.designId}`;
+      } else if (item.designType === 'custom') {
+        designImageUrl = '';
+        designUrl = '';
       }
-      urlParams.append(`line_items[${idx}][price_data][unit_amount]`, item.price_data.unit_amount.toString());
-      urlParams.append(`line_items[${idx}][quantity]`, item.quantity.toString());
+      
+      return {
+        lineNumber: index + 1,
+        productName: item.productName || 'Product',
+        productImage: item.productImage || 'https://picsum.photos/seed/product/200/200',
+        size: item.size || '',
+        color: item.color || '',
+        quantity: item.quantity || 1,
+        designName: item.designName || '',
+        placementsStr: placementsStr,
+        basePrice: Number((item.basePrice || 0).toFixed(1)),
+        placementFee: Number((item.placementPrice || 0).toFixed(1)),
+        itemTotal: Number((item.itemTotal || 0).toFixed(1)),
+        designImageUrl: designImageUrl,
+        designUrl: designUrl
+      };
     });
-
-    const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${stripeSecretKey}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: urlParams.toString(),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to create checkout session');
-    }
-
-    const session = await response.json();
-
-    const pendingOrder = {
+    
+    const n8nOrderPayload = {
+      orderNumber: orderNumber,
+      orderId: orderId,
+      date: new Date().toISOString(),
+      customerName: `${data.customerInfo.firstName} ${data.customerInfo.lastName}`,
+      email: data.customerInfo.email,
+      phone: data.customerInfo.phone,
+      address: fullAddress,
+      subtotal: Number(data.subtotal.toFixed(1)),
+      shipping: Number(data.shippingCost.toFixed(1)),
+      totalPrice: Number(data.totalPrice.toFixed(1)),
+      orderStatus: 'Pending',
+      trackingNumber: '',
+      shippedDate: '',
+      markAsShippedUrl: `https://threadstylez.com/orders/${orderNumber}`,
+      items: formattedItems
+    };
+    
+    console.log('✅ Final N8n Payload:', JSON.stringify(n8nOrderPayload, null, 2));
+    
+    const appOrder = {
       orderNumber,
       orderId,
       orderDate: new Date().toISOString(),
-      paymentStatus: 'pending',
+      paymentStatus: 'completed',
       orderStatus: 'pending',
       shippingStatus: 'pending',
       trackingNumber: '',
@@ -181,25 +171,77 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       shippingCost: data.shippingCost,
       totalPrice: data.totalPrice,
       paymentMethod: data.paymentMethod,
-      stripeSessionId: session.id,
     };
+    
+    localStorage.setItem('lastOrder', JSON.stringify(appOrder));
+    console.log('💾 Order saved to localStorage');
+    
+    // Send to N8n
+    console.log('📤 Calling N8n webhook...');
+    
+    try {
+      const n8nResult = await sendOrderToN8n(n8nOrderPayload);
+      console.log('✅ N8n result:', n8nResult);
+    } catch (n8nError) {
+      console.error('⚠️ N8n failed:', n8nError);
+    }
+    
+    // Stripe Checkout
+    const stripe = await stripePromise;
+    
+    if (!stripe) {
+      console.warn('⚠️ Stripe not initialized');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { success: true, orderId, orderNumber };
+    }
+    
+    console.log('💳 Redirecting to Stripe...');
+    
+    const lineItems = data.items.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.productName,
+          description: `${item.size} | ${item.color}${item.designName ? ' | ' + item.designName : ''}`,
+          images: item.productImage ? [item.productImage] : [],
+        },
+        unit_amount: Math.round(item.itemTotal * 100),
+      },
+      quantity: item.quantity,
+    }));
+    
+    if (data.shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: 'Shipping' },
+          unit_amount: Math.round(data.shippingCost * 100),
+        },
+        quantity: 1,
+      });
+    }
+    
+    const { error } = await stripe.redirectToCheckout({
+      lineItems,
+      mode: 'payment',
+      successUrl: `${window.location.origin}/order-success?order_number=${orderNumber}`,
+      cancelUrl: `${window.location.origin}/checkout`,
+      customerEmail: data.customerInfo.email,
+    });
 
-    localStorage.setItem('pendingOrder', JSON.stringify(pendingOrder));
-    console.log('💾 Pending order saved to localStorage');
-
-    window.location.href = session.url;
-
-    return {
-      success: true,
-      orderId: orderId,
-      orderNumber: orderNumber,
-      sessionId: session.id,
-    };
-
+    if (error) {
+      console.error('❌ Stripe error:', error);
+      throw error;
+    }
+    
+    console.log('✅ Checkout complete');
+    
+    return { success: true, orderId, orderNumber };
+    
   } catch (error) {
-    console.error('💥 Stripe checkout error:', error);
+    console.error('💥 Checkout error:', error);
     throw error;
   }
 };
 
-export const getStripe = () => null;
+export const getStripe = () => stripePromise;
