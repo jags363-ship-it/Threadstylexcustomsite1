@@ -76,13 +76,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const cartCount = cart.length;
-  
+
   const cartSubtotal = cart.reduce((sum, item) => sum + item.itemTotal, 0);
-  
+
+  console.log('=== CartContext Calculations ===');
+  console.log('Cart items:', cart);
+  console.log('cartSubtotal calculation:', cart.reduce((sum, item) => {
+    console.log(`  Item ${item.id}: itemTotal = ${item.itemTotal}`);
+    return sum + item.itemTotal;
+  }, 0));
+  console.log('Final cartSubtotal:', cartSubtotal);
+
   const SHIPPING_THRESHOLD = 35;
   const SHIPPING_FEE = 7.99;
   const cartShipping = cartSubtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-  
+
   const cartTotal = cartSubtotal + cartShipping;
 
   return (

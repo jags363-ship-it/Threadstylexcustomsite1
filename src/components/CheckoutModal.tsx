@@ -14,6 +14,13 @@ interface CheckoutModalProps {
 }
 
 export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartShipping, cartTotal }: CheckoutModalProps) {
+  console.log('=== CheckoutModal Props ===');
+  console.log('cartItems:', cartItems);
+  console.log('cartSubtotal:', cartSubtotal);
+  console.log('cartShipping:', cartShipping);
+  console.log('cartTotal:', cartTotal);
+  console.log('cartItems with itemTotal:', cartItems.map(item => ({ id: item.id, itemTotal: item.itemTotal, basePrice: item.basePrice, placementPrice: item.placementPrice, quantity: item.quantity })));
+
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const { clearCart } = useCart();

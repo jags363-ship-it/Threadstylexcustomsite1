@@ -237,10 +237,23 @@ function App() {
       />
       
       {/* Cart Modal */}
-      <CartModal 
+      <CartModal
         isOpen={showCart}
         onClose={() => setShowCart(false)}
         onCheckout={() => {
+          console.log('=== Opening Checkout Modal ===');
+          console.log('Cart from context:', cart);
+          console.log('cartSubtotal from context:', cartSubtotal);
+          console.log('cartShipping from context:', cartShipping);
+          console.log('cartTotal from context:', cartTotal);
+          console.log('Cart item details:', cart.map(item => ({
+            id: item.id,
+            productName: item.productName,
+            basePrice: item.basePrice,
+            placementPrice: item.placementPrice,
+            quantity: item.quantity,
+            itemTotal: item.itemTotal
+          })));
           setShowCart(false);
           setShowCheckoutModal(true);
         }}
