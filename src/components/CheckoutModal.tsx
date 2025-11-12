@@ -16,7 +16,6 @@ interface CheckoutModalProps {
 export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartShipping, cartTotal }: CheckoutModalProps) {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'paypal'>('card');
   const { clearCart } = useCart();
   
   const [formData, setFormData] = useState({
@@ -30,10 +29,6 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
     state: '',
     zipCode: '',
     country: 'US',
-    cardNumber: '',
-    cardName: '',
-    expiry: '',
-    cvv: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -68,37 +63,14 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
     return Object.keys(newErrors).length === 0;
   };
 
-  const validateStep3 = () => {
-    if (paymentMethod === 'paypal') return true;
-    
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.cardNumber.match(/^\d{16}$/)) {
-      newErrors.cardNumber = 'Valid card number required';
-    }
-    if (formData.cardName.length < 3) {
-      newErrors.cardName = 'Name on card required';
-    }
-    if (!formData.expiry.match(/^\d{2}\/\d{2}$/)) {
-      newErrors.expiry = 'Valid expiry (MM/YY) required';
-    }
-    if (!formData.cvv.match(/^\d{3}$/)) {
-      newErrors.cvv = 'Valid CVV required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleNext = () => {
     if (step === 1 && validateStep1()) setStep(2);
-    else if (step === 2 && validateStep2()) setStep(3);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateStep3()) return;
+    if (!validateStep2()) return;
 
     setIsProcessing(true);
 
@@ -117,13 +89,15 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
           zipCode: formData.zipCode,
           country: formData.country,
         },
-        paymentMethod: paymentMethod,
+        paymentMethod: 'card' as const,
         subtotal: cartSubtotal,
         shippingCost: cartShipping,
         totalPrice: cartTotal,
       };
 
       clearCart();
+      
+      // This will redirect to Stripe - no return after this
       await createCheckoutSession(checkoutData);
 
     } catch (error) {
@@ -163,7 +137,7 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
           </div>
 
           <div className="flex items-center justify-center gap-4 p-6 bg-gray-50 dark:bg-gray-700/50">
-            {[1, 2, 3].map((s) => (
+            {[1, 2].map((s) => (
               <div key={s} className="flex items-center">
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors ${
@@ -174,7 +148,7 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
                 >
                   {s}
                 </div>
-                {s < 3 && (
+                {s < 2 && (
                   <div
                     className={`w-16 h-1 mx-2 transition-colors ${
                       step > s ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-600'
@@ -256,7 +230,7 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
                       <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm">
                         2
                       </div>
-                      Shipping Address
+                      Shipping & Payment
                     </h3>
 
                     <div className="grid md:grid-cols-2 gap-4">
@@ -367,153 +341,24 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
                       </div>
                     </div>
 
-                    <div className="flex gap-4">
-                      <button
-                        type="button"
-                        onClick={() => setStep(1)}
-                        className="flex-1 py-4 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl font-bold text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
-                      >
-                        Back
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleNext}
-                        className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all"
-                      >
-                        Continue to Payment
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-
-                {step === 3 && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="space-y-4"
-                  >
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm">
-                        3
-                      </div>
-                      Payment Method
-                    </h3>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('card')}
-                        className={`p-4 rounded-xl border-2 transition-all ${
-                          paymentMethod === 'card'
-                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-300 dark:border-gray-600'
-                        }`}
-                      >
-                        <CreditCard className="w-8 h-8 mx-auto mb-2" />
-                        <p className="font-semibold">Credit Card</p>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setPaymentMethod('paypal')}
-                        className={`p-4 rounded-xl border-2 transition-all ${
-                          paymentMethod === 'paypal'
-                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-300 dark:border-gray-600'
-                        }`}
-                      >
-                        <Lock className="w-8 h-8 mx-auto mb-2" />
-                        <p className="font-semibold">PayPal</p>
-                      </button>
-                    </div>
-
-                    {paymentMethod === 'card' && (
-                      <div className="space-y-4">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mt-6">
+                      <div className="flex items-start gap-3">
+                        <Lock className="w-5 h-5 text-blue-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Card Number *
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.cardNumber}
-                            onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value.replace(/\D/g, '') })}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
-                            placeholder="4242 4242 4242 4242"
-                            maxLength={16}
-                          />
-                          {errors.cardNumber && (
-                            <p className="text-red-600 text-sm mt-1">{errors.cardNumber}</p>
-                          )}
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Name on Card *
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.cardName}
-                            onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
-                          />
-                          {errors.cardName && (
-                            <p className="text-red-600 text-sm mt-1">{errors.cardName}</p>
-                          )}
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                              Expiry Date *
-                            </label>
-                            <input
-                              type="text"
-                              value={formData.expiry}
-                              onChange={(e) => {
-                                let value = e.target.value.replace(/\D/g, '');
-                                if (value.length >= 2) {
-                                  value = value.slice(0, 2) + '/' + value.slice(2, 4);
-                                }
-                                setFormData({ ...formData, expiry: value });
-                              }}
-                              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
-                              placeholder="MM/YY"
-                              maxLength={5}
-                            />
-                            {errors.expiry && (
-                              <p className="text-red-600 text-sm mt-1">{errors.expiry}</p>
-                            )}
-                          </div>
-
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                              CVV *
-                            </label>
-                            <input
-                              type="text"
-                              value={formData.cvv}
-                              onChange={(e) => setFormData({ ...formData, cvv: e.target.value.replace(/\D/g, '') })}
-                              className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 outline-none"
-                              placeholder="123"
-                              maxLength={3}
-                            />
-                            {errors.cvv && (
-                              <p className="text-red-600 text-sm mt-1">{errors.cvv}</p>
-                            )}
-                          </div>
+                          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                            Secure Stripe Checkout
+                          </p>
+                          <p className="text-sm text-blue-700 dark:text-blue-300">
+                            You'll be redirected to Stripe's secure payment page to complete your purchase safely.
+                          </p>
                         </div>
                       </div>
-                    )}
-
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                      <Lock className="w-4 h-4" />
-                      <span>Secure checkout • SSL encrypted</span>
                     </div>
 
                     <div className="flex gap-4">
                       <button
                         type="button"
-                        onClick={() => setStep(2)}
+                        onClick={() => setStep(1)}
                         disabled={isProcessing}
                         className="flex-1 py-4 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl font-bold text-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all disabled:opacity-50"
                       >
@@ -522,9 +367,19 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
                       <button
                         type="submit"
                         disabled={isProcessing}
-                        className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50"
+                        className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                       >
-                        {isProcessing ? 'Processing...' : 'Complete Order'}
+                        {isProcessing ? (
+                          <>
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            <span>Processing...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="w-5 h-5" />
+                            <span>Continue to Payment</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </motion.div>
