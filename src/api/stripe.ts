@@ -186,8 +186,49 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       console.error('⚠️ N8n failed:', n8nError);
     }
 
-    // Skip Stripe for now - will add proper integration later with backend serverless functions
-    console.log('✅ Checkout complete - skipping Stripe redirect');
+    // Create Stripe Checkout Session via API route
+    const stripe = await stripePromise;
+
+    if (!stripe) {
+      console.warn('⚠️ Stripe not initialized');
+      return { success: true, orderId, orderNumber };
+    }
+
+    console.log('💳 Creating Stripe checkout session...');
+
+    const apiUrl = '/api/create-checkout-session';
+    const checkoutPayload = {
+      items: data.items,
+      customerEmail: data.customerInfo.email,
+      orderNumber: orderNumber,
+      shippingCost: data.shippingCost,
+      successUrl: `${window.location.origin}/order-success?order_number=${orderNumber}`,
+      cancelUrl: `${window.location.origin}`,
+    };
+
+    const apiResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(checkoutPayload),
+    });
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      throw new Error(errorData.error || 'Failed to create checkout session');
+    }
+
+    const { sessionId } = await apiResponse.json();
+    console.log('✅ Checkout session created:', sessionId);
+
+    // Redirect to Stripe Checkout
+    const { error } = await stripe.redirectToCheckout({ sessionId });
+
+    if (error) {
+      console.error('❌ Stripe redirect error:', error);
+      throw error;
+    }
 
     return { success: true, orderId, orderNumber };
     

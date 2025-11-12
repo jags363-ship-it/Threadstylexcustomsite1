@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Lock } from 'lucide-react';
 import { createCheckoutSession } from '../api/stripe';
@@ -22,7 +21,6 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
   console.log('cartTotal:', cartTotal);
   console.log('cartItems with itemTotal:', cartItems.map(item => ({ id: item.id, itemTotal: item.itemTotal, basePrice: item.basePrice, placementPrice: item.placementPrice, quantity: item.quantity })));
 
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const { clearCart } = useCart();
@@ -104,23 +102,16 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
         totalPrice: cartTotal,
       };
 
-      // Process checkout and send to N8n
-      const result = await createCheckoutSession(checkoutData);
+      // Clear cart before redirecting to Stripe
+      clearCart();
 
-      if (result.success) {
-        // Clear cart after successful order submission
-        clearCart();
-
-        // Navigate to order success page
-        navigate(`/order-success?order_number=${result.orderNumber}`);
-      } else {
-        throw new Error('Checkout failed');
-      }
+      // This will redirect to Stripe Checkout - no return after this
+      await createCheckoutSession(checkoutData);
 
     } catch (error) {
       console.error('Checkout error:', error);
       setIsProcessing(false);
-      alert('Order submission failed. Please try again.');
+      alert('Payment failed. Please try again.');
     }
   };
 
