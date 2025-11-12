@@ -35,9 +35,9 @@ function App() {
   const currentProduct = products.find(p => p.id === selectedProduct) || products[0];
   const currentColor = currentProduct.colors.find(c => c.id === selectedColor) || currentProduct.colors[0];
   const selectedPlacementObjects = placements.filter(p => selectedPlacements.includes(p.key));
-  
+
   const basePrice = currentProduct.price * quantity;
-  const placementPrice = selectedPlacementObjects.reduce((sum, p) => sum + p.addOn, 0);
+  const placementPrice = selectedPlacementObjects.reduce((sum, p) => sum + p.addOn, 0) * quantity;
   const subtotal = basePrice + placementPrice;
 
   // Shipping calculation
