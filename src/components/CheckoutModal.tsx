@@ -19,11 +19,16 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
   console.log('cartSubtotal:', cartSubtotal);
   console.log('cartShipping:', cartShipping);
   console.log('cartTotal:', cartTotal);
-  console.log('cartItems with itemTotal:', cartItems.map(item => ({ id: item.id, itemTotal: item.itemTotal, basePrice: item.basePrice, placementPrice: item.placementPrice, quantity: item.quantity })));
+  console.log('cartItems with itemTotal:', cartItems.map(item => ({ 
+    id: item.id, 
+    itemTotal: item.itemTotal, 
+    basePrice: item.basePrice, 
+    placementPrice: item.placementPrice, 
+    quantity: item.quantity 
+  })));
 
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { clearCart } = useCart();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -82,6 +87,11 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
     setIsProcessing(true);
 
     try {
+      console.log('=== Checkout Submit Debug ===');
+      console.log('cartItems before checkout:', cartItems);
+      console.log('cartSubtotal:', cartSubtotal);
+      console.log('cartTotal:', cartTotal);
+
       const checkoutData = {
         items: cartItems,
         customerInfo: {
@@ -102,10 +112,10 @@ export function CheckoutModal({ isOpen, onClose, cartItems, cartSubtotal, cartSh
         totalPrice: cartTotal,
       };
 
-      // Clear cart before redirecting to Stripe
-      clearCart();
+      console.log('checkoutData being sent:', checkoutData);
 
-      // This will redirect to Stripe Checkout - no return after this
+      // DON'T clear cart here - cart will be cleared after successful payment on OrderSuccess page
+      // This will redirect to Stripe Checkout
       await createCheckoutSession(checkoutData);
 
     } catch (error) {
