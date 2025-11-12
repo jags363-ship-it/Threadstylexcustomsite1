@@ -88,12 +88,18 @@ export const createCheckoutSession = async (data: CheckoutData) => {
   try {
     console.log('🛒 Starting checkout session...');
     
+    // ═══════════════════════════════════════
+    // STEP 1: Generate Order Identifiers
+    // ═══════════════════════════════════════
     const orderNumber = `TS-${Math.floor(10000 + Math.random() * 90000)}`;
     const orderId = `OID-${Date.now().toString(36)}`;
     
     console.log('🔢 Order Number:', orderNumber);
     console.log('🔢 Order ID:', orderId);
     
+    // ═══════════════════════════════════════
+    // STEP 2: Build Address
+    // ═══════════════════════════════════════
     const addressParts = [
       data.customerInfo.address,
       data.customerInfo.apartment,
@@ -103,6 +109,11 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     ].filter(Boolean);
     const fullAddress = addressParts.join(', ');
     
+    console.log('📍 Full Address:', fullAddress);
+    
+    // ═══════════════════════════════════════
+    // STEP 3: Format Items for N8n
+    // ═══════════════════════════════════════
     const formattedItems = data.items.map((item, index) => {
       const placementsStr = item.placements && item.placements.length > 0
         ? item.placements.map((p: any) => p.label).join(', ')
@@ -136,6 +147,11 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       };
     });
     
+    console.log('📦 Formatted Items:', formattedItems);
+    
+    // ═══════════════════════════════════════
+    // STEP 4: Prepare N8n Payload
+    // ═══════════════════════════════════════
     const n8nOrderPayload = {
       orderNumber: orderNumber,
       orderId: orderId,
@@ -156,11 +172,14 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     console.log('✅ Final N8n Payload:', JSON.stringify(n8nOrderPayload, null, 2));
     
+    // ═══════════════════════════════════════
+    // STEP 5: Save Order to LocalStorage
+    // ═══════════════════════════════════════
     const appOrder = {
       orderNumber,
       orderId,
       orderDate: new Date().toISOString(),
-      paymentStatus: 'completed',
+      paymentStatus: 'pending',
       orderStatus: 'pending',
       shippingStatus: 'pending',
       trackingNumber: '',
@@ -173,45 +192,70 @@ export const createCheckoutSession = async (data: CheckoutData) => {
       paymentMethod: data.paymentMethod,
     };
     
-    localStorage.setItem('lastOrder', JSON.stringify(appOrder));
-    console.log('💾 Order saved to localStorage');
+    localStorage.setItem('pendingOrder', JSON.stringify(appOrder));
+    console.log('💾 Order saved to localStorage as pending');
     
-    // Send to N8n
+    // ═══════════════════════════════════════
+    // STEP 6: Send to N8n
+    // ═══════════════════════════════════════
     console.log('📤 Calling N8n webhook...');
-
+    
     try {
       const n8nResult = await sendOrderToN8n(n8nOrderPayload);
       console.log('✅ N8n result:', n8nResult);
     } catch (n8nError) {
       console.error('⚠️ N8n failed:', n8nError);
+      // Continue anyway - payment is more important
     }
-
-    // Create Stripe Checkout Session via API route
+    
+    // ═══════════════════════════════════════
+    // STEP 7: Create Stripe Checkout Session
+    // ═══════════════════════════════════════
+    console.log('💳 Creating Stripe checkout session via API...');
+    
     const stripe = await stripePromise;
-
+    
     if (!stripe) {
-      console.warn('⚠️ Stripe not initialized');
-      return { success: true, orderId, orderNumber };
+      throw new Error('Stripe not initialized. Check VITE_STRIPE_PUBLIC_KEY.');
     }
-
-    console.log('💳 Creating Stripe checkout session...');
-
-    const apiUrl = '/api/create-checkout-session';
-    const checkoutPayload = {
-      items: data.items,
-      customerEmail: data.customerInfo.email,
-      orderNumber: orderNumber,
-      shippingCost: data.shippingCost,
-      successUrl: `${window.location.origin}/order-success?order_number=${orderNumber}`,
-      cancelUrl: `${window.location.origin}`,
-    };
-
-    const apiResponse = await fetch(apiUrl, {
+    
+    // Prepare line items for Stripe
+    const stripeItems = data.items.map(item => ({
+      productName: item.productName,
+      productImage: item.productImage,
+      size: item.size,
+      color: item.color,
+      designName: item.designName || '',
+      quantity: item.quantity,
+      itemTotal: item.itemTotal,
+    }));
+    
+    // Add shipping as separate item if > 0
+    if (data.shippingCost > 0) {
+      stripeItems.push({
+        productName: 'Shipping',
+        productImage: '',
+        size: '',
+        color: '',
+        designName: 'Standard Shipping',
+        quantity: 1,
+        itemTotal: data.shippingCost,
+      });
+    }
+    
+    // Call Vercel API route to create checkout session
+    const apiResponse = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(checkoutPayload),
+      body: JSON.stringify({
+        items: stripeItems,
+        customerEmail: data.customerInfo.email,
+        orderNumber: orderNumber,
+        successUrl: `${window.location.origin}/order-success?session_id={CHECKOUT_SESSION_ID}&order_number=${orderNumber}`,
+        cancelUrl: `${window.location.origin}/checkout`,
+      }),
     });
 
     if (!apiResponse.ok) {
@@ -220,16 +264,22 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     }
 
     const { sessionId } = await apiResponse.json();
-    console.log('✅ Checkout session created:', sessionId);
-
-    // Redirect to Stripe Checkout
+    console.log('✅ Stripe session created:', sessionId);
+    
+    // ═══════════════════════════════════════
+    // STEP 8: Redirect to Stripe Checkout
+    // ═══════════════════════════════════════
+    console.log('💳 Redirecting to Stripe...');
+    
     const { error } = await stripe.redirectToCheckout({ sessionId });
 
     if (error) {
       console.error('❌ Stripe redirect error:', error);
       throw error;
     }
-
+    
+    console.log('✅ Checkout complete - redirecting to Stripe');
+    
     return { success: true, orderId, orderNumber };
     
   } catch (error) {
