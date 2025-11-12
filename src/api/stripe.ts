@@ -178,64 +178,17 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     
     // Send to N8n
     console.log('📤 Calling N8n webhook...');
-    
+
     try {
       const n8nResult = await sendOrderToN8n(n8nOrderPayload);
       console.log('✅ N8n result:', n8nResult);
     } catch (n8nError) {
       console.error('⚠️ N8n failed:', n8nError);
     }
-    
-    // Stripe Checkout
-    const stripe = await stripePromise;
-    
-    if (!stripe) {
-      console.warn('⚠️ Stripe not initialized');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return { success: true, orderId, orderNumber };
-    }
-    
-    console.log('💳 Redirecting to Stripe...');
-    
-    const lineItems = data.items.map(item => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: item.productName,
-          description: `${item.size} | ${item.color}${item.designName ? ' | ' + item.designName : ''}`,
-          images: item.productImage ? [item.productImage] : [],
-        },
-        unit_amount: Math.round(item.itemTotal * 100),
-      },
-      quantity: item.quantity,
-    }));
-    
-    if (data.shippingCost > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: { name: 'Shipping' },
-          unit_amount: Math.round(data.shippingCost * 100),
-        },
-        quantity: 1,
-      });
-    }
-    
-    const { error } = await stripe.redirectToCheckout({
-      lineItems,
-      mode: 'payment',
-      successUrl: `${window.location.origin}/order-success?order_number=${orderNumber}`,
-      cancelUrl: `${window.location.origin}/checkout`,
-      customerEmail: data.customerInfo.email,
-    });
 
-    if (error) {
-      console.error('❌ Stripe error:', error);
-      throw error;
-    }
-    
-    console.log('✅ Checkout complete');
-    
+    // Skip Stripe for now - will add proper integration later with backend serverless functions
+    console.log('✅ Checkout complete - skipping Stripe redirect');
+
     return { success: true, orderId, orderNumber };
     
   } catch (error) {
