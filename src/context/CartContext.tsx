@@ -44,7 +44,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const savedCart = localStorage.getItem('threadstylezCart');
     if (savedCart) {
       try {
-        setCart(JSON.parse(savedCart));
+        const parsedCart = JSON.parse(savedCart);
+        // Ensure itemTotal is calculated for all items (in case it's missing)
+        const cartWithTotals = parsedCart.map((item: CartItem) => ({
+          ...item,
+          itemTotal: item.itemTotal || (item.basePrice + item.placementPrice) * item.quantity
+        }));
+        setCart(cartWithTotals);
       } catch (error) {
         console.error('Error loading cart:', error);
       }
@@ -57,7 +63,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [cart]);
 
   const addToCart = (item: CartItem) => {
-    setCart([...cart, { ...item, id: `cart_${Date.now()}_${Math.random()}` }]);
+    const itemTotal = item.itemTotal || (item.basePrice + item.placementPrice) * item.quantity;
+    setCart([...cart, { ...item, id: `cart_${Date.now()}_${Math.random()}`, itemTotal }]);
   };
 
   const removeFromCart = (id: string) => {
@@ -65,9 +72,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateCartItem = (id: string, updates: Partial<CartItem>) => {
-    setCart(cart.map(item => 
-      item.id === id ? { ...item, ...updates } : item
-    ));
+    setCart(cart.map(item => {
+      if (item.id === id) {
+        const updated = { ...item, ...updates };
+        // Recalculate itemTotal when updating
+        const itemTotal = (updated.basePrice + updated.placementPrice) * updated.quantity;
+        return { ...updated, itemTotal };
+      }
+      return item;
+    }));
   };
 
   const clearCart = () => {
