@@ -46,10 +46,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const parsedCart = JSON.parse(savedCart);
         // Ensure itemTotal is calculated for all items (in case it's missing)
-        const cartWithTotals = parsedCart.map((item: CartItem) => ({
-          ...item,
-          itemTotal: item.itemTotal || (item.basePrice + item.placementPrice) * item.quantity
-        }));
+        const cartWithTotals = parsedCart.map((item: CartItem) => {
+          const calculatedTotal = (item.basePrice + item.placementPrice) * item.quantity;
+          return {
+            ...item,
+            itemTotal: item.itemTotal || calculatedTotal
+          };
+        });
         setCart(cartWithTotals);
       } catch (error) {
         console.error('Error loading cart:', error);
@@ -62,11 +65,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('threadstylezCart', JSON.stringify(cart));
   }, [cart]);
 
-const addToCart = (item: CartItem) => {
-  // Always calculate itemTotal when adding to cart
-  const itemTotal = (item.basePrice + item.placementPrice) * item.quantity;
-  setCart([...cart, { ...item, id: `cart_${Date.now()}_${Math.random()}`, itemTotal }]);
-};
+  const addToCart = (item: CartItem) => {
+    // Always calculate itemTotal when adding to cart
+    const itemTotal = (item.basePrice + item.placementPrice) * item.quantity;
+    const newItem = {
+      ...item,
+      id: `cart_${Date.now()}_${Math.random()}`,
+      itemTotal: itemTotal
+    };
+    setCart([...cart, newItem]);
+  };
 
   const removeFromCart = (id: string) => {
     setCart(cart.filter(item => item.id !== id));
@@ -78,7 +86,7 @@ const addToCart = (item: CartItem) => {
         const updated = { ...item, ...updates };
         // Recalculate itemTotal when updating
         const itemTotal = (updated.basePrice + updated.placementPrice) * updated.quantity;
-        return { ...updated, itemTotal };
+        return { ...updated, itemTotal: itemTotal };
       }
       return item;
     }));
@@ -90,20 +98,25 @@ const addToCart = (item: CartItem) => {
   };
 
   const cartCount = cart.length;
-  const cartSubtotal = cart.reduce((sum, item) => sum + (item.itemTotal || 0), 0);
+  
+  // Calculate subtotal
+  const cartSubtotal = cart.reduce((sum, item) => {
+    const itemTotal = item.itemTotal || 0;
+    return sum + itemTotal;
+  }, 0);
 
-  console.log('=== CartContext Calculations ===');
-  console.log('Cart items:', cart);
-  console.log('cartSubtotal calculation:', cart.reduce((sum, item) => {
-    console.log(`  Item ${item.id}: itemTotal = ${item.itemTotal}`);
-    return sum + (item.itemTotal || 0);
-  }, 0));
-  console.log('Final cartSubtotal:', cartSubtotal);
-
+  // Shipping calculation
   const SHIPPING_THRESHOLD = 35;
   const SHIPPING_FEE = 7.99;
   const cartShipping = cartSubtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
   const cartTotal = cartSubtotal + cartShipping;
+
+  // Debug logging
+  console.log('=== CartContext Debug ===');
+  console.log('Cart items:', cart);
+  console.log('Subtotal:', cartSubtotal);
+  console.log('Shipping:', cartShipping);
+  console.log('Total:', cartTotal);
 
   return (
     <CartContext.Provider
@@ -131,23 +144,3 @@ export const useCart = () => {
   }
   return context;
 };
-```
-
----
-
-## **KEY FIXES:**
-
-1. ✅ **Line 78** - Fixed syntax error in console.log
-2. ✅ **Line 63** - Ensures `itemTotal` is always calculated in `addToCart`
-3. ✅ **Line 80** - Added fallback `|| 0` to prevent NaN if itemTotal is missing
-
----
-
-## **GIVE BOLT THIS PROMPT:**
-```
-Replace the entire CartContext.tsx file with this corrected code. There was a syntax error on line 78 where console.log had incorrect backtick placement. 
-
-Also ensure that when items are added to cart, the itemTotal is always calculated as:
-itemTotal = (basePrice + placementPrice) × quantity
-
-Test by adding a product to cart and verifying the subtotal shows correctly in checkout.
