@@ -62,11 +62,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('threadstylezCart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (item: CartItem) => {
-    // Always calculate itemTotal when adding to cart
-    const itemTotal = (item.basePrice + item.placementPrice) * item.quantity;
-    setCart([...cart, { ...item, id: `cart_${Date.now()}_${Math.random()}`, itemTotal }]);
-  };
+const addToCart = (item: CartItem) => {
+  // Always calculate itemTotal when adding to cart
+  const itemTotal = (item.basePrice + item.placementPrice) * item.quantity;
+  setCart([...cart, { ...item, id: `cart_${Date.now()}_${Math.random()}`, itemTotal }]);
+};
 
   const removeFromCart = (id: string) => {
     setCart(cart.filter(item => item.id !== id));
