@@ -23,100 +23,86 @@ export function OrderSuccess() {
       }
 
       try {
-        const stripeSecretKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
+        const pendingOrder = localStorage.getItem('pendingOrder');
+        if (pendingOrder) {
+          const order = JSON.parse(pendingOrder);
+          order.paymentStatus = 'completed';
+          order.orderStatus = 'confirmed';
 
-        const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
-          headers: {
-            'Authorization': `Bearer ${stripeSecretKey}`,
-          },
-        });
+          setOrderData(order);
+          localStorage.setItem('lastOrder', JSON.stringify(order));
+          localStorage.removeItem('pendingOrder');
 
-        const session = await response.json();
+          const addressParts = [
+            order.customerInfo.address,
+            order.customerInfo.apartment,
+            order.customerInfo.city,
+            order.customerInfo.state,
+            order.customerInfo.zipCode
+          ].filter(Boolean);
+          const fullAddress = addressParts.join(', ');
 
-        if (session.payment_status === 'paid') {
-          const pendingOrder = localStorage.getItem('pendingOrder');
-          if (pendingOrder) {
-            const order = JSON.parse(pendingOrder);
-            order.paymentStatus = 'completed';
-            order.orderStatus = 'confirmed';
+          const formattedItems = order.items.map((item: any, index: number) => {
+            const placementsStr = item.placements && item.placements.length > 0
+              ? item.placements.map((p: any) => p.label).join(', ')
+              : '';
 
-            setOrderData(order);
-            localStorage.setItem('lastOrder', JSON.stringify(order));
-            localStorage.removeItem('pendingOrder');
+            let designImageUrl = '';
+            let designUrl = '';
 
-            const addressParts = [
-              order.customerInfo.address,
-              order.customerInfo.apartment,
-              order.customerInfo.city,
-              order.customerInfo.state,
-              order.customerInfo.zipCode
-            ].filter(Boolean);
-            const fullAddress = addressParts.join(', ');
-
-            const formattedItems = order.items.map((item: any, index: number) => {
-              const placementsStr = item.placements && item.placements.length > 0
-                ? item.placements.map((p: any) => p.label).join(', ')
-                : '';
-
-              let designImageUrl = '';
-              let designUrl = '';
-
-              if (item.designType === 'gallery' && item.designId) {
-                designImageUrl = `https://picsum.photos/seed/${item.designId}/400/400`;
-                designUrl = `https://threadstylez.com/designs/${item.designId}`;
-              }
-
-              return {
-                lineNumber: index + 1,
-                productName: item.productName || 'Product',
-                productImage: item.productImage || 'https://picsum.photos/seed/product/200/200',
-                size: item.size || '',
-                color: item.color || '',
-                quantity: item.quantity || 1,
-                designName: item.designName || '',
-                placementsStr: placementsStr,
-                basePrice: Number((item.basePrice || 0).toFixed(1)),
-                placementFee: Number((item.placementPrice || 0).toFixed(1)),
-                itemTotal: Number((item.itemTotal || 0).toFixed(1)),
-                designImageUrl: designImageUrl,
-                designUrl: designUrl
-              };
-            });
-
-            const n8nOrderPayload = {
-              orderNumber: order.orderNumber,
-              orderId: order.orderId,
-              date: new Date().toISOString(),
-              customerName: `${order.customerInfo.firstName} ${order.customerInfo.lastName}`,
-              email: order.customerInfo.email,
-              phone: order.customerInfo.phone,
-              address: fullAddress,
-              subtotal: Number(order.subtotal.toFixed(1)),
-              shipping: Number(order.shippingCost.toFixed(1)),
-              totalPrice: Number(order.totalPrice.toFixed(1)),
-              orderStatus: 'Confirmed',
-              trackingNumber: '',
-              shippedDate: '',
-              markAsShippedUrl: `https://threadstylez.com/orders/${order.orderNumber}`,
-              items: formattedItems
-            };
-
-            const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
-
-            try {
-              await fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(n8nOrderPayload),
-              });
-            } catch (webhookError) {
-              console.error('N8n webhook error:', webhookError);
+            if (item.designType === 'gallery' && item.designId) {
+              designImageUrl = `https://picsum.photos/seed/${item.designId}/400/400`;
+              designUrl = `https://threadstylez.com/designs/${item.designId}`;
             }
+
+            return {
+              lineNumber: index + 1,
+              productName: item.productName || 'Product',
+              productImage: item.productImage || 'https://picsum.photos/seed/product/200/200',
+              size: item.size || '',
+              color: item.color || '',
+              quantity: item.quantity || 1,
+              designName: item.designName || '',
+              placementsStr: placementsStr,
+              basePrice: Number((item.basePrice || 0).toFixed(1)),
+              placementFee: Number((item.placementPrice || 0).toFixed(1)),
+              itemTotal: Number((item.itemTotal || 0).toFixed(1)),
+              designImageUrl: designImageUrl,
+              designUrl: designUrl
+            };
+          });
+
+          const n8nOrderPayload = {
+            orderNumber: order.orderNumber,
+            orderId: order.orderId,
+            date: new Date().toISOString(),
+            customerName: `${order.customerInfo.firstName} ${order.customerInfo.lastName}`,
+            email: order.customerInfo.email,
+            phone: order.customerInfo.phone,
+            address: fullAddress,
+            subtotal: Number(order.subtotal.toFixed(1)),
+            shipping: Number(order.shippingCost.toFixed(1)),
+            totalPrice: Number(order.totalPrice.toFixed(1)),
+            orderStatus: 'Confirmed',
+            trackingNumber: '',
+            shippedDate: '',
+            markAsShippedUrl: `https://threadstylez.com/orders/${order.orderNumber}`,
+            items: formattedItems
+          };
+
+          const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://amrio.app.n8n.cloud/webhook/orders/new';
+
+          try {
+            await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(n8nOrderPayload),
+            });
+          } catch (webhookError) {
+            console.error('N8n webhook error:', webhookError);
           }
-        } else {
-          window.location.href = '/';
         }
       } catch (error) {
         console.error('Payment verification error:', error);
