@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-09-30.clover',
 });
 
 export default async function handler(
@@ -41,7 +41,10 @@ export default async function handler(
       lineItems.push({
         price_data: {
           currency: 'usd',
-          product_data: { name: 'Shipping' },
+          product_data: {
+            name: 'Shipping',
+            description: 'Shipping cost',
+          },
           unit_amount: Math.round(shippingCost * 100),
         },
         quantity: 1,
