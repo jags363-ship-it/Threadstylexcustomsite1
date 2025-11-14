@@ -45,7 +45,7 @@ export default async function handler(
   name: 'Shipping',
   description: 'Shipping cost',
   images: [],
-}
+},
           unit_amount: Math.round(shippingCost * 100),
         },
         quantity: 1,
