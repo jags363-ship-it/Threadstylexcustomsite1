@@ -41,7 +41,7 @@ export default async function handler(
       lineItems.push({
         price_data: {
           currency: 'usd',
-          product_data: {
+product_data: {
   name: 'Shipping',
   description: 'Shipping cost',
   images: [],
