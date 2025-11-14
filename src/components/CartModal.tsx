@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, ShoppingCart, Package } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -5,11 +6,16 @@ import { useCart } from '../context/CartContext';
 interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCheckout: () => void;
 }
 
-export function CartModal({ isOpen, onClose, onCheckout }: CartModalProps) {
+export function CartModal({ isOpen, onClose }: CartModalProps) {
+  const navigate = useNavigate();
   const { cart, removeFromCart, cartCount, cartSubtotal, cartShipping, cartTotal } = useCart();
+
+  const handleCheckout = () => {
+    onClose();
+    navigate('/checkout');
+  };
 
   if (!isOpen) return null;
 
@@ -146,7 +152,7 @@ export function CartModal({ isOpen, onClose, onCheckout }: CartModalProps) {
               </div>
 
               <button
-                onClick={onCheckout}
+                onClick={handleCheckout}
                 className="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-bold text-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2"
               >
                 <ShoppingCart className="w-5 h-5" />

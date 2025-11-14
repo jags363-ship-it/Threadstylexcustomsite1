@@ -15,7 +15,6 @@ import { placements } from './data/placements';
 import { designs } from './data/designs';
 import { useCart } from './context/CartContext';
 import { CartModal } from './components/CartModal';
-import { CheckoutModal } from './components/CheckoutModal';
 
 function App() {
   const [selectedSize, setSelectedSize] = useState('M');
@@ -27,7 +26,6 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState('hoodie');
   const [selectedPlacements, setSelectedPlacements] = useState<string[]>([]);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [showCart, setShowCart] = useState(false);
 
   const { addToCart, cart, cartSubtotal, cartShipping, cartTotal } = useCart();
@@ -236,37 +234,9 @@ function App() {
         error={error}
       />
       
-      {/* Cart Modal */}
       <CartModal
         isOpen={showCart}
         onClose={() => setShowCart(false)}
-        onCheckout={() => {
-          console.log('=== Opening Checkout Modal ===');
-          console.log('Cart from context:', cart);
-          console.log('cartSubtotal from context:', cartSubtotal);
-          console.log('cartShipping from context:', cartShipping);
-          console.log('cartTotal from context:', cartTotal);
-          console.log('Cart item details:', cart.map(item => ({
-            id: item.id,
-            productName: item.productName,
-            basePrice: item.basePrice,
-            placementPrice: item.placementPrice,
-            quantity: item.quantity,
-            itemTotal: item.itemTotal
-          })));
-          setShowCart(false);
-          setShowCheckoutModal(true);
-        }}
-      />
-
-      {/* Checkout Modal */}
-      <CheckoutModal
-        isOpen={showCheckoutModal}
-        onClose={() => setShowCheckoutModal(false)}
-        cartItems={cart}
-        cartSubtotal={cartSubtotal}
-        cartShipping={cartShipping}
-        cartTotal={cartTotal}
       />
     </div>
   );
