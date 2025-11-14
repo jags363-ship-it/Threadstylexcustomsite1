@@ -42,9 +42,10 @@ export default async function handler(
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'Shipping',
-            description: 'Shipping cost',
-          },
+  name: 'Shipping',
+  description: 'Shipping cost',
+  images: [],
+}
           unit_amount: Math.round(shippingCost * 100),
         },
         quantity: 1,
