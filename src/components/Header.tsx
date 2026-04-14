@@ -54,15 +54,15 @@ export function Header({ onCartClick }: HeaderProps) {
             <img
               src="https://threadstylez.com/wp-content/uploads/2025/03/logo1.png"
               alt="ThreadStylez"
-              className="h-10 w-auto object-contain"
+              className="h-14 w-auto object-contain"
               onError={(e) => {
                 // Fallback to image.png from the public folder
                 (e.target as HTMLImageElement).src = '/image.png';
               }}
             />
             <div className="hidden sm:block border-l border-white/10 pl-3">
-              <p className="text-[10px] text-gold-500 font-display font-bold tracking-widest uppercase leading-none">Islamic Games 2026</p>
-              <p className="text-xs text-gray-400 font-body leading-none mt-0.5">Official Apparel Portal</p>
+              <p className="text-xs text-gold-500 font-display font-black tracking-widest uppercase leading-none">Islamic Games 2026</p>
+              <p className="text-sm text-gray-300 font-body font-semibold leading-none mt-1">Official Apparel Portal</p>
             </div>
           </motion.a>
 

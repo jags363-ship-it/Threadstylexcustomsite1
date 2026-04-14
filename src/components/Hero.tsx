@@ -22,11 +22,14 @@ export function Hero() {
   const [activeEvent, setActiveEvent] = useState(0);
 
   const slides = [
-    { src: '/WI-1.png', label: 'Hoodies' },
-    { src: '/WI-2.png', label: 'Jerseys' },
-    { src: '/WI-3.png', label: 'Tracksuits' },
-    { src: '/WI-4.png', label: 'T-Shirts' },
-    { src: '/WI-5.png', label: 'Accessories' },
+    { src: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&q=85', label: 'Basketball' },
+    { src: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=800&q=85', label: 'Soccer' },
+    { src: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&q=85', label: 'Volleyball' },
+    { src: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=85', label: 'Track & Field' },
+    { src: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&q=85', label: 'Swimming' },
+    { src: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&q=85', label: 'Cricket' },
+    { src: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800&q=85', label: 'Martial Arts' },
+    { src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=85', label: 'Ceremony' },
   ];
 
   // Countdown to first 2026 event — NJ June 6
