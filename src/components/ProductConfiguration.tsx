@@ -276,9 +276,8 @@ export function ProductConfiguration({
                     </div>
                   </div>
                   <div className="p-3">
-                    <p className="text-[10px] text-[#1B4D3E] font-bold uppercase tracking-wider">{product.categoryLabel}</p>
-                    <p className="font-black text-sm text-[#0A1628] leading-tight mt-0.5 line-clamp-2"
-                       style={{ fontFamily: "'Barlow Condensed',sans-serif" }}>{product.name}</p>
+                    <p className="text-[10px] text-[#1B4D3E] font-medium uppercase tracking-wide">{product.categoryLabel}</p>
+                    <p className="font-semibold text-sm text-[#0A1628] leading-tight mt-0.5 line-clamp-2">{product.name}</p>
                     <div className="flex items-baseline gap-2 mt-2">
                       <span className="text-lg font-black text-[#0A1628]">${product.price}</span>
                       <span className="text-xs text-gray-400 line-through">${product.originalPrice}</span>

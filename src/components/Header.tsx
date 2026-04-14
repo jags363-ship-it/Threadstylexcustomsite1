@@ -43,9 +43,7 @@ export function Header({ onCartClick }: HeaderProps) {
 
           {/* Logo */}
           <motion.a
-            href="https://threadstylez.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-4 flex-shrink-0"

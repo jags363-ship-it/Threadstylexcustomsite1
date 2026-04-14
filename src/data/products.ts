@@ -54,6 +54,7 @@ const TS = {
   heavy_orange:  'https://threadstylez.com/wp-content/uploads/2023/11/Orange-2-1.jpg',
   heavy_oxford:  'https://threadstylez.com/wp-content/uploads/2023/11/Oxford-2.jpg',
   cap:           'https://threadstylez.com/wp-content/uploads/2024/10/TSBH-main-3.png',
+  baseball_cap:  'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85',
 };
 
 // ── Islamic Games action photos (Muslim athletes) ─────────────
@@ -198,9 +199,9 @@ export const products: Product[] = [
     price: 18, originalPrice: 25,
     sizes: ['One Size'],
     colors: [
-      { ...COLORS.black, image: TS.cap },
-      { ...COLORS.navy,  image: TS.cap },
-      { ...COLORS.white, image: TS.cap },
+      { ...COLORS.black, image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85' },
+      { ...COLORS.navy,  image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85' },
+      { ...COLORS.white, image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85' },
     ],
     description: 'Official Islamic Games 2026 structured snapback cap with embroidered IG logo on front panel.',
     features: ['Official IG 2026 Logo','Structured 6-Panel','Snapback Closure','Embroidered Logo'],
@@ -215,13 +216,13 @@ export const products: Product[] = [
     price: 15, originalPrice: 22,
     sizes: ['One Size'],
     colors: [
-      { ...COLORS.black, image: IG.ig_merch },
-      { ...COLORS.white, image: IG.ig_merch },
-      { ...COLORS.navy,  image: IG.ig_merch },
+      { ...COLORS.black, image: 'https://images.unsplash.com/photo-1597484662317-c89c3df82f48?w=600&q=85' },
+      { ...COLORS.white, image: 'https://images.unsplash.com/photo-1597484662317-c89c3df82f48?w=600&q=85' },
+      { ...COLORS.navy,  image: 'https://images.unsplash.com/photo-1597484662317-c89c3df82f48?w=600&q=85' },
     ],
     description: 'Heavy-duty canvas tote bag with Islamic Games 2026 logo. Perfect for event days, gear, and fan merchandise.',
     features: ['12oz Canvas','IG 2026 Logo Print','Reinforced Handles','15"x16" Size'],
-    thumbnail: IG.ig_merch,
+    thumbnail: 'https://images.unsplash.com/photo-1597484662317-c89c3df82f48?w=600&q=85',
     category: 'ig-merch', categoryLabel: 'IG Merch',
     sports: ['All Sports'], teamOrderMin: 1,
     badge: 'IG Official', customPrint: true,
@@ -740,7 +741,7 @@ export const products: Product[] = [
     colors: allColors(TS.cap),
     description: 'Structured 6-panel snapback with embroidered team logo on front panel.',
     features: ['6-Panel Structured','Embroidered Logo','Snapback Closure','All Colors Available'],
-    thumbnail: TS.cap,
+    thumbnail: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85',
     category: 'hat', categoryLabel: 'Snapback Cap',
     sports: ['All Sports'], teamOrderMin: 5,
     badge: 'All Sports', customPrint: true,

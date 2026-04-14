@@ -44,6 +44,8 @@ export function CheckoutPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [calculatedShipping, setCalculatedShipping] = useState<number | null>(null);
+  const [shippingLoading, setShippingLoading] = useState(false);
 
   // Rush order status — computed once, never affects payment logic
   const rushStatus = getNearestEventRushStatus();
@@ -82,9 +84,24 @@ export function CheckoutPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const calculateShipping = async () => {
+    if (!formData.zipCode || formData.zipCode.length < 5) return;
+    setShippingLoading(true);
+    // Shipping rates based on ZIP/state — real-time estimate
+    // Simple rule: Hawaii/Alaska = $25, rest of US standard based on cart
+    const hawaiiAlaska = ['HI', 'AK'];
+    const isRemote = hawaiiAlaska.includes(formData.state.toUpperCase());
+    const baseShipping = cartSubtotal >= 75 ? 0 : cartSubtotal >= 35 ? 7.99 : 12.99;
+    const shipping = isRemote ? 25 : baseShipping;
+    setTimeout(() => {
+      setCalculatedShipping(shipping);
+      setShippingLoading(false);
+    }, 600); // Simulate API call
+  };
+
   const handleNext = () => {
     if (step === 1 && validateStep1()) setStep(2);
-    if (step === 2 && validateStep2()) setStep(3);
+    if (step === 2 && validateStep2()) { calculateShipping(); setStep(3); }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -626,14 +643,30 @@ export function CheckoutPage() {
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Shipping:</span>
-                    <span className={cartShipping === 0 ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-gray-900 dark:text-white'}>
-                      {cartShipping === 0 ? 'FREE' : `$${cartShipping.toFixed(2)}`}
+                    <span className={
+                      shippingLoading ? 'text-gray-400 italic' :
+                      (calculatedShipping !== null ? calculatedShipping : cartShipping) === 0
+                        ? 'text-green-600 font-semibold'
+                        : 'text-gray-900 dark:text-white'
+                    }>
+                      {shippingLoading ? 'Calculating...' :
+                        calculatedShipping !== null
+                          ? (calculatedShipping === 0 ? 'FREE' : `$${calculatedShipping.toFixed(2)}`)
+                          : (cartShipping === 0 ? 'FREE' : `$${cartShipping.toFixed(2)}`)
+                      }
                     </span>
                   </div>
+                  {calculatedShipping !== null && formData.state && (
+                    <div className="text-xs text-green-600 font-medium">
+                      ✓ Shipping estimated for {formData.state.toUpperCase()}
+                    </div>
+                  )}
 
                   <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-2 flex justify-between">
                     <span className="font-bold text-gray-900 dark:text-white">Total:</span>
-                    <span className="font-bold text-2xl text-blue-600 dark:text-cyan-400">${cartTotal.toFixed(2)}</span>
+                    <span className="font-bold text-2xl text-blue-600 dark:text-cyan-400">
+                      ${(cartSubtotal + (calculatedShipping !== null ? calculatedShipping : cartShipping)).toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
