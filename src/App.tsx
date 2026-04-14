@@ -114,10 +114,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-900">
+    <div className="min-h-screen bg-[#F8F7F4]">
       <Header onCartClick={() => setShowCart(true)} />
 
-      <div className="pt-[72px]"> {/* offset for fixed header + IG strip */}
+      <div className="pt-[108px]"> {/* offset for fixed header + IG strip */}
         <Hero />
         
         <ProductConfiguration
@@ -146,7 +146,7 @@ function App() {
         />
 
         {/* Order Summary + Add to Cart */}
-        <section className="py-12 bg-navy-800">
+        <section className="py-12 bg-white border-t border-gray-100">
           <div className="max-w-3xl mx-auto px-4">
             <AnimatePresence>
               {error && (
@@ -154,7 +154,7 @@ function App() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-3 bg-rush/10 border border-rush/30 text-white px-5 py-4 rounded-xl mb-6"
+                  className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-800 px-5 py-4 rounded-xl mb-6"
                 >
                   <AlertCircle className="w-5 h-5 text-rush flex-shrink-0" />
                   <span className="text-sm font-body">{error}</span>
@@ -167,12 +167,12 @@ function App() {
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card-surface p-6 mb-6"
+                className="card-surface p-6 mb-6 shadow-sm"
               >
-                <h3 className="font-display font-bold text-white uppercase tracking-wider text-sm mb-5">Order Summary</h3>
+                <h3 className="font-display font-bold text-gray-900 uppercase tracking-wider text-sm mb-5">Order Summary</h3>
                 
                 <div className="space-y-3 text-sm">
-                  <div className="flex justify-between text-gray-300">
+                  <div className="flex justify-between text-gray-700">
                     <span>{currentProduct.name} ×{quantity}</span>
                     <span>${basePrice.toFixed(2)}</span>
                   </div>
@@ -189,7 +189,7 @@ function App() {
                     </div>
                   ) : (
                     selectedPlacementObjects.map(p => (
-                      <div key={p.key} className="flex justify-between text-gray-300">
+                      <div key={p.key} className="flex justify-between text-gray-700">
                         <span>{p.label}</span>
                         <span>+${p.addOn.toFixed(2)}</span>
                       </div>
@@ -199,11 +199,11 @@ function App() {
                   {playerName && <div className="flex justify-between text-gray-400 text-xs"><span>Player: {playerName} {playerNumber ? `#${playerNumber}` : ''}</span></div>}
                   
                   <div className="border-t border-white/5 pt-3 mt-3">
-                    <div className="flex justify-between text-gray-400 text-xs mb-1">
+                    <div className="flex justify-between text-gray-500 text-xs mb-1">
                       <span>Shipping</span>
                       <span>{shippingCost === 0 ? '✓ Free' : `$${shippingCost.toFixed(2)}`}</span>
                     </div>
-                    <div className="flex justify-between text-white font-display font-black text-xl">
+                    <div className="flex justify-between text-gray-900 font-display font-black text-xl">
                       <span>Total</span>
                       <span>${totalPrice.toFixed(2)}</span>
                     </div>
@@ -251,7 +251,7 @@ function App() {
                 { icon: Package, label: '2-Wk Standard Delivery' },
                 { icon: CheckCircle, label: 'Secure Stripe Checkout' },
               ].map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-1.5 text-gray-600 text-xs">
+                <div key={label} className="flex items-center gap-1.5 text-gray-500 text-xs">
                   <Icon className="w-3.5 h-3.5 text-gold-500" />
                   <span>{label}</span>
                 </div>

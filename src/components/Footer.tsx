@@ -15,7 +15,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-navy-900 border-t border-white/5 pt-16 pb-8">
+    <footer className="bg-[#0A1628] border-t-4 border-[#C8A951] pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Main partnership banner */}

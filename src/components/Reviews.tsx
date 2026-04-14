@@ -34,11 +34,11 @@ const reviews = [
 
 export function Reviews() {
   return (
-    <section id="reviews" className="py-20 bg-navy-900">
+    <section id="reviews" className="py-20 bg-[#F8F7F4]">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
-          <p className="section-label mb-3">Trusted by Islamic Games Athletes &amp; Teams</p>
-          <h2 className="step-heading">WHAT TEAMS SAY</h2>
+          <p className="section-label mb-3" style={{color:"#1B4D3E"}}>Trusted by Islamic Games Athletes &amp; Teams</p>
+          <h2 className="step-heading" style={{color:"#0A1628"}}>WHAT TEAMS SAY</h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -49,20 +49,20 @@ export function Reviews() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="card-surface p-5 flex flex-col"
+              className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: r.rating }).map((_, s) => (
                   <Star key={s} className="w-3.5 h-3.5 text-gold-500 fill-gold-500" />
                 ))}
               </div>
-              <p className="text-gray-300 text-sm font-body leading-relaxed flex-1 mb-5">"{r.text}"</p>
+              <p className="text-gray-600 text-sm font-body leading-relaxed flex-1 mb-5">"{r.text}"</p>
               <div className="flex items-center gap-3 pt-4 border-t border-white/5">
                 <div className="w-9 h-9 rounded-full bg-[#1B4D3E]/40 border border-[#2D7A55]/30 flex items-center justify-center flex-shrink-0">
                   <span className="text-[#4CAF7D] font-display font-black text-xs">{r.initials}</span>
                 </div>
                 <div>
-                  <p className="text-white font-display font-bold text-sm">{r.name}</p>
+                  <p className="text-gray-900 font-display font-bold text-sm">{r.name}</p>
                   <p className="text-gray-500 text-[10px]">{r.role}</p>
                 </div>
               </div>

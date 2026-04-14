@@ -7,14 +7,13 @@
     --gold: #C8A951;
     --green-ig: #1B4D3E;
     --green-ig-mid: #2D7A55;
-    --navy-900: #060E1A;
-    --navy-800: #0A1628;
+    --navy: #0A1628;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    background-color: #060E1A;
-    color: #fff;
+    background-color: #F8F7F4;
+    color: #111827;
     font-family: 'Barlow', sans-serif;
     -webkit-font-smoothing: antialiased;
   }
@@ -24,11 +23,11 @@
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Subtle gold grid texture */
+  /* Subtle grid texture */
   .grid-bg {
     background-image:
-      linear-gradient(rgba(200,169,81,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200,169,81,0.035) 1px, transparent 1px);
+      linear-gradient(rgba(27,77,62,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27,77,62,0.04) 1px, transparent 1px);
     background-size: 72px 72px;
   }
 
@@ -40,7 +39,7 @@
     background-clip: text;
   }
 
-  /* Islamic Games green gradient text */
+  /* Green gradient text */
   .green-text {
     background: linear-gradient(120deg, #1B4D3E 0%, #2D7A55 50%, #4CAF7D 100%);
     -webkit-background-clip: text;
@@ -48,14 +47,27 @@
     background-clip: text;
   }
 
-  /* Card surfaces */
+  /* Card surfaces — light */
   .card-surface {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+  }
+  .card-surface:hover {
+    border-color: #C8A951;
+    box-shadow: 0 4px 20px rgba(200,169,81,0.15);
+    transform: translateY(-1px);
+  }
+
+  /* Dark card — for sections with dark bg */
+  .card-dark {
     background: linear-gradient(135deg, #0D1E36 0%, #0A1628 100%);
     border: 1px solid rgba(255,255,255,0.09);
     border-radius: 1rem;
     transition: border-color 0.2s ease;
   }
-  .card-surface:hover { border-color: rgba(200,169,81,0.25); }
+  .card-dark:hover { border-color: rgba(200,169,81,0.3); }
 
   /* Gold CTA button */
   .btn-gold {
@@ -74,26 +86,8 @@
     transform: translateY(-2px);
     box-shadow: 0 12px 32px rgba(200,169,81,0.4);
   }
-  .btn-gold:active { transform: translateY(0); }
 
-  /* Outline button */
-  .btn-outline {
-    border: 1.5px solid rgba(200,169,81,0.5);
-    color: #C8A951;
-    font-weight: 700;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transition: all 0.2s ease;
-    background: transparent;
-  }
-  .btn-outline:hover {
-    background: rgba(200,169,81,0.1);
-    border-color: #C8A951;
-    transform: translateY(-1px);
-  }
-
-  /* Islamic Games green button */
+  /* Green button */
   .btn-green {
     background: linear-gradient(135deg, #1B4D3E 0%, #2D7A55 100%);
     color: #fff;
@@ -107,7 +101,24 @@
   .btn-green:hover {
     background: linear-gradient(135deg, #2D7A55 0%, #3D9A6A 100%);
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(27,77,62,0.5);
+    box-shadow: 0 8px 24px rgba(27,77,62,0.35);
+  }
+
+  /* Outline button */
+  .btn-outline {
+    border: 2px solid #1B4D3E;
+    color: #1B4D3E;
+    font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background: #1B4D3E;
+    color: white;
+    transform: translateY(-1px);
   }
 
   /* Section labels */
@@ -116,7 +127,7 @@
     font-size: 0.7rem;
     letter-spacing: 0.35em;
     text-transform: uppercase;
-    color: #C8A951;
+    color: #1B4D3E;
     font-weight: 700;
   }
 
@@ -126,7 +137,7 @@
     font-weight: 900;
     font-size: clamp(2.2rem, 5vw, 3.5rem);
     line-height: 0.95;
-    color: white;
+    color: #0A1628;
     letter-spacing: -0.01em;
   }
 
@@ -143,11 +154,7 @@
     border: 1px solid rgba(76,175,125,0.3);
   }
 
-  /* Price tag styling */
-  .price-individual { color: #C8A951; }
-  .price-team { color: #4CAF7D; }
-
-  /* Animate shimmer on gold */
+  /* Gold shimmer animation */
   @keyframes shimmer {
     0% { background-position: -200% center; }
     100% { background-position: 200% center; }

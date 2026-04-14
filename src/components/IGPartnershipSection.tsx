@@ -21,14 +21,14 @@ const stats = [
 
 export function IGPartnershipSection() {
   return (
-    <section className="py-20 bg-navy-800 border-y border-white/5">
+    <section className="py-20 bg-[#F0F4F2] border-y border-[#2D7A55]/20">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Section label */}
         <div className="text-center mb-14">
           <p className="section-label mb-3">Official Partnership</p>
-          <h2 className="step-heading mb-4">THREADSTYLEZ × ISLAMIC GAMES 2026</h2>
-          <p className="text-gray-400 font-body max-w-2xl mx-auto">
+          <h2 className="step-heading mb-4" style={{color:"#0A1628"}}>THREADSTYLEZ × ISLAMIC GAMES 2026</h2>
+          <p className="text-gray-600 font-body max-w-2xl mx-auto">
             ThreadStylez is proud to be the official apparel provider for Islamic Games 2026 — North America's largest and most celebrated Muslim sports festival, uniting athletes, families, and communities in the spirit of faith, health, and sportsmanship.
           </p>
         </div>
@@ -99,9 +99,9 @@ export function IGPartnershipSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="card-surface p-5 text-center"
+              className="bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm"
             >
-              <div className="font-display font-black text-gold-500 text-3xl leading-none mb-1">{s.val}</div>
+              <div className="font-display font-black text-[#C8A951] text-3xl leading-none mb-1">{s.val}</div>
               <div className="text-gray-500 text-xs uppercase tracking-wider font-body">{s.label}</div>
             </motion.div>
           ))}
@@ -136,7 +136,7 @@ export function IGPartnershipSection() {
             ))}
 
             {/* Coming soon card */}
-            <div className="card-surface p-5 flex items-center justify-center border-dashed">
+            <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-5 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-gray-600 text-2xl mb-2">+</div>
                 <p className="font-display font-bold text-gray-600 text-sm uppercase tracking-wide">More cities TBA</p>
@@ -168,12 +168,12 @@ export function IGPartnershipSection() {
               desc: 'As the official provider, all ThreadStylez apparel meets the Islamic Games\' standards for quality, durability, and professional presentation on the field.',
             },
           ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="card-surface p-5">
+            <div key={title} className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
               <div className="w-10 h-10 rounded-xl bg-[#1B4D3E]/40 border border-[#2D7A55]/30 flex items-center justify-center mb-4">
                 <Icon className="w-5 h-5 text-[#4CAF7D]" />
               </div>
-              <h4 className="font-display font-black text-white text-base uppercase tracking-wide mb-2">{title}</h4>
-              <p className="text-gray-500 text-xs font-body leading-relaxed">{desc}</p>
+              <h4 className="font-display font-black text-gray-900 text-base uppercase tracking-wide mb-2">{title}</h4>
+              <p className="text-gray-600 text-xs font-body leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>

@@ -49,19 +49,19 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-20 bg-navy-800">
+    <section id="faq" className="py-20 bg-white border-t border-gray-100">
       <div className="max-w-3xl mx-auto px-4">
         <div className="text-center mb-12">
           <p className="section-label mb-3">Have Questions?</p>
-          <h2 className="step-heading">FREQUENTLY ASKED</h2>
+          <h2 className="step-heading" style={{color:"#0A1628"}}>FREQUENTLY ASKED</h2>
         </div>
 
         <div className="space-y-2">
           {faqs.map((faq, i) => (
-            <div key={i} className="border border-white/8 rounded-xl overflow-hidden">
+            <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 p-5 text-left bg-navy-900 hover:bg-navy-700 transition-colors"
+                className="w-full flex items-center justify-between gap-4 p-5 text-left bg-white hover:bg-gray-50 transition-colors"
               >
                 <span className="font-display font-bold text-white text-sm uppercase tracking-wide">{faq.q}</span>
                 <motion.div animate={{ rotate: open === i ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -77,7 +77,7 @@ export function FAQ() {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <p className="px-5 pb-5 text-gray-400 text-sm font-body leading-relaxed border-t border-white/5 pt-4">
+                    <p className="px-5 pb-5 text-gray-600 text-sm font-body leading-relaxed border-t border-gray-100 pt-4">
                       {faq.a}
                     </p>
                   </motion.div>

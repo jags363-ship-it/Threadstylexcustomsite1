@@ -148,14 +148,14 @@ export function ProductConfiguration({
   })();
 
   return (
-    <section id="products" className="py-16 bg-navy-900">
+    <section id="products" className="py-16 bg-[#F8F7F4]">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Section Header */}
         <div className="text-center mb-12">
           <p className="section-label mb-3">Step 1 of 4</p>
-          <h2 className="step-heading mb-3">SELECT YOUR APPAREL</h2>
-          <p className="text-gray-400 font-body max-w-xl mx-auto">Browse our full collection. All items are customizable with team name, player name, number, and your logo.</p>
+          <h2 className="step-heading mb-3" style={{color:"#0A1628"}}>SELECT YOUR APPAREL</h2>
+          <p className="text-gray-600 font-body max-w-xl mx-auto">Browse our full collection. All items are customizable with team name, player name, number, and your logo.</p>
         </div>
 
         {/* Category Filter Tabs */}
@@ -166,8 +166,8 @@ export function ProductConfiguration({
               onClick={() => setActiveCategory(cat.id)}
               className={`px-4 py-2 rounded-full text-xs font-display font-bold tracking-wider uppercase transition-all border flex items-center gap-1.5 ${
                 activeCategory === cat.id
-                  ? 'bg-gold-500 text-navy-900 border-gold-500'
-                  : 'border-white/10 text-gray-400 hover:border-white/25 hover:text-white'
+                  ? 'bg-[#C8A951] text-[#060E1A] border-[#C8A951] shadow-sm'
+                  : 'border-gray-300 text-gray-600 hover:border-[#1B4D3E] hover:text-[#1B4D3E]'
               }`}
             >
               <span>{cat.icon}</span> {cat.label}
@@ -212,9 +212,9 @@ export function ProductConfiguration({
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleProductChange(product.id)}
                 className={`relative flex flex-col rounded-xl overflow-hidden border transition-all text-left ${
-                  isSelected ? 'border-gold-500 shadow-lg shadow-gold-500/10' : 'border-white/8 hover:border-white/20 card-surface'
+                  isSelected ? 'border-[#C8A951] shadow-lg shadow-[#C8A951]/15' : 'border-gray-200 hover:border-[#C8A951]/50 card-surface'
                 }`}
-                style={{ background: isSelected ? 'rgba(200,169,81,0.06)' : '#0A1628' }}
+                style={{ background: isSelected ? 'rgba(200,169,81,0.08)' : '#FFFFFF' }}
               >
                 {/* Badges */}
                 <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
@@ -246,7 +246,7 @@ export function ProductConfiguration({
                   )}
                 </div>
 
-                <div className="p-3 flex flex-col flex-1">
+                <div className="p-3 flex flex-col flex-1 bg-white">
                   {/* Category label */}
                   <p className="text-[9px] text-gold-500 font-display font-bold uppercase tracking-widest mb-0.5">
                     {product.categoryLabel}
@@ -588,7 +588,7 @@ export function ProductConfiguration({
                   {currentProduct.sizes.map(size => (
                     <button key={size} onClick={() => setSelectedSize(size)}
                       className={`px-3 py-2 rounded-lg text-xs font-display font-bold uppercase tracking-wider transition-all border ${
-                        selectedSize === size ? 'btn-gold border-gold-500' : 'border-white/10 text-gray-400 hover:border-white/25 hover:text-white'
+                        selectedSize === size ? 'btn-gold border-gold-500' : 'border-gray-300 text-gray-600 hover:border-[#1B4D3E] hover:text-[#1B4D3E]'
                       }`}
                     >{size}</button>
                   ))}
