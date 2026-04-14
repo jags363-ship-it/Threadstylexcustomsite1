@@ -1,90 +1,81 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
 
 const faqs = [
   {
-    id: 1,
-    question: 'How long does shipping take?',
-    answer: 'We offer free standard shipping that takes 5-7 business days. Express shipping (2-3 days) is available for $9.99. All orders placed before October 25th are guaranteed to arrive before Halloween!'
+    q: 'What is the standard delivery time?',
+    a: 'Standard production and delivery takes approximately 2 weeks (± a few days) from the time your order is confirmed and payment is received. This covers printing, quality check, packaging, and shipping.',
   },
   {
-    id: 2,
-    question: 'What materials are the hoodies made from?',
-    answer: 'Our hoodies are made from premium 80% cotton and 20% polyester blend. They feature a soft fleece lining, double-lined hood, and durable front pocket. The fabric is pre-shrunk and designed to maintain its shape and color after washing.'
+    q: 'What is a Rush Order?',
+    a: 'If your event is within 2 weeks of placing your order, it is automatically classified as a Rush Order. We will do our absolute best to fulfill it on time, but we CANNOT guarantee delivery before your event date. We strongly recommend ordering at least 3 weeks in advance.',
   },
   {
-    id: 3,
-    question: 'How should I wash my hoodie?',
-    answer: 'Machine wash cold inside-out with like colors. Tumble dry low or hang dry for best results. Do not bleach or iron directly on the design. Following these instructions will keep your hoodie looking great for years!'
+    q: 'Can I order for my whole team?',
+    a: 'Absolutely. Select "Team Order" in the order type section. Team orders of 5+ items receive a 15% bulk discount. You can specify individual sizes and player details for each team member — or submit a roster sheet via email after ordering.',
   },
   {
-    id: 4,
-    question: 'What is your return policy?',
-    answer: 'We offer a 30-day satisfaction guarantee. If you\'re not completely happy with your hoodie, you can return it for a full refund or exchange. Custom designs are only returnable if there\'s a printing defect. Contact our support team to initiate a return.'
-  }
+    q: 'What customization options are available?',
+    a: 'You can customize: Team Name, Player Name, Player Number, Team Logo (upload your own), Primary and Secondary colors, and Print Placements (front, back, sleeve, etc.). All items support full sublimation or screen printing depending on the product.',
+  },
+  {
+    q: 'Why is this the "Official IG Apparel Partner"?',
+    a: 'ThreadStylez is the officially designated apparel vendor for IG (Instagram) teams participating in National Games events. This means your order meets the official quality and branding standards required for team representation.',
+  },
+  {
+    q: 'What file format should I upload for my logo?',
+    a: 'We recommend PNG with transparent background (300×300px minimum). SVG and JPG files are also accepted. For best print quality, provide high-resolution files at the largest size available.',
+  },
+  {
+    q: 'Can I mix different sizes in a team order?',
+    a: 'Yes. After placing your order, contact our team at orders@threadstylez.com with your size breakdown per player. For large team orders, we recommend emailing a roster sheet.',
+  },
+  {
+    q: 'What is your return / exchange policy?',
+    a: 'Custom-printed orders cannot be returned unless there is a manufacturing defect. Blank/non-customized orders may be returned within 14 days. Please contact us within 72 hours of receiving your order if there is an issue.',
+  },
 ];
 
 export function FAQ() {
-  const [openId, setOpenId] = useState<number | null>(null);
-
-  const toggleFAQ = (id: number) => {
-    setOpenId(openId === id ? null : id);
-  };
+  const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-12 md:py-16 bg-gradient-to-br from-purple-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors">
-      <div className="container mx-auto px-4">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white"
-        >
-          Frequently Asked Questions
-        </motion.h2>
+    <section id="faq" className="py-20 bg-navy-800">
+      <div className="max-w-3xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <p className="section-label mb-3">Have Questions?</p>
+          <h2 className="step-heading">FREQUENTLY ASKED</h2>
+        </div>
 
-        <div className="max-w-3xl mx-auto space-y-4">
-          {faqs.map((faq, index) => (
-            <motion.div
-              key={faq.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transition-colors"
-            >
+        <div className="space-y-2">
+          {faqs.map((faq, i) => (
+            <div key={i} className="border border-white/8 rounded-xl overflow-hidden">
               <button
-                onClick={() => toggleFAQ(faq.id)}
-                className="w-full px-6 md:px-8 py-6 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => setOpen(open === i ? null : i)}
+                className="w-full flex items-center justify-between gap-4 p-5 text-left bg-navy-900 hover:bg-navy-700 transition-colors"
               >
-                <span className="text-lg font-semibold text-gray-900 dark:text-white pr-4">
-                  {faq.question}
-                </span>
-                <motion.div
-                  animate={{ rotate: openId === faq.id ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex-shrink-0"
-                >
-                  <ChevronDown className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+                <span className="font-display font-bold text-white text-sm uppercase tracking-wide">{faq.q}</span>
+                <motion.div animate={{ rotate: open === i ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                  <ChevronDown className={`w-4 h-4 flex-shrink-0 ${open === i ? 'text-gold-500' : 'text-gray-500'}`} />
                 </motion.div>
               </button>
               <AnimatePresence>
-                {openId === faq.id && (
+                {open === i && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 md:px-8 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {faq.answer}
-                    </div>
+                    <p className="px-5 pb-5 text-gray-400 text-sm font-body leading-relaxed border-t border-white/5 pt-4">
+                      {faq.a}
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

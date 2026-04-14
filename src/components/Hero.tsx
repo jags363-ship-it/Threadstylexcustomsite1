@@ -1,159 +1,238 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Snowflake, Package, ShieldCheck, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Shield, Package, Users, ChevronDown } from 'lucide-react';
 
 export function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
-  const modelImages = [
-        'https://i.pinimg.com/1200x/92/a1/de/92a1de7f8954d6e792e51d497731667d.jpg',
-    'https://i.pinimg.com/1200x/ed/97/a8/ed97a8760267151a22dff862e7d53ca3.jpg',
-       'https://i.pinimg.com/1200x/18/07/8e/18078eede2dcac62a5c38136a09f8ff5.jpg',
-  'https://i.pinimg.com/736x/61/63/e4/6163e40fddce19517288b4b3757a7e5b.jpg',
-    'https://i.pinimg.com/1200x/74/3d/56/743d56ada745492a776a73c0423d8442.jpg',
-  'https://i.pinimg.com/736x/6b/61/c3/6b61c3d9ddc2ead7fb9cb1d83e4e15f2.jpg',
-    'https://i.pinimg.com/1200x/94/37/df/9437df4ffab3bca7ae410797430ef4ad.jpg',
-    'https://i.pinimg.com/1200x/49/d9/be/49d9be9080ad0d42672bf819d307ca71.jpg',
-
+  const slides = [
+    { src: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-TSPH.png',  label: 'Team Hoodies' },
+    { src: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=800&q=80',  label: 'Soccer Kits' },
+    { src: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800&q=80',  label: 'Volleyball Jerseys' },
+    { src: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=800&q=80',  label: 'Track & Field Singlets' },
+    { src: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800&q=80',  label: 'Cricket Whites' },
+    { src: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',     label: 'Tennis Polos' },
+    { src: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800&q=80',  label: 'Cycling Jerseys' },
+    { src: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800&q=80',     label: 'Martial Arts Gear' },
+    { src: 'https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=800&q=80',  label: '5K Run Tees' },
+    { src: 'https://images.unsplash.com/photo-1547347298-4074fc3086f0?w=800&q=80',     label: 'Ultimate Frisbee' },
   ];
 
-  // Auto-rotate carousel every 3 seconds
+  // Event countdown — update this date
+  const EVENT_DATE = new Date('2025-08-01T09:00:00');
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % modelImages.length);
-    }, 3000);
-    
-    return () => clearInterval(interval);
-  }, [modelImages.length]);
+    const tick = () => {
+      const now = new Date();
+      const diff = EVENT_DATE.getTime() - now.getTime();
+      if (diff <= 0) return;
+      setTimeLeft({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        mins: Math.floor((diff % 3600000) / 60000),
+        secs: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setCurrentSlide(p => (p + 1) % slides.length), 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  const isRushZone = timeLeft.days <= 14 && timeLeft.days > 0;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-16 md:py-24 transition-colors">
-      {/* Falling Snowflakes Animation */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-navy-900 pt-24">
+      {/* Grid background */}
+      <div className="absolute inset-0 grid-bg pointer-events-none" />
+      
+      {/* Glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full bg-navy-800 opacity-60 blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gold-500/5 blur-[100px] pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-4 py-16 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+          {/* Left — Copy */}
+          <div>
+            {/* IG Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2.5 border border-gold-500/30 bg-gold-500/5 rounded-full px-5 py-2 mb-8"
+            >
+              <span className="w-5 h-5 rounded-sm bg-gradient-to-br from-purple-600 via-red-500 to-yellow-400 flex-shrink-0" />
+              <span className="text-gold-500 text-xs tracking-[0.2em] uppercase font-display font-bold">
+                Official IG Apparel Partner
+              </span>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="font-display font-black leading-none mb-6"
+              style={{ fontSize: 'clamp(3rem, 7vw, 5.5rem)' }}
+            >
+              <span className="block text-white">OFFICIAL</span>
+              <span className="block text-white">NATIONAL GAMES</span>
+              <span className="block gold-text">APPAREL PORTAL</span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-gray-400 font-body text-lg leading-relaxed mb-8 max-w-xl"
+            >
+              Customize and order premium apparel for <strong className="text-white">all sports</strong> — individuals &amp; teams. The preferred vendor for IG apparel across all national competitions.
+            </motion.p>
+
+            {/* Rush / Delivery Banner */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className={`rounded-xl p-4 mb-8 border ${isRushZone
+                ? 'bg-rush/10 border-rush/40 text-white'
+                : 'bg-white/5 border-white/10 text-gray-300'}`}
+            >
+              {isRushZone ? (
+                <div className="flex items-start gap-3">
+                  <span className="text-rush text-xl mt-0.5">⚠</span>
+                  <div>
+                    <p className="font-display font-bold text-rush uppercase tracking-wider text-sm">Rush Order Zone Active</p>
+                    <p className="text-xs mt-0.5 text-gray-300">You're within 2 weeks of the event. Orders placed now are <strong>RUSH ORDERS</strong> — delivery before event date is <strong>NOT guaranteed.</strong></p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Package className="w-5 h-5 text-gold-500 flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-display font-bold text-sm uppercase tracking-wider">Standard Delivery: 2 Weeks (± a few days)</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Orders within 2 weeks of event become Rush Orders — not guaranteed before event date.</p>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-wrap gap-3 mb-10"
+            >
+              <a href="#products" className="btn-gold px-8 py-3.5 rounded-xl text-sm inline-flex items-center gap-2">
+                Customize &amp; Order Now <span>→</span>
+              </a>
+              <a href="#team-orders" className="btn-outline px-8 py-3.5 rounded-xl text-sm inline-flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Start Team Order
+              </a>
+            </motion.div>
+
+            {/* Trust badges */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-wrap gap-6"
+            >
+              {[
+                { icon: Shield, label: 'Official IG Partner' },
+                { icon: Package, label: '2-Week Standard Delivery' },
+                { icon: Users, label: 'Individual & Team Orders' },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label} className="flex items-center gap-2 text-gray-400 text-sm">
+                  <Icon className="w-4 h-4 text-gold-500" />
+                  <span>{label}</span>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right — Carousel + Countdown */}
           <motion.div
-            key={i}
-            className="absolute text-blue-400 dark:text-cyan-300 opacity-60"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `-${Math.random() * 20}%`,
-              fontSize: `${Math.random() * 20 + 10}px`
-            }}
-            animate={{
-              y: ['0vh', '110vh'],
-              x: [0, Math.random() * 100 - 50],
-              rotate: [0, 360]
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 5
-            }}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
           >
-            ❄
-          </motion.div>
-        ))}
-      </div>
+            {/* Product carousel */}
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 mb-6 aspect-[4/3] bg-navy-800">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentSlide}
+                  src={slides[currentSlide].src}
+                  alt={slides[currentSlide].label}
+                  className="w-full h-full object-cover"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/blank-placeholder.svg'; }}
+                />
+              </AnimatePresence>
 
-      {/* Gradient Overlay for better readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/50 to-cyan-50/50 dark:via-gray-900/50 dark:to-gray-900/50 pointer-events-none" />
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-6 py-2 rounded-full mb-6 shadow-lg"
-          >
-            <Snowflake className="w-4 h-4" />
-            <span className="font-semibold">Winter Collection 2025 ❄️</span>
-            <Snowflake className="w-4 h-4" />
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent leading-tight"
-          >
-            Cozy Custom Apparel for Winter Vibes
-          </motion.h1>
-
-          {/* Model Carousel */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8"
-          >
-            <div className="relative max-w-2xl mx-auto">
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl ring-4 ring-blue-200">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentSlide}
-                    src={modelImages[currentSlide]}
-                    alt="Halloween Hoodie Model"
-                    className="w-full h-full object-cover"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </AnimatePresence>
-
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+              {/* Category label overlay */}
+              <div className="absolute bottom-4 left-4">
+                <span className="bg-navy-900/80 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full text-xs font-display font-bold text-gold-500 tracking-wider uppercase">
+                  {slides[currentSlide].label}
+                </span>
               </div>
 
-              {/* Dots */}
-              <div className="flex justify-center gap-2 mt-4">
-                {modelImages.map((_, index) => (
+              {/* Dot nav */}
+              <div className="absolute bottom-4 right-4 flex gap-1.5">
+                {slides.map((_, i) => (
                   <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`h-2 rounded-full transition-all ${
-                      currentSlide === index
-                        ? 'bg-blue-600 w-8'
-                        : 'bg-gray-300 hover:bg-gray-400 w-2'
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
+                    key={i}
+                    onClick={() => setCurrentSlide(i)}
+                    className={`rounded-full transition-all ${i === currentSlide ? 'bg-gold-500 w-5 h-1.5' : 'bg-white/30 w-1.5 h-1.5'}`}
                   />
                 ))}
               </div>
             </div>
-          </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl mx-auto"
-          >
-            Design your perfect winter wardrobe with custom prints. Stay warm, stay stylish! ⛄
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-6 md:gap-8"
-          >
-            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-              <Snowflake className="w-5 h-5 text-blue-600" />
-              <span className="text-sm md:text-base font-medium">Premium Quality</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-              <Package className="w-5 h-5 text-cyan-500" />
-              <span className="text-sm md:text-base font-medium">Custom Designs</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-              <Star className="w-5 h-5 text-blue-600 fill-blue-600" />
-              <span className="text-sm md:text-base font-medium">Perfect Gifts</span>
+            {/* Countdown */}
+            <div id="delivery" className="card-surface p-5">
+              <p className="section-label mb-4 text-center">Event Countdown — Order Before It's Too Late</p>
+              <div className="grid grid-cols-4 gap-3">
+                {[
+                  { val: timeLeft.days, label: 'Days' },
+                  { val: timeLeft.hours, label: 'Hours' },
+                  { val: timeLeft.mins, label: 'Mins' },
+                  { val: timeLeft.secs, label: 'Secs' },
+                ].map(({ val, label }) => (
+                  <div key={label} className="text-center bg-navy-700 rounded-xl py-3 border border-white/5">
+                    <div className="font-display font-black text-3xl text-white leading-none">
+                      {String(val).padStart(2, '0')}
+                    </div>
+                    <div className="text-gray-500 text-[10px] mt-1 uppercase tracking-wider">{label}</div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-center text-gray-500 text-xs mt-3">
+                {timeLeft.days <= 14 ? (
+                  <span className="text-rush font-semibold">⚠ Rush order zone — delivery not guaranteed before event</span>
+                ) : (
+                  <>Order now for standard 2-week delivery — <span className="text-gold-500 font-semibold">estimated delivery before event</span></>
+                )}
+              </p>
             </div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-600">
+        <span className="text-[10px] tracking-widest uppercase">Browse</span>
+        <ChevronDown className="w-4 h-4 animate-bounce" />
       </div>
     </section>
   );

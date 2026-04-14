@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, AlertCircle } from 'lucide-react';
+import { ShoppingCart, AlertCircle, Package, CheckCircle, Clock } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ProductConfiguration } from './components/ProductConfiguration';
@@ -8,7 +8,6 @@ import { Reviews } from './components/Reviews';
 import { FAQ } from './components/FAQ';
 import { Footer } from './components/Footer';
 import { StickyCheckout } from './components/StickyCheckout';
-import { ThemeToggle } from './components/ThemeToggle';
 import { useUTM } from './hooks/useUTM';
 import { products } from './data/products';
 import { placements } from './data/placements';
@@ -16,69 +15,81 @@ import { designs } from './data/designs';
 import { useCart } from './context/CartContext';
 import { CartModal } from './components/CartModal';
 
+// Delivery date calculator
+function getEstimatedDelivery(isRush: boolean): string {
+  const d = new Date();
+  d.setDate(d.getDate() + (isRush ? 10 : 14));
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function isRushOrder(): boolean {
+  const eventDate = new Date('2025-08-01');
+  const diff = (eventDate.getTime() - new Date().getTime()) / 86400000;
+  return diff <= 14 && diff > 0;
+}
+
 function App() {
+  // Product state (preserved from original)
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('black');
   const [quantity, setQuantity] = useState(1);
   const [selectedDesign, setSelectedDesign] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState('hoodie');
   const [selectedPlacements, setSelectedPlacements] = useState<string[]>([]);
   const [showCart, setShowCart] = useState(false);
 
-  const { addToCart, cart, cartSubtotal, cartShipping, cartTotal } = useCart();
-  const utmParams = useUTM();
+  // National Games extras
+  const [teamName, setTeamName] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [playerNumber, setPlayerNumber] = useState('');
+  const [orderType, setOrderType] = useState<'individual' | 'team'>('individual');
+
+  const { addToCart } = useCart();
+  useUTM();
+
   const currentProduct = products.find(p => p.id === selectedProduct) || products[0];
-  const currentColor = currentProduct.colors.find(c => c.id === selectedColor) || currentProduct.colors[0];
   const selectedPlacementObjects = placements.filter(p => selectedPlacements.includes(p.key));
 
   const basePrice = currentProduct.price * quantity;
   const placementPrice = selectedPlacementObjects.reduce((sum, p) => sum + p.addOn, 0) * quantity;
-  const subtotal = basePrice + placementPrice;
-
-  // Shipping calculation
-  const SHIPPING_THRESHOLD = 35;
+  const teamDiscount = orderType === 'team' && quantity >= 5 ? basePrice * 0.15 : 0;
+  const subtotal = basePrice + placementPrice - teamDiscount;
   const SHIPPING_FEE = 7.99;
-  const shippingCost = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+  const shippingCost = subtotal >= 35 ? 0 : SHIPPING_FEE;
   const totalPrice = subtotal + shippingCost;
 
-  const qualifiesForFreeShipping = subtotal >= SHIPPING_THRESHOLD;
+  const rush = isRushOrder();
+  const estimatedDelivery = getEstimatedDelivery(rush);
+
+  const hasDesign = selectedDesign !== null || uploadedFile !== null;
+  const isBlankSelected = selectedDesign === 'blank';
+  const canAddToCart = hasDesign && (isBlankSelected || selectedPlacements.length > 0);
 
   const handleAddToCart = () => {
     setError(null);
-
-    const isBlankSelected = selectedDesign === 'blank';
-
     if (!selectedDesign && !uploadedFile) {
-      setError('Pick a design or select blank apparel! ❄️');
+      setError('Pick a design or select blank apparel to continue');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-
     if (!isBlankSelected && selectedPlacements.length === 0) {
-      setError('Choose where to print your design! 📍');
+      setError('Choose at least one print placement to continue');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-
-    // Get design name
-    const designName = selectedDesign 
-      ? designs.find(d => d.id === selectedDesign)?.name 
-      : 'Custom Design';
-
-    // Get product image from colors array
+    const designName = selectedDesign ? designs.find(d => d.id === selectedDesign)?.name : 'Custom Design';
     const selectedColorObj = currentProduct.colors.find(c => c.id === selectedColor);
-    const productImage = selectedColorObj?.image || currentProduct.colors[0]?.image || 'https://via.placeholder.com/150?text=Product';
+    const productImage = selectedColorObj?.image || currentProduct.colors[0]?.image || '';
 
-    // Create cart item
     const cartItem = {
       id: `cart_${Date.now()}_${Math.random()}`,
       productId: currentProduct.id,
       productName: currentProduct.name,
       productImage,
-      size: selectedSize!,
+      size: selectedSize,
       color: selectedColor,
       quantity,
       designType: uploadedFile ? 'custom' as const : isBlankSelected ? 'blank' as const : 'gallery' as const,
@@ -86,38 +97,34 @@ function App() {
       designName,
       customDesignFile: uploadedFile || undefined,
       placements: selectedPlacementObjects,
-      basePrice,
+      basePrice: basePrice - teamDiscount,
       placementPrice,
-      itemTotal: basePrice + placementPrice,
+      itemTotal: subtotal,
+      // National Games extras stored in metadata
+      teamName: teamName || undefined,
+      playerName: playerName || undefined,
+      playerNumber: playerNumber || undefined,
+      orderType,
+      isRush: rush,
     };
 
     try {
-      addToCart(cartItem);
-      
-      // Open cart automatically
+      addToCart(cartItem as any);
       setShowCart(true);
-      
-      // Reset selections
       setSelectedDesign(null);
       setUploadedFile(null);
       setSelectedPlacements([]);
       setQuantity(1);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
+    } catch {
       setError('Failed to add to cart. Please try again.');
     }
   };
 
-  const hasDesign = selectedDesign !== null || uploadedFile !== null;
-  const isBlankSelected = selectedDesign === 'blank';
-  const canAddToCart = hasDesign && (isBlankSelected || selectedPlacements.length > 0);
-
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-navy-900">
       <Header onCartClick={() => setShowCart(true)} />
-      <ThemeToggle />
 
-      <div className="pt-20 md:pt-24">
+      <div className="pt-[72px]"> {/* offset for fixed header + IG strip */}
         <Hero />
         
         <ProductConfiguration
@@ -135,86 +142,140 @@ function App() {
           setUploadedFile={setUploadedFile}
           selectedPlacements={selectedPlacements}
           setSelectedPlacements={setSelectedPlacements}
+          teamName={teamName}
+          setTeamName={setTeamName}
+          playerName={playerName}
+          setPlayerName={setPlayerName}
+          playerNumber={playerNumber}
+          setPlayerNumber={setPlayerNumber}
+          orderType={orderType}
+          setOrderType={setOrderType}
         />
 
-        <section className="py-8 md:py-12 dark:bg-gray-900 transition-colors">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <AnimatePresence>
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-2 text-red-600 bg-red-50 dark:bg-red-900/30 px-6 py-4 rounded-xl mb-6 shadow-lg"
-                  >
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                    <span className="font-medium">{error}</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Price Breakdown */}
-              {hasDesign && (selectedDesign === 'blank' || selectedPlacements.length > 0) && (
+        {/* Order Summary + Add to Cart */}
+        <section className="py-12 bg-navy-800">
+          <div className="max-w-3xl mx-auto px-4">
+            <AnimatePresence>
+              {error && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6 shadow-lg"
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center gap-3 bg-rush/10 border border-rush/30 text-white px-5 py-4 rounded-xl mb-6"
                 >
-                  <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Current Item Summary</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-gray-700 dark:text-gray-300">
-                      <span>{currentProduct.name} ({quantity}x)</span>
-                      <span>${basePrice.toFixed(2)}</span>
-                    </div>
-                    {selectedDesign === 'blank' ? (
-                      <div className="flex justify-between text-gray-500 dark:text-gray-400 text-sm italic">
-                        <span>No design - blank apparel</span>
-                        <span>$0.00</span>
-                      </div>
-                    ) : (
-                      selectedPlacementObjects.map((placement) => (
-                        <div key={placement.key} className="flex justify-between text-gray-700 dark:text-gray-300">
-                          <span>{placement.label}</span>
-                          <span>+${placement.addOn.toFixed(2)}</span>
-                        </div>
-                      ))
-                    )}
-                    
-                    <div className="border-t-2 border-gray-300 dark:border-gray-600 pt-3 flex justify-between text-xl font-bold text-gray-900 dark:text-white">
-                      <span>Item Total</span>
-                      <span>${(basePrice + placementPrice).toFixed(2)}</span>
-                    </div>
-                  </div>
+                  <AlertCircle className="w-5 h-5 text-rush flex-shrink-0" />
+                  <span className="text-sm font-body">{error}</span>
                 </motion.div>
               )}
+            </AnimatePresence>
 
-              {/* Add to Cart Button */}
-              <motion.button
-                whileHover={{ scale: canAddToCart ? 1.02 : 1 }}
-                whileTap={{ scale: canAddToCart ? 0.98 : 1 }}
-                onClick={handleAddToCart}
-                disabled={!canAddToCart || isLoading}
-                className={`w-full flex items-center justify-center gap-3 px-8 py-6 rounded-2xl font-bold text-xl shadow-xl transition-all ${
-                  canAddToCart && !isLoading
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:shadow-2xl'
-                    : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                }`}
+            {/* Price Summary */}
+            {canAddToCart && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="card-surface p-6 mb-6"
               >
-                <ShoppingCart className="w-6 h-6" />
-                {isLoading ? 'Adding to Cart...' : 'Add to Cart'}
-              </motion.button>
+                <h3 className="font-display font-bold text-white uppercase tracking-wider text-sm mb-5">Order Summary</h3>
+                
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between text-gray-300">
+                    <span>{currentProduct.name} ×{quantity}</span>
+                    <span>${basePrice.toFixed(2)}</span>
+                  </div>
+                  {teamDiscount > 0 && (
+                    <div className="flex justify-between text-gold-500">
+                      <span>Team bulk discount (15%)</span>
+                      <span>−${teamDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {isBlankSelected ? (
+                    <div className="flex justify-between text-gray-500 italic text-xs">
+                      <span>No design — blank apparel</span>
+                      <span>$0.00</span>
+                    </div>
+                  ) : (
+                    selectedPlacementObjects.map(p => (
+                      <div key={p.key} className="flex justify-between text-gray-300">
+                        <span>{p.label}</span>
+                        <span>+${p.addOn.toFixed(2)}</span>
+                      </div>
+                    ))
+                  )}
+                  {teamName && <div className="flex justify-between text-gray-400 text-xs"><span>Team: {teamName}</span></div>}
+                  {playerName && <div className="flex justify-between text-gray-400 text-xs"><span>Player: {playerName} {playerNumber ? `#${playerNumber}` : ''}</span></div>}
+                  
+                  <div className="border-t border-white/5 pt-3 mt-3">
+                    <div className="flex justify-between text-gray-400 text-xs mb-1">
+                      <span>Shipping</span>
+                      <span>{shippingCost === 0 ? '✓ Free' : `$${shippingCost.toFixed(2)}`}</span>
+                    </div>
+                    <div className="flex justify-between text-white font-display font-black text-xl">
+                      <span>Total</span>
+                      <span>${totalPrice.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
 
-              {!hasDesign && (
-                <p className="text-center text-gray-600 dark:text-gray-400 mt-4 text-sm">
-                  Select a design or blank apparel to continue
-                </p>
-              )}
-              {hasDesign && !isBlankSelected && selectedPlacements.length === 0 && (
-                <p className="text-center text-blue-600 dark:text-cyan-400 mt-4 text-sm font-semibold">
-                  Choose a print placement to continue ❄️
-                </p>
-              )}
+                {/* Delivery estimate */}
+                <div className={`mt-5 p-4 rounded-xl border flex items-start gap-3 ${rush ? 'border-rush/30 bg-rush/5' : 'border-gold-500/20 bg-gold-500/5'}`}>
+                  <div className="flex-shrink-0 mt-0.5">
+                    {rush ? <Clock className="w-4 h-4 text-rush" /> : <Package className="w-4 h-4 text-gold-500" />}
+                  </div>
+                  <div>
+                    <p className={`font-display font-bold text-xs uppercase tracking-wider ${rush ? 'text-rush' : 'text-gold-500'}`}>
+                      {rush ? '⚠ Rush Order' : 'Estimated Delivery'}
+                    </p>
+                    <p className="text-white font-body text-sm mt-0.5">
+                      {rush
+                        ? `Rush orders are not guaranteed before your event. Estimated: ~${estimatedDelivery}`
+                        : `~${estimatedDelivery} (2 weeks from order confirmation)`}
+                    </p>
+                    {rush && <p className="text-gray-400 text-xs mt-1">Rush delivery not guaranteed. Order early for best results.</p>}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Add to Cart */}
+            <motion.button
+              whileHover={{ scale: canAddToCart ? 1.01 : 1 }}
+              whileTap={{ scale: canAddToCart ? 0.99 : 1 }}
+              onClick={handleAddToCart}
+              disabled={!canAddToCart || isLoading}
+              className={`w-full flex items-center justify-center gap-3 px-8 py-5 rounded-xl font-display font-black text-lg uppercase tracking-wider transition-all ${
+                canAddToCart && !isLoading
+                  ? 'btn-gold shadow-xl shadow-gold-500/20'
+                  : 'bg-white/5 text-gray-600 cursor-not-allowed border border-white/5'
+              }`}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {isLoading ? 'Adding...' : 'Add to Cart'}
+            </motion.button>
+
+            {!hasDesign && (
+              <p className="text-center text-gray-600 mt-4 text-sm font-body">
+                Select a design or blank apparel above to continue
+              </p>
+            )}
+            {hasDesign && !isBlankSelected && selectedPlacements.length === 0 && (
+              <p className="text-center text-gold-500 mt-4 text-sm font-display font-bold uppercase tracking-wide">
+                Choose a print placement to continue
+              </p>
+            )}
+
+            {/* Delivery policy reminder */}
+            <div className="mt-6 flex items-center justify-center gap-6 flex-wrap">
+              {[
+                { icon: CheckCircle, label: 'Official IG Partner' },
+                { icon: Package, label: '2-Wk Standard Delivery' },
+                { icon: CheckCircle, label: 'Secure Stripe Checkout' },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label} className="flex items-center gap-1.5 text-gray-600 text-xs">
+                  <Icon className="w-3.5 h-3.5 text-gold-500" />
+                  <span>{label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -228,16 +289,15 @@ function App() {
         selectedDesign={selectedDesign}
         uploadedFile={uploadedFile}
         quantity={quantity}
-        price={basePrice + placementPrice}
+        price={totalPrice}
         onCheckout={handleAddToCart}
         isLoading={isLoading}
         error={error}
+        orderType={orderType}
+        teamName={teamName}
       />
-      
-      <CartModal
-        isOpen={showCart}
-        onClose={() => setShowCart(false)}
-      />
+
+      <CartModal isOpen={showCart} onClose={() => setShowCart(false)} />
     </div>
   );
 }

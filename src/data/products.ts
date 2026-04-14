@@ -1,12 +1,25 @@
+// ============================================================
+// NATIONAL GAMES APPAREL PORTAL — FULL SPORT CATALOGUE
+// 16 sports + all-sport custom print basics
+//
+// IMAGE STRATEGY:
+//   ThreadStylez CDN  → real product shots (hoodies, tees, crews, pants)
+//   Pexels CDN        → sport-contextual action photos (free, no watermark)
+//
+// CUSTOM PRINT: every single product supports custom print —
+//   team name, player name, number, logo, colours.
+//   Noted explicitly in features[] for each item.
+// ============================================================
+
 export interface Product {
   id: string;
   name: string;
   price: number;
   originalPrice: number;
   sizes: string[];
-  colors: Array<{ 
-    id: string; 
-    name: string; 
+  colors: Array<{
+    id: string;
+    name: string;
     hex: string;
     image: string;
     backImage?: string;
@@ -14,262 +27,1269 @@ export interface Product {
   description: string;
   features: string[];
   thumbnail: string;
+  category: 'tshirt' | 'hoodie' | 'sweatshirt' | 'sweatpants' | 'jersey' | 'tracksuit' | 'hat' | 'shorts' | 'jacket' | 'sport-specific';
+  categoryLabel: string;
+  sports: string[];
+  teamOrderMin: number;
+  badge?: string;
+  customPrint: true; // ALL items support custom print
 }
 
+// ─── THREADSTYLEZ REAL PRODUCT IMAGES ─────────────────────────
+const TS = {
+  hoodie: {
+    black:   { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-TSPH.png',         backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Black-TSPH.png' },
+    white:   { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-White-TSPH.png',         backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-White-TSPH.png' },
+    heather: { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-Heather-TSPH.png', backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Black-Heather-TSPH.png' },
+    grey:    { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Grey-TSPH.png',          backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Grey-TSPH.png' },
+    red:     { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Red-TSPH.png',           backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Red-TSPH.png' },
+  },
+  tee: {
+    black: { image: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black.jpg', backImage: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black-Back.jpg' },
+    white: { image: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-White.jpg', backImage: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-White-Back.jpg' },
+  },
+  heavyTee: {
+    black:    { image: 'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-Side.jpg' },
+    white:    { image: 'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-White-Main.jpg' },
+    navy:     { image: 'https://threadstylez.com/wp-content/uploads/2023/11/NAvy-2-1.jpg' },
+    red:      { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Red-3-1.jpg' },
+    charcoal: { image: 'https://threadstylez.com/wp-content/uploads/2023/11/cHARCOAL-2-1.jpg' },
+    ash:      { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Ash-2-1.jpg' },
+    orange:   { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Orange-2-1.jpg' },
+    oxford:   { image: 'https://threadstylez.com/wp-content/uploads/2023/11/Oxford-2.jpg' },
+  },
+  crew: {
+    black:   { image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Black-.jpg' },
+    white:   { image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-White-.jpg' },
+    heather: { image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Heather-Black.jpg' },
+    grey:    { image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Grey-2.jpg' },
+  },
+  pants: {
+    black:   { image: 'https://threadstylez.com/wp-content/uploads/2023/12/Main-Front.png' },
+    white:   { image: 'https://threadstylez.com/wp-content/uploads/2023/12/WHITE.png' },
+    heather: { image: 'https://threadstylez.com/wp-content/uploads/2023/12/BH-Heather.png' },
+    grey:    { image: 'https://threadstylez.com/wp-content/uploads/2023/12/Heather-Grey.png' },
+    red:     { image: 'https://threadstylez.com/wp-content/uploads/2023/12/Red.png' },
+  },
+};
+
+// ─── SPORT-CONTEXTUAL PHOTOS (Pexels free CDN) ────────────────
+// These show the SPORT being played — contextually relevant apparel shots
+const P = {
+  // Core apparel on athletes in action
+  soccer:       'https://images.pexels.com/photos/46798/the-ball-stadion-football-the-pitch-46798.jpeg?auto=compress&cs=tinysrgb&w=600',
+  volleyball:   'https://images.pexels.com/photos/1263348/pexels-photo-1263348.jpeg?auto=compress&cs=tinysrgb&w=600',
+  flagfootball: 'https://images.pexels.com/photos/1618200/pexels-photo-1618200.jpeg?auto=compress&cs=tinysrgb&w=600',
+  cricket:      'https://images.pexels.com/photos/3718453/pexels-photo-3718453.jpeg?auto=compress&cs=tinysrgb&w=600',
+  softball:     'https://images.pexels.com/photos/1661950/pexels-photo-1661950.jpeg?auto=compress&cs=tinysrgb&w=600',
+  track:        'https://images.pexels.com/photos/618612/pexels-photo-618612.jpeg?auto=compress&cs=tinysrgb&w=600',
+  martialarts:  'https://images.pexels.com/photos/260447/pexels-photo-260447.jpeg?auto=compress&cs=tinysrgb&w=600',
+  tennis:       'https://images.pexels.com/photos/209977/pexels-photo-209977.jpeg?auto=compress&cs=tinysrgb&w=600',
+  tabletennis:  'https://images.pexels.com/photos/6832697/pexels-photo-6832697.jpeg?auto=compress&cs=tinysrgb&w=600',
+  archery:      'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=600',
+  armwrestling: 'https://images.pexels.com/photos/7480178/pexels-photo-7480178.jpeg?auto=compress&cs=tinysrgb&w=600',
+  fitness:      'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=600',
+  pickleball:   'https://images.pexels.com/photos/8224705/pexels-photo-8224705.jpeg?auto=compress&cs=tinysrgb&w=600',
+  run5k:        'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=600',
+  bikeride:     'https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=600',
+  badminton:    'https://images.pexels.com/photos/1103833/pexels-photo-1103833.jpeg?auto=compress&cs=tinysrgb&w=600',
+  frisbee:      'https://images.pexels.com/photos/2570139/pexels-photo-2570139.jpeg?auto=compress&cs=tinysrgb&w=600',
+  // Generic apparel category shots (sport-neutral)
+  jersey:       'https://images.pexels.com/photos/3621104/pexels-photo-3621104.jpeg?auto=compress&cs=tinysrgb&w=600',
+  cap:          'https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=600',
+  shorts:       'https://images.pexels.com/photos/3768892/pexels-photo-3768892.jpeg?auto=compress&cs=tinysrgb&w=600',
+  jacket:       'https://images.pexels.com/photos/3601094/pexels-photo-3601094.jpeg?auto=compress&cs=tinysrgb&w=600',
+  polo:         'https://images.pexels.com/photos/3622616/pexels-photo-3622616.jpeg?auto=compress&cs=tinysrgb&w=600',
+  singlet:      'https://images.pexels.com/photos/3622618/pexels-photo-3622618.jpeg?auto=compress&cs=tinysrgb&w=600',
+  cycling:      'https://images.pexels.com/photos/1619854/pexels-photo-1619854.jpeg?auto=compress&cs=tinysrgb&w=600',
+  rashguard:    'https://images.pexels.com/photos/3622590/pexels-photo-3622590.jpeg?auto=compress&cs=tinysrgb&w=600',
+};
+
+// ─── SHARED CUSTOM PRINT FEATURE LINE ─────────────────────────
+const CUSTOM_PRINT_FEATURES = [
+  '✦ Custom print: team name, player name & number on front/back',
+  '✦ Upload your team logo or crest — printed or embroidered',
+  '✦ Choose your primary & secondary team colours',
+  '✦ Individual athlete orders & team bulk orders (5+) both supported',
+];
+
+// ─── ALL SPORTS LIST ─────────────────────────────────────────
+export const ALL_SPORTS = [
+  'Soccer','Volleyball','Flag Football','Cricket','Softball',
+  'Track & Field','Martial Arts','Tennis','Table Tennis',
+  'Archery','Arm Wrestling','Fitness Course','Pickleball',
+  '5K Run for Sudan','Bike Ride','Badminton','Ultimate Frisbee',
+];
+
+const ALL_SPORTS_LIST = [...ALL_SPORTS];
+
 export const products: Product[] = [
+
+  // ════════════════════════════════════════════════════════════
+  // SECTION A — ALL-SPORT CUSTOM PRINT BASICS
+  // Available to every athlete across all 16 sports
+  // All support: screen print, sublimation, embroidery
+  // ════════════════════════════════════════════════════════════
+
   {
-    id: 'hoodie',
-    name: 'Premium Unisex Hooded Sweatshirt',
+    id: 'hoodie-custom',
+    name: 'Custom Team Pullover Hoodie',
+    category: 'hoodie',
+    categoryLabel: 'Hoodie',
+    sports: ALL_SPORTS_LIST,
     price: 55,
-    originalPrice: 69.99,
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
+    originalPrice: 70,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'All Sports',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
     colors: [
-      { 
-        id: 'black', 
-        name: 'Black', 
-        hex: '#000000',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-TSPH.png',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Black-TSPH.png'
-      },
-      { 
-        id: 'white', 
-        name: 'White', 
-        hex: '#FFFFFF',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-White-TSPH.png',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-White-TSPH.png'
-      },
-      { 
-        id: 'black-heather', 
-        name: 'Black Heather', 
-        hex: '#3d3d3d',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-Heather-TSPH.png',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Black-Heather-TSPH.png'
-      },
-      { 
-        id: 'grey', 
-        name: 'Heather Grey', 
-        hex: '#9CA3AF',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Grey-TSPH.png',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Grey-TSPH.png'
-      },
-      { 
-        id: 'red', 
-        name: 'Red', 
-        hex: '#DC2626',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Red-TSPH.png',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Red-TSPH.png'
-      },
+      { id:'black',   name:'Black',        hex:'#1a1a1a', image: TS.hoodie.black.image,   backImage: TS.hoodie.black.backImage   },
+      { id:'white',   name:'White',        hex:'#FFFFFF', image: TS.hoodie.white.image,   backImage: TS.hoodie.white.backImage   },
+      { id:'heather', name:'Blk Heather',  hex:'#3d3d3d', image: TS.hoodie.heather.image, backImage: TS.hoodie.heather.backImage },
+      { id:'grey',    name:'Heather Grey', hex:'#9CA3AF', image: TS.hoodie.grey.image,    backImage: TS.hoodie.grey.backImage    },
+      { id:'red',     name:'Red',          hex:'#DC2626', image: TS.hoodie.red.image,     backImage: TS.hoodie.red.backImage     },
     ],
-    description: 'Premium cotton-poly blend hoodie with advanced reactive dye for lasting color.',
+    description: 'Premium ThreadStylez pullover hoodie — available to every athlete at the National Games. Your team name, crest, and athlete number printed or embroidered. Warm-up, travel, and sideline essential.',
     features: [
-      '8.5 oz./yd² (US) 14.1 oz./L yd (CA) 65% Premium Cotton & 35% Polyester',
-      'Designed in USA with TS First Next-Generation Fleece',
-      'Advanced Reactive-Dyed for Longer Lasting Color',
-      '3-Panel Hood with Drawcord',
-      'Cuffed Sleeves and Hem',
-      'Pouch Pocket',
-      'Easy Tear-Away Label',
-      '1 Piece Single Packed in Polybag'
+      '8.5 oz · 65% premium cotton 35% polyester fleece',
+      'Advanced reactive-dyed — lasting colour wash after wash',
+      '3-panel hood with drawcord · kangaroo pocket · cuffed sleeves',
+      'Front chest + full back + sleeve print placements available',
+      ...CUSTOM_PRINT_FEATURES,
     ],
-    thumbnail: 'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-TSPH.png',
+    thumbnail: TS.hoodie.black.image,
   },
+
   {
-    id: 'sweatshirt',
-    name: 'Premium Unisex Crewneck Sweatshirt',
-    price: 35,
-    originalPrice: 49.99,
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
-    colors: [
-      { 
-        id: 'black', 
-        name: 'Black', 
-        hex: '#000000',
-        image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Black-.jpg'
-      },
-      { 
-        id: 'white', 
-        name: 'White', 
-        hex: '#FFFFFF',
-        image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-White-.jpg'
-      },
-      { 
-        id: 'black-heather', 
-        name: 'Black Heather', 
-        hex: '#3d3d3d',
-        image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Heather-Black.jpg'
-      },
-      { 
-        id: 'heather-gray', 
-        name: 'Heather Gray', 
-        hex: '#9CA3AF',
-        image: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Grey-2.jpg'
-      },
-    ],
-    description: 'Classic crewneck sweatshirt with premium fleece and cuffed hem.',
-    features: [
-      '8.5 oz./yd² (US) 14.1 oz./L yd (CA) 65% Premium Ring-spun Cotton & 35% Polyester',
-      'Designed in USA with TS Next-Generation Fleece',
-      'Advanced Reactive-Dyed for Longer Lasting Color',
-      'New Free Cuffed hem',
-      'Easy Tear-Away Label',
-      'Wholesale Sweatshirts',
-      'Single Piece Pack in a Polybag'
-    ],
-    thumbnail: 'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Black-.jpg',
-  },
-  {
-    id: 'sweatpants',
-    name: 'Premium Unisex Sweatpants',
-    price: 40,
+    id: 'crewneck-custom',
+    name: 'Custom Team Crewneck Sweatshirt',
+    category: 'sweatshirt',
+    categoryLabel: 'Crewneck',
+    sports: ALL_SPORTS_LIST,
+    price: 42,
     originalPrice: 55,
-    sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'All Sports',
+    sizes: ['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
     colors: [
-      { 
-        id: 'black', 
-        name: 'Black', 
-        hex: '#000000',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/12/Main-Front.png'
-      },
-      { 
-        id: 'white', 
-        name: 'White', 
-        hex: '#FFFFFF',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/12/WHITE.png'
-      },
-      { 
-        id: 'black-heather', 
-        name: 'Black Heather', 
-        hex: '#3d3d3d',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/12/BH-Heather.png'
-      },
-      { 
-        id: 'heather-gray', 
-        name: 'Heather Gray', 
-        hex: '#9CA3AF',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/12/Heather-Grey.png'
-      },
-      { 
-        id: 'red', 
-        name: 'Red', 
-        hex: '#DC2626',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/12/Red.png'
-      },
+      { id:'black',   name:'Black',        hex:'#1a1a1a', image: TS.crew.black.image   },
+      { id:'white',   name:'White',        hex:'#FFFFFF', image: TS.crew.white.image   },
+      { id:'heather', name:'Blk Heather',  hex:'#3d3d3d', image: TS.crew.heather.image },
+      { id:'grey',    name:'Heather Grey', hex:'#9CA3AF', image: TS.crew.grey.image    },
     ],
-    description: 'Premium fleece sweatpants with elastic waistband and side pockets.',
+    description: 'ThreadStylez crewneck — custom print for every sport team. Sizes up to 5XL so every athlete is covered. Pairs with sweatpants for a full matching warm-up set.',
     features: [
-      '8.5 oz./yd² (US) 14.1 oz./L yd (CA) 65% Premium Ring-spun Cotton & 35% Polyester',
-      'Designed in USA with TS Next-Generation Fleece',
-      'Advanced Reactive-Dyed for Longer Lasting Color',
-      'Elastic waistband with drawcord',
-      'Side and Back Right Pockets',
-      'New Free Cuffed hem',
-      'Easy Tear-Away Label'
+      '8.5 oz · 65% ring-spun cotton 35% polyester · ultra-soft fleece',
+      'Available XS–5XL — full team inclusivity',
+      'Cuffed hem · tear-away label',
+      'Pairs with Custom Team Sweatpants for full matching set',
+      ...CUSTOM_PRINT_FEATURES,
     ],
-    thumbnail: 'https://threadstylez.com/wp-content/uploads/2023/12/Main-Front.png',
+    thumbnail: TS.crew.black.image,
+  },
+
+  {
+    id: 'tshirt-custom',
+    name: 'Custom Essential Performance Tee',
+    category: 'tshirt',
+    categoryLabel: 'T-Shirt',
+    sports: ALL_SPORTS_LIST,
+    price: 18,
+    originalPrice: 25,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'All Sports',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black', name:'Black', hex:'#1a1a1a', image: TS.tee.black.image, backImage: TS.tee.black.backImage },
+      { id:'white', name:'White', hex:'#FFFFFF', image: TS.tee.white.image, backImage: TS.tee.white.backImage },
+    ],
+    description: 'ThreadStylez lightweight performance tee for training and event days. Front, back, and sleeve print. The most versatile item in the portal — every sport, every athlete.',
+    features: [
+      '5 oz/yd² · 55% cotton 45% polyester · moisture-wicking',
+      'Double-needle stitched collar, sleeves, and hem',
+      'Front + back + sleeve print placements',
+      'Heat label — no itch, no discomfort',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: TS.tee.black.image,
+  },
+
+  {
+    id: 'tshirt-heavy-custom',
+    name: 'Custom Heavy Cotton Team Tee',
+    category: 'tshirt',
+    categoryLabel: 'T-Shirt',
+    sports: ALL_SPORTS_LIST,
+    price: 22,
+    originalPrice: 30,
+    teamOrderMin: 5,
+    customPrint: true,
+    sizes: ['S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black',    name:'Black',     hex:'#1a1a1a', image: TS.heavyTee.black.image    },
+      { id:'white',    name:'White',     hex:'#FFFFFF', image: TS.heavyTee.white.image    },
+      { id:'navy',     name:'Navy',      hex:'#1e3a8a', image: TS.heavyTee.navy.image     },
+      { id:'red',      name:'Red',       hex:'#DC2626', image: TS.heavyTee.red.image      },
+      { id:'charcoal', name:'Charcoal',  hex:'#3d3d3d', image: TS.heavyTee.charcoal.image },
+      { id:'ash-grey', name:'Ash Grey',  hex:'#D1D5DB', image: TS.heavyTee.ash.image      },
+      { id:'orange',   name:'Orange',    hex:'#ea580c', image: TS.heavyTee.orange.image   },
+      { id:'oxford',   name:'Oxford',    hex:'#6B7280', image: TS.heavyTee.oxford.image   },
+    ],
+    description: 'Heavier 6 oz tee in 8 colours — screen-print or embroidery for team name and crest. Great for coaches, officials, event staff, and supporter wear across all sports.',
+    features: [
+      '6 oz/yd² · 65% cotton 35% polyester · durable & structured',
+      '8 colour options to match any team palette',
+      'Double-needle lay-flat collar · tear-away label',
+      'Ideal for coaches, officials, volunteers & supporters',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: TS.heavyTee.black.image,
+  },
+
+  {
+    id: 'sweatpants-custom',
+    name: 'Custom Team Warm-Up Sweatpants',
+    category: 'sweatpants',
+    categoryLabel: 'Sweatpants',
+    sports: ALL_SPORTS_LIST,
+    price: 45,
+    originalPrice: 58,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'Pair as Set',
+    sizes: ['S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black',   name:'Black',        hex:'#1a1a1a', image: TS.pants.black.image   },
+      { id:'white',   name:'White',        hex:'#FFFFFF', image: TS.pants.white.image   },
+      { id:'heather', name:'Blk Heather',  hex:'#3d3d3d', image: TS.pants.heather.image },
+      { id:'grey',    name:'Heather Grey', hex:'#9CA3AF', image: TS.pants.grey.image    },
+      { id:'red',     name:'Red',          hex:'#DC2626', image: TS.pants.red.image     },
+    ],
+    description: 'ThreadStylez sweatpants with custom team name printed on left leg. Pair with the hoodie or crewneck for a complete matching warm-up tracksuit. Available across all sports.',
+    features: [
+      '8.5 oz · 65% ring-spun cotton 35% polyester',
+      'Elastic waistband with drawcord · side + back-right pockets · cuffed hem',
+      'Team name on left leg · logo on back waistband available',
+      'Pair with Custom Hoodie or Crewneck for full matching set',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: TS.pants.black.image,
+  },
+
+  {
+    id: 'snapback-custom',
+    name: 'Custom Team Snapback Cap',
+    category: 'hat',
+    categoryLabel: 'Cap',
+    sports: ALL_SPORTS_LIST,
+    price: 32,
+    originalPrice: 42,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'All Sports',
+    sizes: ['One Size'],
+    colors: [
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.cap },
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.cap },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.cap },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.cap },
+      { id:'grey',  name:'Grey',  hex:'#6B7280', image: P.cap },
+    ],
+    description: '6-panel structured snapback — embroidered team logo on front panel, sport or event name on side. For athletes, coaches, officials, and supporters across all 16 sports.',
+    features: [
+      '6-panel structured polyester · flat brim · snap closure',
+      'Embroidered team logo on front panel',
+      'Sport or event name on side panel (optional)',
+      'One size fits most',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cap,
+  },
+
+  // ════════════════════════════════════════════════════════════
+  // SECTION B — SPORT-SPECIFIC KITS
+  // Each has real sport-contextual imagery + custom print
+  // ════════════════════════════════════════════════════════════
+
+  // ── SOCCER ──────────────────────────────────────────────────
+  {
+    id: 'soccer-match-kit',
+    name: 'Soccer Match Kit — Jersey + Shorts',
+    category: 'sport-specific',
+    categoryLabel: 'Soccer Kit',
+    sports: ['Soccer'],
+    price: 75,
+    originalPrice: 99,
+    teamOrderMin: 10,
+    customPrint: true,
+    badge: 'Full Kit',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy-white',  name:'Navy / White',  hex:'#0A2342', image: P.soccer },
+      { id:'red-white',   name:'Red / White',   hex:'#DC2626', image: P.soccer },
+      { id:'green-white', name:'Green / White', hex:'#166534', image: P.soccer },
+      { id:'black-gold',  name:'Black / Gold',  hex:'#1a1a1a', image: P.soccer },
+      { id:'white-navy',  name:'White / Navy',  hex:'#FFFFFF', image: P.soccer },
+    ],
+    description: 'Full sublimation soccer match kit — jersey and shorts as a set. Player name, number, and team crest included. Meets national competition standards.',
+    features: [
+      'Full sublimation jersey + matching shorts',
+      'Moisture-wicking performance mesh · vented side panels',
+      'Elastic-waist shorts with drawcord',
+      'Team order minimum: 10 players',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.soccer,
   },
   {
-    id: 'tshirt-essential',
-    name: 'Premium Essential T-Shirt',
-    price: 8,
-    originalPrice: 12.99,
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
+    id: 'soccer-gk-jersey',
+    name: 'Soccer Goalkeeper Jersey',
+    category: 'sport-specific',
+    categoryLabel: 'Goalkeeper Jersey',
+    sports: ['Soccer'],
+    price: 58,
+    originalPrice: 78,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
     colors: [
-      { 
-        id: 'black', 
-        name: 'Black', 
-        hex: '#000000',
-        image: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black.jpg',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black-Back.jpg'
-      },
-      { 
-        id: 'white', 
-        name: 'White', 
-        hex: '#FFFFFF',
-        image: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-White.jpg',
-        backImage: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-White-Back.jpg'
-      },
+      { id:'yellow', name:'Safety Yellow', hex:'#EAB308', image: P.soccer },
+      { id:'orange', name:'Orange',        hex:'#ea580c', image: P.soccer },
+      { id:'green',  name:'Keeper Green',  hex:'#166534', image: P.soccer },
+      { id:'purple', name:'Purple',        hex:'#7C3AED', image: P.soccer },
     ],
-    description: 'Lightweight essential tee with cotton-poly blend for everyday comfort.',
+    description: 'High-visibility goalkeeper jersey — padded elbows, loose fit. Sublimated with name and number. Deliberately contrasts the outfield kit colour.',
     features: [
-      '5 oz./yd², pre-shrunk 55% cotton 45% polyester',
-      'Double-needle stitched lay flat collar, sleeves, and bottom hem',
-      'Heat Label',
-      'Single Pack in Polybag'
+      'Padded elbow zones · loose athletic fit',
+      'High-vis colourways to contrast outfield kit',
+      'Full sublimation — name & number included',
+      'Individual orders welcome — no team minimum',
+      ...CUSTOM_PRINT_FEATURES,
     ],
-    thumbnail: 'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black.jpg',
+    thumbnail: P.soccer,
+  },
+
+  // ── VOLLEYBALL ───────────────────────────────────────────────
+  {
+    id: 'volleyball-kit',
+    name: 'Volleyball Jersey + Shorts Set',
+    category: 'sport-specific',
+    categoryLabel: 'Volleyball Kit',
+    sports: ['Volleyball'],
+    price: 68,
+    originalPrice: 90,
+    teamOrderMin: 6,
+    customPrint: true,
+    badge: 'Full Kit',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy-gold',  name:'Navy / Gold',  hex:'#0A2342', image: P.volleyball },
+      { id:'red-white',  name:'Red / White',  hex:'#DC2626', image: P.volleyball },
+      { id:'black-gold', name:'Black / Gold', hex:'#1a1a1a', image: P.volleyball },
+      { id:'white-red',  name:'White / Red',  hex:'#FFFFFF', image: P.volleyball },
+    ],
+    description: 'Sublimated volleyball jersey and fitted shorts. Libero contrast kit available — note in order comments. Player name, number, and team crest included.',
+    features: [
+      'Full sublimation jersey + fitted shorts',
+      'Stretch-fit performance fabric · body-mapped panels',
+      'Libero contrast colourway available on request',
+      'Team minimum: 6 players',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.volleyball,
   },
   {
-    id: 'tshirt-heavy',
-    name: 'Premium Adult Heavy T-Shirt',
-    price: 15.99,
-    originalPrice: 22.99,
-    sizes: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
+    id: 'volleyball-knee-pads',
+    name: 'Volleyball Knee Pad Sleeves',
+    category: 'sport-specific',
+    categoryLabel: 'Knee Pads',
+    sports: ['Volleyball'],
+    price: 22,
+    originalPrice: 30,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['S/M','L/XL'],
     colors: [
-      { 
-        id: 'black', 
-        name: 'Black', 
-        hex: '#000000',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-Side.jpg'
-      },
-      { 
-        id: 'white', 
-        name: 'White', 
-        hex: '#FFFFFF',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-White-Main.jpg'
-      },
-      { 
-        id: 'ash-grey', 
-        name: 'Ash Grey', 
-        hex: '#D1D5DB',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Ash-2-1.jpg'
-      },
-      { 
-        id: 'charcoal', 
-        name: 'Charcoal', 
-        hex: '#3d3d3d',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/cHARCOAL-2-1.jpg'
-      },
-      { 
-        id: 'dark-chocolate', 
-        name: 'Dark Chocolate', 
-        hex: '#4B2E20',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Dark-Choco-2.jpg'
-      },
-      { 
-        id: 'navy', 
-        name: 'Navy', 
-        hex: '#1e3a8a',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/NAvy-2-1.jpg'
-      },
-      { 
-        id: 'orange', 
-        name: 'Orange', 
-        hex: '#ea580c',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Orange-2-1.jpg'
-      },
-      { 
-        id: 'oxford', 
-        name: 'Oxford', 
-        hex: '#6B7280',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Oxford-2.jpg'
-      },
-      { 
-        id: 'red', 
-        name: 'Red', 
-        hex: '#DC2626',
-        image: 'https://threadstylez.com/wp-content/uploads/2023/11/Red-3-1.jpg'
-      },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.volleyball },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.volleyball },
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.volleyball },
     ],
-    description: 'Heavy-weight premium t-shirt with superior durability and comfort.',
+    description: 'Compression knee-pad sleeves with gel padding — embroidered team logo on outer panel. Individual or team orders.',
     features: [
-      '6 oz./yd², pre-shrunk 65% premium cotton 35% polyester',
-      'Double-needle stitched lay flat collar, sleeves, and bottom hem',
-      'Easy Tear-Away T-Shirt',
-      'Single Piece Pack in a Polybag'
+      'Compression fit · 4-way stretch · gel-pad knee protection',
+      'Embroidered team logo on outer panel',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
     ],
-    thumbnail: 'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-Side.jpg',
+    thumbnail: P.volleyball,
+  },
+
+  // ── FLAG FOOTBALL ────────────────────────────────────────────
+  {
+    id: 'flag-football-jersey',
+    name: 'Flag Football Jersey',
+    category: 'sport-specific',
+    categoryLabel: 'Flag Football Jersey',
+    sports: ['Flag Football'],
+    price: 52,
+    originalPrice: 70,
+    teamOrderMin: 7,
+    customPrint: true,
+    badge: 'Flag Football',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy-gold',   name:'Navy / Gold',   hex:'#0A2342', image: P.flagfootball },
+      { id:'red-white',   name:'Red / White',   hex:'#DC2626', image: P.flagfootball },
+      { id:'black-white', name:'Black / White', hex:'#1a1a1a', image: P.flagfootball },
+      { id:'green-gold',  name:'Green / Gold',  hex:'#166534', image: P.flagfootball },
+    ],
+    description: 'Loose-fit flag football jersey — number on front and back, name on back. Reinforced flag-belt side loops. Full sublimation team colours.',
+    features: [
+      'Loose athletic fit · full range of motion',
+      'Number on front & back · name on back',
+      'Reinforced flag-belt side loops',
+      'Team minimum: 7 players',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.flagfootball,
+  },
+  {
+    id: 'flag-football-shorts',
+    name: 'Flag Football Shorts + Flag Belt',
+    category: 'shorts',
+    categoryLabel: 'FF Shorts & Belt',
+    sports: ['Flag Football'],
+    price: 38,
+    originalPrice: 50,
+    teamOrderMin: 7,
+    customPrint: true,
+    badge: 'Pair with Jersey',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.flagfootball },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.flagfootball },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.flagfootball },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.flagfootball },
+    ],
+    description: 'Matching flag football shorts with integrated flag-belt clip loops. Pair with the jersey for the complete kit.',
+    features: [
+      'Elastic waist with drawcord · integrated flag-belt clip loops',
+      'Matching team colour',
+      'Pair with Flag Football Jersey for full kit',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.flagfootball,
+  },
+
+  // ── CRICKET ──────────────────────────────────────────────────
+  {
+    id: 'cricket-whites',
+    name: 'Cricket Playing Whites — Shirt + Trousers',
+    category: 'sport-specific',
+    categoryLabel: 'Cricket Whites',
+    sports: ['Cricket'],
+    price: 85,
+    originalPrice: 110,
+    teamOrderMin: 11,
+    customPrint: true,
+    badge: 'Full Kit',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.cricket },
+    ],
+    description: 'Traditional cricket playing whites — collared long-sleeve shirt and trousers. Team crest and name embroidered on chest. Competition grade.',
+    features: [
+      'Collared long-sleeve cricket shirt + matching white trousers',
+      'Moisture-wicking poly-cotton · competition grade',
+      'Team minimum: 11 players (full team)',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cricket,
+  },
+  {
+    id: 'cricket-training-tee',
+    name: 'Cricket Training & Fielding Tee',
+    category: 'tshirt',
+    categoryLabel: 'Cricket Tee',
+    sports: ['Cricket'],
+    price: 28,
+    originalPrice: 38,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'Cricket',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#1e3a8a', image: P.cricket },
+      { id:'green', name:'Green', hex:'#166534', image: P.cricket },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.cricket },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.cricket },
+    ],
+    description: 'Sublimated cricket training tee — team name, crest, and player number. Great for warm-up, fielding practice, and T20 formats.',
+    features: [
+      'Full sublimation — team colours · moisture-wicking',
+      'Suitable for T20 & training formats',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cricket,
+  },
+  {
+    id: 'cricket-cap',
+    name: 'Cricket Cap — Traditional',
+    category: 'hat',
+    categoryLabel: 'Cricket Cap',
+    sports: ['Cricket'],
+    price: 35,
+    originalPrice: 48,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['S/M','L/XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.cricket },
+      { id:'navy',  name:'Navy',  hex:'#1e3a8a', image: P.cricket },
+      { id:'green', name:'Green', hex:'#166534', image: P.cricket },
+    ],
+    description: 'Traditional 6-panel cricket cap with embroidered team crest. Structured peak. Individual orders welcome.',
+    features: [
+      'Structured peak · embroidered team crest',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cricket,
+  },
+
+  // ── SOFTBALL ─────────────────────────────────────────────────
+  {
+    id: 'softball-jersey',
+    name: 'Softball Button-Up Jersey',
+    category: 'sport-specific',
+    categoryLabel: 'Softball Jersey',
+    sports: ['Softball'],
+    price: 55,
+    originalPrice: 74,
+    teamOrderMin: 9,
+    customPrint: true,
+    badge: 'Softball',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white-navy', name:'White / Navy',  hex:'#FFFFFF', image: P.softball },
+      { id:'white-red',  name:'White / Red',   hex:'#FFFFFF', image: P.softball },
+      { id:'grey-navy',  name:'Grey / Navy',   hex:'#9CA3AF', image: P.softball },
+      { id:'navy-gold',  name:'Navy / Gold',   hex:'#0A2342', image: P.softball },
+    ],
+    description: 'Classic full-button softball jersey — name on back, number on front and back. Sublimated team colours. Competition grade.',
+    features: [
+      'Full-button sublimated jersey · relaxed athletic fit',
+      'Name on back · number front & back · side vents',
+      'Team minimum: 9 players',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.softball,
+  },
+  {
+    id: 'softball-pants',
+    name: 'Softball Pants + Belt',
+    category: 'sport-specific',
+    categoryLabel: 'Softball Pants',
+    sports: ['Softball'],
+    price: 42,
+    originalPrice: 56,
+    teamOrderMin: 9,
+    customPrint: true,
+    badge: 'Pair with Jersey',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.softball },
+      { id:'grey',  name:'Grey',  hex:'#9CA3AF', image: P.softball },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.softball },
+    ],
+    description: 'Full-length softball pants with elastic waist, belt loops, and reinforced knees. Belt included. Pairs with softball jersey.',
+    features: [
+      'Elastic waist + belt loops · belt included',
+      'Reinforced knee and seat · open or tapered bottom',
+      'Pair with Softball Jersey for full kit',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.softball,
+  },
+  {
+    id: 'softball-cap',
+    name: 'Softball Team Cap',
+    category: 'hat',
+    categoryLabel: 'Softball Cap',
+    sports: ['Softball'],
+    price: 28,
+    originalPrice: 38,
+    teamOrderMin: 9,
+    customPrint: true,
+    badge: 'Softball',
+    sizes: ['One Size'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#1e3a8a', image: P.cap },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.cap },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.cap },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.cap },
+    ],
+    description: 'Structured softball cap — embroidered team logo on front, player number on side panel.',
+    features: [
+      '6-panel structured cap · adjustable strap',
+      'Embroidered team logo · player number on side panel',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cap,
+  },
+
+  // ── TRACK & FIELD ─────────────────────────────────────────────
+  {
+    id: 'track-singlet',
+    name: 'Athletics Sprint Singlet',
+    category: 'sport-specific',
+    categoryLabel: 'Singlet',
+    sports: ['Track & Field'],
+    price: 38,
+    originalPrice: 52,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'Track & Field',
+    sizes: ['XS','S','M','L','XL','2XL'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.singlet },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.singlet },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.singlet },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.singlet },
+      { id:'green', name:'Green', hex:'#166534', image: P.singlet },
+    ],
+    description: 'Ultra-lightweight racerback singlet for sprints, middle-distance, and field events. Full sublimation for national team colours.',
+    features: [
+      '100% polyester — featherlight · racerback cut',
+      'Body-mapped mesh ventilation panels',
+      'IAAF-compliant competition singlet',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.singlet,
+  },
+  {
+    id: 'track-shorts',
+    name: 'Track & Field Running Shorts',
+    category: 'shorts',
+    categoryLabel: 'Running Shorts',
+    sports: ['Track & Field','5K Run for Sudan'],
+    price: 32,
+    originalPrice: 44,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'Track & Field',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.shorts },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.shorts },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.shorts },
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.shorts },
+    ],
+    description: '4" inseam split running shorts — side vents for full stride. Sublimated team colours. Built-in compression liner optional.',
+    features: [
+      '4" inseam · split-side design · built-in liner (optional)',
+      'Elastic waist with internal drawcord',
+      'Pairs with Sprint Singlet for full kit',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.shorts,
+  },
+  {
+    id: 'track-warmup-jacket',
+    name: 'Warm-Up Jacket',
+    category: 'jacket',
+    categoryLabel: 'Warm-Up Jacket',
+    sports: ['Track & Field','Soccer','Volleyball','Badminton','Ultimate Frisbee','Softball','Cricket'],
+    price: 65,
+    originalPrice: 85,
+    teamOrderMin: 5,
+    customPrint: true,
+    badge: 'Multi-Sport',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.jacket },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.jacket },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.jacket },
+      { id:'royal', name:'Royal', hex:'#1D4ED8', image: P.jacket },
+    ],
+    description: 'Full-zip warm-up jacket — team name on chest, athlete name on back. Pairs with sweatpants for a full matching tracksuit set.',
+    features: [
+      'Full-zip performance polyester · thumb-hole cuffs',
+      'Two side zip pockets',
+      'Pairs with Custom Sweatpants for full matching tracksuit',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.jacket,
+  },
+
+  // ── MARTIAL ARTS ─────────────────────────────────────────────
+  {
+    id: 'martial-arts-rashguard',
+    name: 'Martial Arts Compression Rashguard',
+    category: 'sport-specific',
+    categoryLabel: 'Rashguard',
+    sports: ['Martial Arts'],
+    price: 45,
+    originalPrice: 60,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black',      name:'Black',        hex:'#1a1a1a', image: P.rashguard },
+      { id:'navy',       name:'Navy',         hex:'#0A2342', image: P.rashguard },
+      { id:'red-black',  name:'Red / Black',  hex:'#DC2626', image: P.rashguard },
+      { id:'white-navy', name:'White / Navy', hex:'#FFFFFF', image: P.rashguard },
+    ],
+    description: 'Long or short sleeve compression rashguard for BJJ, MMA, judo, karate, and taekwondo. Club name and logo sublimated.',
+    features: [
+      '4-way stretch compression · flatlock stitching — no mat friction',
+      'Long or short sleeve (specify in notes)',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.rashguard,
+  },
+  {
+    id: 'martial-arts-shorts',
+    name: 'MMA / Grappling Fight Shorts',
+    category: 'shorts',
+    categoryLabel: 'Fight Shorts',
+    sports: ['Martial Arts'],
+    price: 38,
+    originalPrice: 52,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black',     name:'Black',        hex:'#1a1a1a', image: P.martialarts },
+      { id:'navy-gold', name:'Navy / Gold',  hex:'#0A2342', image: P.martialarts },
+      { id:'red-black', name:'Red / Black',  hex:'#DC2626', image: P.martialarts },
+    ],
+    description: 'Sublimated MMA/grappling shorts with flex panel. Hook-and-loop + drawcord waist. No pockets — competition legal.',
+    features: [
+      'Flex inset panel · hook-and-loop + drawcord waist',
+      'No pockets — competition legal',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.martialarts,
+  },
+
+  // ── TENNIS ───────────────────────────────────────────────────
+  {
+    id: 'tennis-polo',
+    name: 'Tennis Performance Polo',
+    category: 'sport-specific',
+    categoryLabel: 'Tennis Polo',
+    sports: ['Tennis','Table Tennis','Pickleball'],
+    price: 48,
+    originalPrice: 64,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white',      name:'White',        hex:'#FFFFFF', image: P.polo },
+      { id:'navy-white', name:'Navy / White', hex:'#0A2342', image: P.polo },
+      { id:'red-white',  name:'Red / White',  hex:'#DC2626', image: P.polo },
+      { id:'black',      name:'Black',        hex:'#1a1a1a', image: P.polo },
+    ],
+    description: 'Court-ready performance polo — sublimated with team or player name. For Tennis, Table Tennis, and Pickleball. Individual orders welcome.',
+    features: [
+      'Moisture-wicking piqué-style fabric · 3-button placket collar',
+      'Curved hem for on-court movement',
+      'Suits Tennis, Table Tennis & Pickleball',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.polo,
+  },
+  {
+    id: 'tennis-shorts-skort',
+    name: 'Court Shorts / Skort',
+    category: 'shorts',
+    categoryLabel: 'Court Shorts',
+    sports: ['Tennis','Table Tennis','Pickleball','Badminton'],
+    price: 32,
+    originalPrice: 44,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.shorts },
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.shorts },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.shorts },
+    ],
+    description: 'Stretch court shorts or skort — specify style in order notes. Deep pockets, elastic waist. Suits Tennis, Table Tennis, Pickleball, and Badminton.',
+    features: [
+      '4-way stretch · deep pockets · elastic waist',
+      'Shorts or skort (specify in order notes)',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.shorts,
+  },
+
+  // ── TABLE TENNIS ─────────────────────────────────────────────
+  {
+    id: 'tabletennis-shirt',
+    name: 'Table Tennis Performance Shirt',
+    category: 'sport-specific',
+    categoryLabel: 'Table Tennis Shirt',
+    sports: ['Table Tennis'],
+    price: 38,
+    originalPrice: 52,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy-white',  name:'Navy / White',  hex:'#0A2342', image: P.tabletennis },
+      { id:'red-white',   name:'Red / White',   hex:'#DC2626', image: P.tabletennis },
+      { id:'black-gold',  name:'Black / Gold',  hex:'#1a1a1a', image: P.tabletennis },
+      { id:'white-navy',  name:'White / Navy',  hex:'#FFFFFF', image: P.tabletennis },
+    ],
+    description: 'Anti-static loose-weave shirt — fast-drying, free arm movement. Name and number sublimated on back. Individual orders welcome.',
+    features: [
+      'Anti-static loose-weave fabric · extended back hem',
+      'Full sublimation — name & number on back',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.tabletennis,
+  },
+
+  // ── ARCHERY ──────────────────────────────────────────────────
+  {
+    id: 'archery-shirt',
+    name: 'Archery Competition Shirt',
+    category: 'sport-specific',
+    categoryLabel: 'Archery Shirt',
+    sports: ['Archery'],
+    price: 42,
+    originalPrice: 56,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy',  name:'Navy',         hex:'#0A2342', image: P.archery },
+      { id:'green', name:'Forest Green', hex:'#166534', image: P.archery },
+      { id:'black', name:'Black',        hex:'#1a1a1a', image: P.archery },
+      { id:'white', name:'White',        hex:'#FFFFFF', image: P.archery },
+    ],
+    description: 'Fitted archery shirt with draw-side seamless shoulder — no string interference. Team crest and name sublimated.',
+    features: [
+      'Draw-side seamless shoulder — prevents bow string interference',
+      'Slim athletic fit · individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.archery,
+  },
+  {
+    id: 'archery-jacket',
+    name: 'Archery Range Jacket',
+    category: 'jacket',
+    categoryLabel: 'Archery Jacket',
+    sports: ['Archery'],
+    price: 62,
+    originalPrice: 82,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.archery },
+      { id:'green', name:'Green', hex:'#166534', image: P.archery },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.archery },
+    ],
+    description: 'Lightweight windproof jacket for outdoor archery ranges. Draw-side arm guard compatible. Team logo embroidered on chest.',
+    features: [
+      'Windproof · draw-side sleeve (arm-guard compatible)',
+      'Team logo embroidered on chest · two zip pockets',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.archery,
+  },
+
+  // ── ARM WRESTLING ────────────────────────────────────────────
+  {
+    id: 'armwrestling-singlet',
+    name: 'Arm Wrestling Competition Singlet',
+    category: 'sport-specific',
+    categoryLabel: 'Competition Singlet',
+    sports: ['Arm Wrestling'],
+    price: 42,
+    originalPrice: 58,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL','4XL'],
+    colors: [
+      { id:'navy',       name:'Navy',       hex:'#0A2342', image: P.armwrestling },
+      { id:'red',        name:'Red',        hex:'#DC2626', image: P.armwrestling },
+      { id:'black',      name:'Black',      hex:'#1a1a1a', image: P.armwrestling },
+      { id:'gold-black', name:'Gold/Black', hex:'#C8A951', image: P.armwrestling },
+    ],
+    description: 'Competition singlet — snug torso fit, wide-cut armholes for full shoulder mobility. Available up to 4XL. Individual orders welcome.',
+    features: [
+      'Wide-cut armholes · snug torso fit · up to 4XL',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.armwrestling,
+  },
+
+  // ── FITNESS COURSE ───────────────────────────────────────────
+  {
+    id: 'fitness-compression',
+    name: 'Fitness Compression Shirt',
+    category: 'sport-specific',
+    categoryLabel: 'Compression Shirt',
+    sports: ['Fitness Course'],
+    price: 42,
+    originalPrice: 56,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black',      name:'Black',        hex:'#1a1a1a', image: P.fitness },
+      { id:'navy',       name:'Navy',         hex:'#0A2342', image: P.fitness },
+      { id:'grey-black', name:'Grey / Black', hex:'#6B7280', image: P.fitness },
+      { id:'red-black',  name:'Red / Black',  hex:'#DC2626', image: P.fitness },
+    ],
+    description: 'Short or long sleeve compression shirt for obstacle course and functional fitness events. Team name and logo sublimated.',
+    features: [
+      '4-way stretch compression · flatlock stitching — chafe-free',
+      'Short or long sleeve (specify in notes)',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.fitness,
+  },
+  {
+    id: 'fitness-training-shorts',
+    name: 'Fitness Training Shorts',
+    category: 'shorts',
+    categoryLabel: 'Training Shorts',
+    sports: ['Fitness Course','Martial Arts','Arm Wrestling'],
+    price: 30,
+    originalPrice: 40,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.shorts },
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.shorts },
+      { id:'grey',  name:'Grey',  hex:'#6B7280', image: P.shorts },
+    ],
+    description: '5" training shorts with compression liner and deep zip pockets. Moisture-wicking. Individual orders welcome.',
+    features: [
+      '5" inseam · built-in compression liner · deep zip pockets',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.shorts,
+  },
+  {
+    id: 'event-tee',
+    name: 'Event Participant Tee',
+    category: 'tshirt',
+    categoryLabel: 'Event Tee',
+    sports: ['Fitness Course','5K Run for Sudan','Bike Ride'],
+    price: 18,
+    originalPrice: 25,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Event Tee',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: TS.tee.white.image },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: TS.tee.black.image },
+      { id:'navy',  name:'Navy',  hex:'#1e3a8a', image: TS.heavyTee.navy.image },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: TS.heavyTee.red.image },
+    ],
+    description: 'Participant and supporter event tee — custom event name, date, and logo on front. Back can include participant names or sponsors. No minimum.',
+    features: [
+      'Event name, date & logo on front',
+      'Participant list or sponsor names on back (optional)',
+      'Individual orders welcome — no minimum',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: TS.tee.white.image,
+  },
+
+  // ── PICKLEBALL ───────────────────────────────────────────────
+  {
+    id: 'pickleball-polo',
+    name: 'Pickleball Performance Polo',
+    category: 'sport-specific',
+    categoryLabel: 'Pickleball Polo',
+    sports: ['Pickleball'],
+    price: 42,
+    originalPrice: 56,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white',      name:'White',        hex:'#FFFFFF', image: P.pickleball },
+      { id:'navy',       name:'Navy',         hex:'#0A2342', image: P.pickleball },
+      { id:'lime-black', name:'Lime / Black', hex:'#84CC16', image: P.pickleball },
+      { id:'orange',     name:'Orange',       hex:'#ea580c', image: P.pickleball },
+    ],
+    description: 'Quick-dry polo for pickleball — player name on back, team/event on chest. Individual and team orders.',
+    features: [
+      'Moisture-wicking quick-dry · 3-button placket',
+      'Player name on back · team on chest',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.pickleball,
+  },
+
+  // ── 5K RUN FOR SUDAN ─────────────────────────────────────────
+  {
+    id: 'run-5k-event-tee',
+    name: '5K Run for Sudan — Official Event Tee',
+    category: 'tshirt',
+    categoryLabel: '5K Event Tee',
+    sports: ['5K Run for Sudan'],
+    price: 20,
+    originalPrice: 28,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: '5K Sudan',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White',         hex:'#FFFFFF', image: P.run5k },
+      { id:'red',   name:'Red (Sudan)',   hex:'#DC2626', image: P.run5k },
+      { id:'black', name:'Black',         hex:'#1a1a1a', image: P.run5k },
+      { id:'green', name:'Green (Sudan)', hex:'#166534', image: P.run5k },
+    ],
+    description: 'Official 5K Run for Sudan participant tee — event name, logo, and date on front. Sudan national colours. No minimum.',
+    features: [
+      'Event name, logo & date on front',
+      'Back: participant bib number or sponsor list (optional)',
+      'Sudan national colours: Red, White, Black, Green',
+      'Individual orders welcome — no minimum',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.run5k,
+  },
+  {
+    id: 'run-5k-tank',
+    name: '5K Run — Race Tank Top',
+    category: 'tshirt',
+    categoryLabel: 'Race Tank',
+    sports: ['5K Run for Sudan','Track & Field'],
+    price: 22,
+    originalPrice: 30,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.run5k },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.run5k },
+      { id:'red',   name:'Red',   hex:'#DC2626', image: P.run5k },
+    ],
+    description: 'Race-ready tank top — event logo on front, bib number on back. Lightweight, breathable, cut for speed.',
+    features: [
+      'Ultra-lightweight · racerback cut — unrestricted arm swing',
+      'Event logo on front · bib number on back',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.run5k,
+  },
+
+  // ── BIKE RIDE ────────────────────────────────────────────────
+  {
+    id: 'cycling-jersey',
+    name: 'Cycling Jersey — Full-Zip',
+    category: 'sport-specific',
+    categoryLabel: 'Cycling Jersey',
+    sports: ['Bike Ride'],
+    price: 65,
+    originalPrice: 88,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Bike Ride',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'navy-white',  name:'Navy / White',  hex:'#0A2342', image: P.cycling },
+      { id:'red-white',   name:'Red / White',   hex:'#DC2626', image: P.cycling },
+      { id:'black-gold',  name:'Black / Gold',  hex:'#1a1a1a', image: P.cycling },
+      { id:'green-white', name:'Green / White', hex:'#166534', image: P.cycling },
+    ],
+    description: 'Full-sublimation full-zip cycling jersey — team name on chest, rider name on back, three rear pockets. Aerodynamic form-fit.',
+    features: [
+      'Full sublimation · 3 rear storage pockets',
+      'Full-zip with chin guard · silicone gripper hem',
+      'Individual and group orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cycling,
+  },
+  {
+    id: 'cycling-shorts',
+    name: 'Cycling Bib Shorts / Shorts',
+    category: 'shorts',
+    categoryLabel: 'Cycling Shorts',
+    sports: ['Bike Ride'],
+    price: 55,
+    originalPrice: 74,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'black',     name:'Black',       hex:'#1a1a1a', image: P.cycling },
+      { id:'navy',      name:'Navy',        hex:'#0A2342', image: P.cycling },
+      { id:'black-red', name:'Black / Red', hex:'#1a1a1a', image: P.cycling },
+    ],
+    description: 'Padded bib shorts or shorts (specify). 8-panel chamois. Sublimated team branding on outer leg.',
+    features: [
+      'Bib or waistband style (specify in notes)',
+      '8-panel chamois padding · 4-way stretch compression',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.cycling,
+  },
+
+  // ── BADMINTON ────────────────────────────────────────────────
+  {
+    id: 'badminton-shirt',
+    name: 'Badminton Performance Shirt',
+    category: 'sport-specific',
+    categoryLabel: 'Badminton Shirt',
+    sports: ['Badminton'],
+    price: 40,
+    originalPrice: 54,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Badminton',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white-navy',  name:'White / Navy',  hex:'#FFFFFF', image: P.badminton },
+      { id:'navy-white',  name:'Navy / White',  hex:'#0A2342', image: P.badminton },
+      { id:'red-white',   name:'Red / White',   hex:'#DC2626', image: P.badminton },
+      { id:'black-gold',  name:'Black / Gold',  hex:'#1a1a1a', image: P.badminton },
+    ],
+    description: 'Quick-dry badminton shirt — lightweight mesh back panel, full sublimation with team name and player number. Individual and team orders.',
+    features: [
+      'Lightweight quick-dry · mesh back panel for ventilation',
+      'Full sublimation · full swing mobility cut',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.badminton,
+  },
+  {
+    id: 'badminton-skort',
+    name: 'Badminton Skort / Shorts',
+    category: 'shorts',
+    categoryLabel: 'Badminton Skort',
+    sports: ['Badminton'],
+    price: 30,
+    originalPrice: 40,
+    teamOrderMin: 1,
+    customPrint: true,
+    badge: 'Individual OK',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white', name:'White', hex:'#FFFFFF', image: P.badminton },
+      { id:'navy',  name:'Navy',  hex:'#0A2342', image: P.badminton },
+      { id:'black', name:'Black', hex:'#1a1a1a', image: P.badminton },
+    ],
+    description: 'Badminton skort or shorts — specify in notes. Built-in compression shorts under skort. Pairs with badminton shirt.',
+    features: [
+      'Skort or shorts (specify in notes)',
+      'Built-in compression shorts under skort',
+      'Individual orders welcome',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.badminton,
+  },
+
+  // ── ULTIMATE FRISBEE ─────────────────────────────────────────
+  {
+    id: 'frisbee-jersey',
+    name: 'Ultimate Frisbee Jersey',
+    category: 'sport-specific',
+    categoryLabel: 'Frisbee Jersey',
+    sports: ['Ultimate Frisbee'],
+    price: 48,
+    originalPrice: 65,
+    teamOrderMin: 7,
+    customPrint: true,
+    badge: 'Ultimate Frisbee',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white-blue',  name:'White / Blue', hex:'#FFFFFF', image: P.frisbee },
+      { id:'dark-green',  name:'Dark Green',   hex:'#166534', image: P.frisbee },
+      { id:'navy-white',  name:'Navy / White', hex:'#0A2342', image: P.frisbee },
+      { id:'black-teal',  name:'Black / Teal', hex:'#1a1a1a', image: P.frisbee },
+    ],
+    description: 'Loose-fit sublimated ultimate frisbee jersey — team name on chest, player name and number on back. Reinforced stitching for layout dives.',
+    features: [
+      'Reinforced stitching for layout dives · loose athletic fit',
+      'Team minimum: 7 players',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.frisbee,
+  },
+  {
+    id: 'frisbee-shorts',
+    name: 'Ultimate Frisbee Shorts',
+    category: 'shorts',
+    categoryLabel: 'Frisbee Shorts',
+    sports: ['Ultimate Frisbee'],
+    price: 30,
+    originalPrice: 42,
+    teamOrderMin: 7,
+    customPrint: true,
+    badge: 'Pair with Jersey',
+    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    colors: [
+      { id:'white',      name:'White',      hex:'#FFFFFF', image: P.frisbee },
+      { id:'dark-green', name:'Dark Green', hex:'#166534', image: P.frisbee },
+      { id:'navy',       name:'Navy',       hex:'#0A2342', image: P.frisbee },
+      { id:'black',      name:'Black',      hex:'#1a1a1a', image: P.frisbee },
+    ],
+    description: '7" inseam shorts — reinforced seat seam for layout dives and sprints. Pairs with frisbee jersey.',
+    features: [
+      '7" inseam · reinforced seat seam',
+      'Pairs with Ultimate Frisbee Jersey',
+      ...CUSTOM_PRINT_FEATURES,
+    ],
+    thumbnail: P.frisbee,
   },
 ];
 
-// For backwards compatibility
-export const productInfo = products[0];
+// ── Helpers ──────────────────────────────────────────────────────
+export const productInfo = products[0]; // backwards compatibility
+
+export function getProductsByCategory(cat: string): Product[] {
+  if (cat === 'all') return products;
+  return products.filter(p => p.category === cat);
+}
+
+export function getProductsBySport(sport: string): Product[] {
+  if (sport === 'All Sports') return products;
+  return products.filter(p => p.sports.includes(sport));
+}
