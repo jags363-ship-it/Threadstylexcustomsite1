@@ -1,92 +1,83 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Minus, Plus, Tag, CheckCircle, RotateCw, Upload, Check, X, AlertCircle, MapPin, Users, User, Package } from 'lucide-react';
+import { Minus, Plus, CheckCircle, RotateCw, Upload, Check, X, AlertCircle, Users, User, ChevronRight, ShoppingCart } from 'lucide-react';
 import { useState, useRef, useCallback } from 'react';
-import { products, getProductsByCategory, getProductsBySport, ALL_SPORTS } from '../data/products';
+import { products, getProductsBySport, getProductsByCategory, SPORTS_LIST, CATEGORIES_LIST } from '../data/products';
 import { getPlacementsForProduct } from '../data/placements';
+import { useCart } from '../context/CartContext';
 import { designs } from '../data/designs';
 
-interface ProductConfigurationProps {
-  selectedSize: string;
-  setSelectedSize: (size: string) => void;
-  selectedColor: string;
-  setSelectedColor: (color: string) => void;
-  quantity: number;
-  setQuantity: (quantity: number) => void;
-  selectedProduct: string;
-  setSelectedProduct: (product: string) => void;
-  selectedDesign: string | null;
-  setSelectedDesign: (design: string | null) => void;
-  uploadedFile: File | null;
-  setUploadedFile: (file: File | null) => void;
-  selectedPlacements: string[];
-  setSelectedPlacements: (placements: string[]) => void;
-  // National Games extras
-  teamName: string;
-  setTeamName: (v: string) => void;
-  playerName: string;
-  setPlayerName: (v: string) => void;
-  playerNumber: string;
-  setPlayerNumber: (v: string) => void;
-  orderType: 'individual' | 'team';
-  setOrderType: (v: 'individual' | 'team') => void;
+interface Props {
+  selectedSize: string; setSelectedSize: (v: string) => void;
+  selectedColor: string; setSelectedColor: (v: string) => void;
+  quantity: number; setQuantity: (v: number) => void;
+  selectedProduct: string; setSelectedProduct: (v: string) => void;
+  selectedDesign: string | null; setSelectedDesign: (v: string | null) => void;
+  uploadedFile: File | null; setUploadedFile: (v: File | null) => void;
+  selectedPlacements: string[]; setSelectedPlacements: (v: string[]) => void;
+  teamName: string; setTeamName: (v: string) => void;
+  playerName: string; setPlayerName: (v: string) => void;
+  playerNumber: string; setPlayerNumber: (v: string) => void;
+  orderType: 'individual' | 'team'; setOrderType: (v: 'individual' | 'team') => void;
 }
 
-const CATEGORIES = [
-  { id: 'all',           label: 'All Items',       icon: '🏅' },
-  { id: 'tshirt',        label: 'T-Shirts',         icon: '👕' },
-  { id: 'jersey',        label: 'Jerseys',          icon: '🏆' },
-  { id: 'hoodie',        label: 'Hoodies',          icon: '🧥' },
-  { id: 'sweatshirt',    label: 'Crewnecks',        icon: '🔵' },
-  { id: 'sweatpants',    label: 'Tracksuit Pants',  icon: '🏃' },
-  { id: 'sport-specific',label: 'Sport-Specific',   icon: '⚡' },
-  { id: 'hat',           label: 'Hats & Accessories',icon: '🧢' },
-];
-
-const SPORTS = ['All Sports', ...ALL_SPORTS];
+// Sport icons map
+const SPORT_ICONS: Record<string, string> = {
+  'Basketball': '🏀', 'Soccer': '⚽', 'Volleyball': '🏐',
+  'Flag Football': '🏈', 'Cricket': '🏏', 'Softball': '🥎',
+  'Track & Field': '🏃', 'Martial Arts': '🥋', 'Tennis': '🎾',
+  'Table Tennis': '🏓', 'Archery': '🏹', 'Arm Wrestling': '💪',
+  'Fitness Course': '🏋️', 'Pickleball': '🏸', '5K Run for Sudan': '🏃',
+  'Bike Ride': '🚴', 'Badminton': '🏸', 'Ultimate Frisbee': '🥏',
+  'Swimming': '🏊',
+};
 
 export function ProductConfiguration({
-  selectedSize, setSelectedSize,
-  selectedColor, setSelectedColor,
-  quantity, setQuantity,
-  selectedProduct, setSelectedProduct,
-  selectedDesign, setSelectedDesign,
-  uploadedFile, setUploadedFile,
-  selectedPlacements, setSelectedPlacements,
-  teamName, setTeamName,
-  playerName, setPlayerName,
-  playerNumber, setPlayerNumber,
+  selectedSize, setSelectedSize, selectedColor, setSelectedColor,
+  quantity, setQuantity, selectedProduct, setSelectedProduct,
+  selectedDesign, setSelectedDesign, uploadedFile, setUploadedFile,
+  selectedPlacements, setSelectedPlacements, teamName, setTeamName,
+  playerName, setPlayerName, playerNumber, setPlayerNumber,
   orderType, setOrderType,
-}: ProductConfigurationProps) {
-  const [viewSide, setViewSide] = useState<'front' | 'back'>('front');
-  const [activeTab, setActiveTab] = useState<'designs' | 'upload'>('designs');
-  const [isDragging, setIsDragging] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+}: Props) {
+  // Step 1 = sport selection, Step 2 = product selection, Step 3 = customization
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [selectedSport, setSelectedSport] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [activeSport, setActiveSport] = useState('All Sports');
+  const [viewSide, setViewSide] = useState<'front' | 'back'>('front');
+  const [uploadedPreview, setUploadedPreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { addToCart } = useCart();
 
   const currentProduct = products.find(p => p.id === selectedProduct) || products[0];
   const currentColor = currentProduct.colors.find(c => c.id === selectedColor) || currentProduct.colors[0];
-  const savings = currentProduct.originalPrice - currentProduct.price;
-  const savingsPercent = Math.round((savings / currentProduct.originalPrice) * 100);
   const hasBackImage = !!currentColor.backImage;
   const currentImage = viewSide === 'back' && currentColor.backImage ? currentColor.backImage : currentColor.image;
+  const savingsPercent = Math.round(((currentProduct.originalPrice - currentProduct.price) / currentProduct.originalPrice) * 100);
+  const teamPrice = +(currentProduct.price * 0.85).toFixed(2);
+  const displayedProducts = selectedSport
+    ? getProductsBySport(selectedSport).filter(p => activeCategory === 'all' || p.category === activeCategory)
+    : getProductsByCategory(activeCategory === 'all' ? 'all' : activeCategory);
 
-  const teamUnitPrice = Math.round(currentProduct.price * 0.85 * 100) / 100; // 15% team discount
-
-  const handleProductChange = (productId: string) => {
-    setSelectedProduct(productId);
-    const np = products.find(p => p.id === productId);
-    if (np) { setSelectedSize(np.sizes[2]); setSelectedColor(np.colors[0].id); setViewSide('front'); }
+  const handleSelectSport = (sport: string) => {
+    setSelectedSport(sport);
+    setActiveCategory('all');
+    const first = getProductsBySport(sport)[0];
+    if (first) { setSelectedProduct(first.id); setSelectedColor(first.colors[0]?.id || 'black'); setSelectedSize(first.sizes[0] || 'M'); }
+    setStep(2);
   };
 
-  const handleColorChange = (colorId: string) => { setSelectedColor(colorId); setViewSide('front'); };
-
-  const togglePlacement = (key: string) => {
-    setSelectedPlacements(selectedPlacements.includes(key)
-      ? selectedPlacements.filter(p => p !== key)
-      : [...selectedPlacements, key]);
+  const handleSelectProduct = (productId: string) => {
+    const p = products.find(x => x.id === productId)!;
+    setSelectedProduct(productId);
+    setSelectedColor(p.colors[0]?.id || 'black');
+    setSelectedSize(p.sizes.includes('M') ? 'M' : p.sizes[0]);
+    setViewSide('front');
+    setStep(3);
+    setTimeout(() => document.getElementById('customization-panel')?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
   const compressImage = useCallback(async (file: File): Promise<File> => {
@@ -99,14 +90,14 @@ export function ProductConfiguration({
           let { width, height } = img;
           const max = 2000;
           if (width > max || height > max) {
-            if (width > height) { height = (height / width) * max; width = max; }
-            else { width = (width / height) * max; height = max; }
+            if (width > height) { height = (height/width)*max; width = max; }
+            else { width = (width/height)*max; height = max; }
           }
           canvas.width = width; canvas.height = height;
           canvas.getContext('2d')?.drawImage(img, 0, 0, width, height);
           canvas.toBlob(blob => {
-            if (blob) resolve(new File([blob], file.name, { type: file.type, lastModified: Date.now() }));
-            else reject(new Error('Compression failed'));
+            if (blob) resolve(new File([blob], file.name, { type: file.type }));
+            else reject(new Error('Failed'));
           }, file.type, 0.85);
         };
         img.onerror = () => reject(new Error('Image load failed'));
@@ -117,211 +108,242 @@ export function ProductConfiguration({
     });
   }, []);
 
-  const validateAndProcessFile = useCallback(async (file: File) => {
-    setError(null); setIsProcessing(true);
-    if (!file.type.match(/^image\/(png|jpeg|jpg)$/)) { setError('PNG or JPG only!'); setIsProcessing(false); return; }
-    if (file.size > 5 * 1024 * 1024) { setError('Max 5MB!'); setIsProcessing(false); return; }
+  const processFile = useCallback(async (file: File) => {
+    setFileError(null); setIsProcessing(true);
+    if (!file.type.match(/^image\/(png|jpeg|jpg|svg\+xml)$/)) { setFileError('PNG, JPG, or SVG only'); setIsProcessing(false); return; }
+    if (file.size > 5 * 1024 * 1024) { setFileError('Max file size: 5MB'); setIsProcessing(false); return; }
     try {
       const processed = file.size > 2 * 1024 * 1024 ? await compressImage(file) : file;
-      setUploadedFile(processed); setSelectedDesign(null); setError(null);
-    } catch { setError('Failed to process image.'); }
+      setUploadedFile(processed);
+      setSelectedDesign(null);
+      const reader = new FileReader();
+      reader.onload = (e) => setUploadedPreview(e.target?.result as string);
+      reader.readAsDataURL(processed);
+    } catch { setFileError('Failed to process image'); }
     finally { setIsProcessing(false); }
   }, [compressImage, setUploadedFile, setSelectedDesign]);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); setIsDragging(false);
-    const file = e.dataTransfer.files[0]; if (file) validateAndProcessFile(file);
-  }, [validateAndProcessFile]);
+  const handleAddToCart = () => {
+    const cartItem = {
+      id: `cart_${Date.now()}_${Math.random()}`,
+      productId: currentProduct.id,
+      productName: currentProduct.name,
+      productImage: currentImage,
+      size: selectedSize,
+      color: selectedColor,
+      quantity,
+      designType: uploadedFile ? 'custom' as const : selectedDesign === 'blank' ? 'blank' as const : 'gallery' as const,
+      designId: selectedDesign || undefined,
+      designName: selectedDesign ? designs.find(d => d.id === selectedDesign)?.name : 'Custom Upload',
+      customDesignFile: uploadedFile || undefined,
+      placements: getPlacementsForProduct(currentProduct.id).filter(p => selectedPlacements.includes(p.key)),
+      basePrice: orderType === 'team' && quantity >= currentProduct.teamOrderMin ? teamPrice * quantity : currentProduct.price * quantity,
+      placementPrice: 0,
+      itemTotal: orderType === 'team' && quantity >= currentProduct.teamOrderMin ? teamPrice * quantity : currentProduct.price * quantity,
+      teamName: teamName || undefined,
+      playerName: playerName || undefined,
+      playerNumber: playerNumber || undefined,
+      orderType,
+      sport: selectedSport || undefined,
+    };
+    addToCart(cartItem as any);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2500);
+    setSelectedDesign(null); setUploadedFile(null); setUploadedPreview(null); setSelectedPlacements([]); setQuantity(1);
+  };
 
-  const handleDragOver = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); }, []);
-  const handleDragLeave = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); }, []);
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]; if (file) validateAndProcessFile(file);
-  }, [validateAndProcessFile]);
-
-  const clearUpload = () => { setUploadedFile(null); setError(null); if (fileInputRef.current) fileInputRef.current.value = ''; };
-
-  const filteredProducts = (() => {
-    const byCat = getProductsByCategory(activeCategory);
-    if (activeSport === 'All Sports') return byCat;
-    return byCat.filter(p => p.sports.includes(activeSport));
-  })();
-
-  return (
-    <section id="products" className="py-16 bg-[#F8F7F4]">
-      <div className="max-w-7xl mx-auto px-4">
-
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <p className="section-label mb-3">Step 1 of 4</p>
-          <h2 className="step-heading mb-3" style={{color:"#0A1628"}}>SELECT YOUR APPAREL</h2>
-          <p className="text-gray-600 font-body max-w-xl mx-auto">Browse our full collection. All items are customizable with team name, player name, number, and your logo.</p>
-        </div>
-
-        {/* Category Filter Tabs */}
-        <div className="flex flex-wrap gap-2 justify-center mb-4">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2 rounded-full text-xs font-display font-bold tracking-wider uppercase transition-all border flex items-center gap-1.5 ${
-                activeCategory === cat.id
-                  ? 'bg-[#C8A951] text-[#060E1A] border-[#C8A951] shadow-sm'
-                  : 'border-gray-300 text-gray-600 hover:border-[#1B4D3E] hover:text-[#1B4D3E]'
-              }`}
-            >
-              <span>{cat.icon}</span> {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Sport Filter */}
-        <div className="flex flex-wrap gap-2 justify-center mb-8">
-          <span className="text-gray-600 text-xs uppercase tracking-widest font-display self-center pr-1">Sport:</span>
-          {SPORTS.map(sport => (
-            <button
-              key={sport}
-              onClick={() => setActiveSport(sport)}
-              className={`px-3 py-1.5 rounded-full text-[11px] font-display font-semibold tracking-wide transition-all border ${
-                activeSport === sport
-                  ? 'border-white/40 text-white bg-white/10'
-                  : 'border-white/5 text-gray-600 hover:border-white/15 hover:text-gray-400'
-              }`}
-            >
-              {sport}
-            </button>
-          ))}
-        </div>
-
-        {/* Product Grid */}
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-16 text-gray-600">
-            <p className="text-4xl mb-3">🔍</p>
-            <p className="font-display font-bold uppercase tracking-wider text-white">No items found</p>
-            <p className="text-sm mt-1">Try a different category or sport filter</p>
+  // ── STEP 1: Sport Selection ────────────────────────────────
+  if (step === 1) {
+    return (
+      <section id="products" className="py-16 bg-[#F0F4F8]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#1B4D3E] mb-2">Step 1 — Choose Your Sport</p>
+            <h2 className="font-black text-4xl md:text-5xl text-[#0A1628] uppercase" style={{fontFamily:"'Barlow Condensed',sans-serif"}}>
+              SELECT YOUR SPORT
+            </h2>
+            <p className="text-gray-600 mt-3 text-base">Pick your sport to see the right apparel options for your team</p>
           </div>
-        ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-16">
-          {filteredProducts.map(product => {
-            const isSelected = selectedProduct === product.id;
-            const pSavings = Math.round((1 - product.price / product.originalPrice) * 100);
-            return (
-              <motion.button
-                key={product.id}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleProductChange(product.id)}
-                className={`relative flex flex-col rounded-xl overflow-hidden border transition-all text-left ${
-                  isSelected ? 'border-[#C8A951] shadow-lg shadow-[#C8A951]/15' : 'border-gray-200 hover:border-[#C8A951]/50 card-surface'
-                }`}
-                style={{ background: isSelected ? 'rgba(200,169,81,0.08)' : '#FFFFFF' }}
-              >
-                {/* Badges */}
-                <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-                  {product.badge && (
-                    <span className="bg-gold-500 text-navy-900 text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full">
-                      {product.badge}
-                    </span>
-                  )}
-                  {pSavings > 0 && (
-                    <span className="bg-navy-900/80 text-gold-500 text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full border border-gold-500/30">
-                      {pSavings}% OFF
-                    </span>
-                  )}
-                </div>
 
-                {/* Product image */}
-                <div className="aspect-square overflow-hidden bg-navy-700 flex items-center justify-center relative">
-                  <img
-                    src={product.thumbnail}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { (e.target as HTMLImageElement).src = '/blank-placeholder.svg'; }}
-                  />
-                  {/* Team order badge overlay */}
-                  {product.teamOrderMin && (
-                    <div className="absolute bottom-2 right-2 bg-navy-900/80 backdrop-blur-sm text-[9px] text-gold-500 font-display font-bold px-1.5 py-0.5 rounded-full border border-gold-500/20">
-                      Team min {product.teamOrderMin}
-                    </div>
-                  )}
-                </div>
+          {/* Islamic Games Merch shortcut */}
+          <div className="mb-8 flex justify-center">
+            <motion.button
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              onClick={() => { setSelectedSport(''); setActiveCategory('ig-merch'); setStep(2); }}
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-lg uppercase tracking-wide shadow-lg border-2 border-[#C8A951]"
+              style={{ background: 'linear-gradient(135deg,#0A1628,#1B4D3E)', color: '#C8A951', fontFamily: "'Barlow Condensed',sans-serif" }}
+            >
+              🏅 Islamic Games Official Merchandise
+              <ChevronRight className="w-5 h-5" />
+            </motion.button>
+          </div>
 
-                <div className="p-3 flex flex-col flex-1 bg-white">
-                  {/* Category label */}
-                  <p className="text-[9px] text-gold-500 font-display font-bold uppercase tracking-widest mb-0.5">
-                    {product.categoryLabel}
-                  </p>
-                  {/* Name */}
-                  <p className="text-white text-xs font-display font-bold leading-tight mb-2 line-clamp-2">{product.name}</p>
-                  {/* Sport tags */}
-                  {product.sports && product.sports.length > 0 && product.sports[0] !== ALL_SPORTS[0] && (
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      {product.sports.slice(0, 2).map(s => (
-                        <span key={s} className="text-[9px] text-gray-500 border border-white/10 px-1.5 py-0.5 rounded-full">
-                          {s}
-                        </span>
-                      ))}
-                      {product.sports.length > 2 && (
-                        <span className="text-[9px] text-gray-600">+{product.sports.length - 2}</span>
-                      )}
-                    </div>
-                  )}
-                  {/* Custom print badge — always shown */}
-                  <div className="flex items-center gap-1 mb-2">
-                    <span className="text-[9px] text-gold-500 border border-gold-500/30 bg-gold-500/5 px-1.5 py-0.5 rounded-full font-display font-bold tracking-wide">
-                      ✦ Custom Print
-                    </span>
-                  </div>
-                  {/* Price */}
-                  <div className="flex items-baseline gap-1.5 mt-auto">
-                    <span className="text-gold-500 font-display font-black text-base">${product.price}</span>
-                    <span className="text-gray-600 text-xs line-through">${product.originalPrice}</span>
-                  </div>
-                  {/* Team price */}
-                  <p className="text-[10px] text-gray-600 mt-0.5">
-                    Team: <span className="text-gold-500 font-semibold">${(product.price * 0.85).toFixed(0)}/ea</span> (5+)
-                  </p>
-                  {/* Selected indicator */}
-                  {isSelected && (
-                    <div className="mt-2 text-[10px] font-display font-bold text-gold-500 uppercase tracking-wider flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Selected
-                    </div>
-                  )}
-                </div>
-              </motion.button>
-            );
-          })}
-        </div>
-        )}
-
-        {/* Configuration Panel */}
-        <div id="designs" className="grid lg:grid-cols-2 gap-8">
-
-          {/* Left: Image + Design + Placements */}
-          <div className="space-y-6">
-            {/* Product Image */}
-            <div className="card-surface p-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${currentProduct.id}-${selectedColor}-${viewSide}`}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.25 }}
-                  className="aspect-square rounded-xl overflow-hidden bg-navy-700 flex items-center justify-center"
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {SPORTS_LIST.map((sport) => {
+              const count = getProductsBySport(sport).length;
+              return (
+                <motion.button
+                  key={sport}
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => handleSelectSport(sport)}
+                  className="bg-white rounded-2xl p-5 text-center border-2 border-transparent hover:border-[#1B4D3E] shadow-sm hover:shadow-md transition-all group"
                 >
-                  <img src={currentImage} alt={`${currentProduct.name}`} className="w-full h-full object-contain p-4" />
-                </motion.div>
-              </AnimatePresence>
+                  <div className="text-4xl mb-2">{SPORT_ICONS[sport] || '🏅'}</div>
+                  <p className="font-black text-sm uppercase tracking-wide text-[#0A1628] group-hover:text-[#1B4D3E]"
+                     style={{ fontFamily: "'Barlow Condensed',sans-serif" }}>
+                    {sport}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">{count} items</p>
+                </motion.button>
+              );
+            })}
+          </div>
 
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => { setSelectedSport(''); setActiveCategory('all'); setStep(2); }}
+              className="text-[#1B4D3E] font-bold text-sm underline underline-offset-4 hover:text-[#2D7A55]"
+            >
+              Browse all apparel →
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── STEP 2: Product Grid ────────────────────────────────────
+  if (step === 2) {
+    return (
+      <section id="products" className="py-16 bg-[#F0F4F8]">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
+            <button onClick={() => setStep(1)} className="hover:text-[#1B4D3E] font-semibold">All Sports</button>
+            {selectedSport && <><ChevronRight className="w-4 h-4" /><span className="font-bold text-[#0A1628]">{SPORT_ICONS[selectedSport]} {selectedSport}</span></>}
+            {activeCategory === 'ig-merch' && !selectedSport && <><ChevronRight className="w-4 h-4" /><span className="font-bold text-[#0A1628]">🏅 IG Merchandise</span></>}
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#1B4D3E] mb-1">Step 2 — Select Apparel</p>
+              <h2 className="font-black text-3xl text-[#0A1628] uppercase" style={{fontFamily:"'Barlow Condensed',sans-serif"}}>
+                {selectedSport ? `${selectedSport} Apparel` : 'All Apparel'}
+              </h2>
+              <p className="text-gray-500 text-sm">{displayedProducts.length} items — click any to customize</p>
+            </div>
+            <button onClick={() => setStep(1)}
+              className="text-sm font-bold text-[#1B4D3E] border-2 border-[#1B4D3E] px-4 py-2 rounded-xl hover:bg-[#1B4D3E] hover:text-white transition-all">
+              ← Change Sport
+            </button>
+          </div>
+
+          {/* Category filter tabs */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {[{ id: 'all', label: 'All', emoji: '🏅' }, ...CATEGORIES_LIST].map(cat => (
+              <button key={cat.id} onClick={() => setActiveCategory(cat.id)}
+                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide border-2 transition-all ${
+                  activeCategory === cat.id
+                    ? 'border-[#1B4D3E] bg-[#1B4D3E] text-white'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-[#1B4D3E] hover:text-[#1B4D3E]'
+                }`}>
+                {cat.emoji} {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Product grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+            {displayedProducts.map((product) => {
+              const disc = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+              return (
+                <motion.button
+                  key={product.id}
+                  whileHover={{ y: -3 }} whileTap={{ scale: 0.98 }}
+                  onClick={() => handleSelectProduct(product.id)}
+                  className="bg-white rounded-2xl overflow-hidden border-2 border-transparent hover:border-[#1B4D3E] shadow-sm hover:shadow-lg transition-all text-left group"
+                >
+                  <div className="relative aspect-square bg-gray-50 overflow-hidden">
+                    <img src={product.thumbnail} alt={product.name}
+                      className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.3'; }}
+                    />
+                    <div className="absolute top-2 left-2 flex flex-col gap-1">
+                      {disc > 0 && <span className="bg-[#C8A951] text-[#0A1628] text-[10px] font-black px-2 py-0.5 rounded-full">{disc}% OFF</span>}
+                      {product.badge && <span className="bg-[#1B4D3E] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{product.badge}</span>}
+                      {product.modest && <span className="bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Modest</span>}
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <p className="text-[10px] text-[#1B4D3E] font-bold uppercase tracking-wider">{product.categoryLabel}</p>
+                    <p className="font-black text-sm text-[#0A1628] leading-tight mt-0.5 line-clamp-2"
+                       style={{ fontFamily: "'Barlow Condensed',sans-serif" }}>{product.name}</p>
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <span className="text-lg font-black text-[#0A1628]">${product.price}</span>
+                      <span className="text-xs text-gray-400 line-through">${product.originalPrice}</span>
+                    </div>
+                    <p className="text-[10px] text-[#1B4D3E] font-bold mt-0.5">
+                      Team: ${(product.price * 0.85).toFixed(0)}/ea (min {product.teamOrderMin})
+                    </p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {product.colors.slice(0, 8).map(c => (
+                        <div key={c.id} title={c.name}
+                          className="w-4 h-4 rounded-full border border-gray-200 flex-shrink-0"
+                          style={{ backgroundColor: c.hex }} />
+                      ))}
+                      {product.colors.length > 8 && <span className="text-[10px] text-gray-400">+{product.colors.length - 8}</span>}
+                    </div>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── STEP 3: Customization ───────────────────────────────────
+  return (
+    <section id="customization-panel" className="py-16 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-gray-500 mb-8 flex-wrap">
+          <button onClick={() => setStep(1)} className="hover:text-[#1B4D3E] font-semibold">All Sports</button>
+          <ChevronRight className="w-4 h-4" />
+          <button onClick={() => setStep(2)} className="hover:text-[#1B4D3E] font-semibold">
+            {selectedSport || 'All Apparel'}
+          </button>
+          <ChevronRight className="w-4 h-4" />
+          <span className="font-bold text-[#0A1628]">{currentProduct.name}</span>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-10">
+          {/* LEFT — Image + Upload */}
+          <div className="space-y-5">
+            {/* Product image */}
+            <div className="bg-gray-50 rounded-2xl overflow-hidden border border-gray-200">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={`${selectedProduct}-${selectedColor}-${viewSide}`}
+                  src={currentImage}
+                  alt={currentProduct.name}
+                  className="w-full aspect-square object-contain p-8"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.2'; }}
+                />
+              </AnimatePresence>
               {hasBackImage && (
-                <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="p-3 border-t border-gray-200 flex gap-2">
                   {(['front', 'back'] as const).map(side => (
                     <button key={side} onClick={() => setViewSide(side)}
-                      className={`py-2.5 rounded-xl text-xs font-display font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
-                        viewSide === side ? 'btn-gold' : 'border border-white/10 text-gray-400 hover:border-white/20'
-                      }`}
-                    >
+                      className={`flex-1 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1 transition-all ${
+                        viewSide === side
+                          ? 'bg-[#0A1628] text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}>
                       {side === 'back' && <RotateCw className="w-3 h-3" />} {side} View
                     </button>
                   ))}
@@ -329,331 +351,250 @@ export function ProductConfiguration({
               )}
             </div>
 
-            {/* Design Picker */}
-            <div className="card-surface overflow-hidden">
-              <div className="p-4 border-b border-white/5">
-                <h3 className="font-display font-bold text-white text-lg uppercase tracking-wide">Pick Your Design</h3>
-                <p className="text-gray-500 text-xs mt-0.5">Choose a gallery design or upload your team logo</p>
+            {/* Upload logo section — NO gallery designs */}
+            <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-200">
+                <h3 className="font-black text-base uppercase tracking-wide text-[#0A1628]"
+                    style={{fontFamily:"'Barlow Condensed',sans-serif"}}>Upload Your Team Logo / Artwork</h3>
+                <p className="text-xs text-gray-500 mt-0.5">PNG, JPG, or SVG · Max 5MB · Transparent background recommended</p>
               </div>
-              <div className="flex border-b border-white/5">
-                {(['designs', 'upload'] as const).map(tab => (
-                  <button key={tab} onClick={() => setActiveTab(tab)}
-                    className={`flex-1 py-3 px-4 text-xs font-display font-bold uppercase tracking-wider transition-all ${
-                      activeTab === tab ? 'btn-gold' : 'text-gray-500 hover:text-white hover:bg-white/5'
+              <div className="p-5">
+                <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/jpg,image/svg+xml"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) processFile(f); }} className="hidden" />
+
+                {!uploadedPreview ? (
+                  <div
+                    onDrop={e => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if (f) processFile(f); }}
+                    onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
+                      isDragging ? 'border-[#1B4D3E] bg-green-50' : 'border-gray-300 hover:border-[#1B4D3E] hover:bg-gray-50'
                     }`}
                   >
-                    {tab === 'designs' ? 'Gallery Designs' : 'Upload Logo / Art'}
-                  </button>
-                ))}
-              </div>
-              <div className="p-4">
-                <AnimatePresence mode="wait">
-                  {activeTab === 'designs' ? (
-                    <motion.div key="designs" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
-                      <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto scrollbar-hide">
-                        {designs.map(design => (
-                          <motion.button
-                            key={design.id} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-                            onClick={() => { setSelectedDesign(design.id); setUploadedFile(null); setError(null); }}
-                            className={`relative aspect-square rounded-lg overflow-hidden transition-all ${
-                              selectedDesign === design.id ? 'ring-2 ring-gold-500 shadow-lg' : 'ring-1 ring-white/10 hover:ring-white/25'
-                            }`}
-                          >
-                            <img src={design.thumbnailSrc} alt={design.name} className="w-full h-full object-cover" loading="lazy" />
-                            {selectedDesign === design.id && (
-                              <div className="absolute inset-0 bg-gold-500/80 flex items-center justify-center">
-                                <Check className="w-7 h-7 text-navy-900" />
-                              </div>
-                            )}
-                          </motion.button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <motion.div key="upload" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
-                      <div
-                        onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave}
-                        className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all ${
-                          isDragging ? 'border-gold-500 bg-gold-500/5' : 'border-white/15 hover:border-white/30'
-                        }`}
-                      >
-                        <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/jpg" onChange={handleFileSelect} className="hidden" />
-                        {!uploadedFile ? (
-                          <div className="space-y-3">
-                            <div className="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center mx-auto">
-                              <Upload className="w-5 h-5 text-gold-500" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-display font-bold text-white mb-1">Drop file or click to browse</p>
-                              <p className="text-xs text-gray-500 mb-3">PNG / JPG / SVG · Max 5MB · Transparent BG recommended</p>
-                              <button onClick={() => fileInputRef.current?.click()} disabled={isProcessing}
-                                className="btn-gold px-5 py-2 rounded-lg text-xs inline-flex items-center gap-2">
-                                {isProcessing ? 'Processing...' : 'Select File'}
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-3">
-                            <div className="relative inline-block">
-                              <img src={URL.createObjectURL(uploadedFile)} alt="Uploaded" className="max-w-full h-28 object-contain rounded-lg" />
-                              <button onClick={clearUpload} className="absolute -top-2 -right-2 w-5 h-5 bg-rush text-white rounded-full flex items-center justify-center">
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                            <p className="text-xs text-green-400 flex items-center justify-center gap-1.5"><Check className="w-3 h-3" />{uploadedFile.name}</p>
-                          </div>
-                        )}
-                        {error && <p className="mt-2 text-xs text-rush flex items-center justify-center gap-1"><AlertCircle className="w-3 h-3" />{error}</p>}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    <div className="w-12 h-12 rounded-xl bg-[#1B4D3E]/10 flex items-center justify-center mx-auto mb-3">
+                      <Upload className="w-6 h-6 text-[#1B4D3E]" />
+                    </div>
+                    <p className="font-bold text-gray-700 text-sm mb-1">Drop your logo here or click to browse</p>
+                    <p className="text-xs text-gray-400">PNG · JPG · SVG · Max 5MB</p>
+                    {isProcessing && <p className="text-[#1B4D3E] text-xs mt-2 font-bold">Processing...</p>}
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4 p-4 bg-green-50 rounded-xl border border-green-200">
+                    <img src={uploadedPreview} alt="Logo" className="w-16 h-16 object-contain rounded-lg border border-gray-200 bg-white" />
+                    <div className="flex-1">
+                      <p className="font-bold text-green-800 text-sm flex items-center gap-1">
+                        <Check className="w-4 h-4" /> Logo uploaded
+                      </p>
+                      <p className="text-xs text-green-600 mt-0.5">Will be printed on your order</p>
+                    </div>
+                    <button onClick={() => { setUploadedFile(null); setUploadedPreview(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                      className="p-1.5 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-all">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+                {fileError && <p className="text-red-500 text-xs mt-2 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{fileError}</p>}
+
+                <div className="mt-4 p-4 bg-[#0A1628] rounded-xl text-white">
+                  <p className="font-black text-xs uppercase tracking-wider text-[#C8A951] mb-2">+ Custom Print — Included On Every Order</p>
+                  <div className="grid grid-cols-2 gap-1 text-xs text-gray-300">
+                    {['Team name on front & back','Player name & number','Upload your team logo / crest','Screen print, sublimation, or embroidery','Choose primary & secondary colours','Individual athletes & full teams'].map(f => (
+                      <div key={f} className="flex items-start gap-1"><Check className="w-3 h-3 text-[#C8A951] flex-shrink-0 mt-0.5" />{f}</div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* Print Placements */}
-            {(selectedDesign || uploadedFile) && selectedDesign !== 'blank' && (
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card-surface overflow-hidden">
-                <div className="p-4 border-b border-white/5 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/20 flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-gold-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-white uppercase tracking-wide text-sm">Print Placements</h3>
-                    <p className="text-xs text-gray-500">{selectedPlacements.length > 0 ? `${selectedPlacements.length} selected` : 'Select print locations'}</p>
-                  </div>
-                </div>
-                <div className="p-4 space-y-2 max-h-72 overflow-y-auto scrollbar-hide">
-                  {getPlacementsForProduct(selectedProduct).map(placement => {
-                    const sel = selectedPlacements.includes(placement.key);
-                    return (
-                      <motion.button key={placement.key} whileTap={{ scale: 0.99 }} onClick={() => togglePlacement(placement.key)}
-                        className={`w-full text-left p-3 rounded-xl transition-all border ${
-                          sel ? 'border-gold-500/50 bg-gold-500/5' : 'border-white/5 bg-navy-800 hover:border-white/15'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex-1">
-                            <div className={`font-display font-bold text-sm uppercase tracking-wide ${sel ? 'text-gold-500' : 'text-white'}`}>
-                              {sel && <Check className="w-3 h-3 inline mr-1.5" />}{placement.label}
-                            </div>
-                            <div className="text-xs text-gray-500 mt-0.5">{placement.description} · Max {placement.maxW}"×{placement.maxH}"</div>
-                          </div>
-                          <span className={`text-sm font-display font-bold ${sel ? 'text-gold-500' : 'text-gray-400'}`}>+${placement.addOn.toFixed(2)}</span>
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-
-            {selectedDesign === 'blank' && (
-              <div className="card-surface p-5 text-center">
-                <p className="text-white font-display font-bold">✓ Blank apparel — no print placements needed</p>
-                <p className="text-gray-500 text-xs mt-1">Customization via embroidery or heat press available upon request.</p>
-              </div>
-            )}
           </div>
 
-          {/* Right: Config + National Games Fields */}
-          <div className="space-y-6">
-            {/* Product Info */}
-            <div className="card-surface p-6">
-              <div className="flex items-start justify-between gap-3 mb-4">
+          {/* RIGHT — Config panel */}
+          <div className="space-y-5">
+            {/* Product info */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <div className="flex items-start justify-between gap-3 mb-3">
                 <div>
-                  <p className="text-xs text-gold-500 font-display font-bold uppercase tracking-wider mb-1">{currentProduct.id.replace('-', ' ')}</p>
-                  <h2 className="font-display font-black text-white text-2xl uppercase leading-tight">{currentProduct.name}</h2>
+                  <p className="text-xs text-[#1B4D3E] font-bold uppercase tracking-wider">{currentProduct.categoryLabel}</p>
+                  <h2 className="font-black text-2xl text-[#0A1628] uppercase leading-tight mt-0.5"
+                      style={{fontFamily:"'Barlow Condensed',sans-serif"}}>{currentProduct.name}</h2>
                 </div>
-                <span className="bg-gold-500 text-navy-900 px-2.5 py-1 rounded-full text-xs font-display font-black flex items-center gap-1 flex-shrink-0">
-                  <Tag className="w-3 h-3" />{savingsPercent}% OFF
-                </span>
+                {savingsPercent > 0 && (
+                  <span className="bg-[#C8A951] text-[#0A1628] text-xs font-black px-2.5 py-1 rounded-full flex-shrink-0">{savingsPercent}% OFF</span>
+                )}
               </div>
-              <p className="text-gray-400 text-sm font-body mb-4">{currentProduct.description}</p>
-              <div className="space-y-1.5 mb-4">
-                {currentProduct.features.slice(0, 4).map((f, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-gray-400">
-                    <CheckCircle className="w-3.5 h-3.5 text-gold-500 flex-shrink-0 mt-0.5" />{f}
+              <p className="text-gray-600 text-sm mb-4">{currentProduct.description}</p>
+              <div className="space-y-1 mb-4">
+                {currentProduct.features.slice(0, 4).map(f => (
+                  <div key={f} className="flex items-start gap-2 text-xs text-gray-600">
+                    <CheckCircle className="w-3.5 h-3.5 text-[#1B4D3E] flex-shrink-0 mt-0.5" />{f}
                   </div>
                 ))}
               </div>
-              <div className="flex items-baseline gap-3 pt-3 border-t border-white/5">
-                <span className="font-display font-black text-white text-4xl">${currentProduct.price}</span>
-                <span className="text-gray-600 text-xl line-through">${currentProduct.originalPrice}</span>
-                <span className="text-xs text-gray-500 ml-auto">Team price: <strong className="text-gold-500">${teamUnitPrice}/ea</strong></span>
+              <div className="flex items-baseline gap-3 pt-4 border-t border-gray-100">
+                <span className="font-black text-3xl text-[#0A1628]">${currentProduct.price}</span>
+                <span className="text-gray-400 text-lg line-through">${currentProduct.originalPrice}</span>
+                <span className="text-xs text-[#1B4D3E] font-bold ml-auto">Team: ${teamPrice}/ea (min {currentProduct.teamOrderMin})</span>
               </div>
             </div>
 
-            {/* Order Type */}
-            <div id="team-orders" className="card-surface p-6">
-              <h3 className="font-display font-bold text-white uppercase tracking-wide mb-4 text-sm">Order Type</h3>
+            {/* Order type */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">Order Type</p>
               <div className="grid grid-cols-2 gap-3">
-                {([
-                  { id: 'individual', icon: User, label: 'Individual', sub: 'Single order' },
-                  { id: 'team', icon: Users, label: 'Team Order', sub: '15% bulk discount' },
-                ] as const).map(({ id, icon: Icon, label, sub }) => (
+                {([['individual', User, 'Individual', 'Single order'] as const, ['team', Users, 'Team Order', '15% bulk discount'] as const]).map(([id, Icon, label, sub]) => (
                   <button key={id} onClick={() => setOrderType(id)}
-                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all ${
-                      orderType === id ? 'border-gold-500 bg-gold-500/5' : 'border-white/10 hover:border-white/20 bg-navy-800'
-                    }`}
-                  >
-                    <Icon className={`w-6 h-6 ${orderType === id ? 'text-gold-500' : 'text-gray-400'}`} />
-                    <div>
-                      <p className={`font-display font-bold text-sm uppercase tracking-wide ${orderType === id ? 'text-gold-500' : 'text-white'}`}>{label}</p>
-                      <p className="text-gray-500 text-[10px]">{sub}</p>
-                    </div>
-                    {orderType === id && <Check className="w-3.5 h-3.5 text-gold-500" />}
+                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+                      orderType === id ? 'border-[#1B4D3E] bg-[#1B4D3E]/5' : 'border-gray-200 hover:border-gray-300'
+                    }`}>
+                    <Icon className={`w-6 h-6 ${orderType === id ? 'text-[#1B4D3E]' : 'text-gray-400'}`} />
+                    <p className={`font-black text-sm uppercase ${orderType === id ? 'text-[#1B4D3E]' : 'text-gray-700'}`}
+                       style={{fontFamily:"'Barlow Condensed',sans-serif"}}>{label}</p>
+                    <p className="text-gray-500 text-[10px]">{sub}</p>
+                    {orderType === id && <Check className="w-3.5 h-3.5 text-[#1B4D3E]" />}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* National Games Customization */}
-            <div className="card-surface p-6 space-y-4">
-              <div>
-                <h3 className="font-display font-bold text-white uppercase tracking-wide text-sm mb-1">Team & Player Details</h3>
-                <p className="text-gray-500 text-xs">These details will be printed/embroidered on your order.</p>
-              </div>
-
-              <div>
-                <label className="block text-[10px] text-gray-400 uppercase tracking-widest font-display font-bold mb-1.5">Team Name</label>
-                <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} maxLength={40}
-                  placeholder="e.g. Canada Athletics"
-                  className="w-full bg-navy-900 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-gold-500/50 font-body transition-colors"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            {/* Team / Player details */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-4">Team & Player Details</p>
+              <div className="space-y-3">
                 <div>
-                  <label className="block text-[10px] text-gray-400 uppercase tracking-widest font-display font-bold mb-1.5">Player Name</label>
-                  <input type="text" value={playerName} onChange={e => setPlayerName(e.target.value)} maxLength={30}
-                    placeholder="e.g. Johnson"
-                    className="w-full bg-navy-900 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-gold-500/50 font-body transition-colors"
-                  />
+                  <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Team Name</label>
+                  <input type="text" value={teamName} onChange={e => setTeamName(e.target.value)} maxLength={40}
+                    placeholder="e.g. Canada Athletics"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1B4D3E] transition-colors" />
                 </div>
-                <div>
-                  <label className="block text-[10px] text-gray-400 uppercase tracking-widest font-display font-bold mb-1.5">Player Number</label>
-                  <input type="text" value={playerNumber} onChange={e => setPlayerNumber(e.target.value.replace(/\D/g, '').slice(0, 3))} maxLength={3}
-                    placeholder="e.g. 23"
-                    className="w-full bg-navy-900 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-gold-500/50 font-body transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Live jersey preview */}
-              {(teamName || playerName || playerNumber) && (
-                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className="bg-navy-900 rounded-xl p-4 border border-white/5 flex items-center gap-4"
-                >
-                  <div className="w-16 h-16 rounded-lg bg-navy-700 border border-white/5 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    <img src={currentImage} alt="" className="w-full h-full object-contain p-1" />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Player Name</label>
+                    <input type="text" value={playerName} onChange={e => setPlayerName(e.target.value)} maxLength={30}
+                      placeholder="e.g. Johnson"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1B4D3E] transition-colors" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-0.5">Preview</p>
-                    {teamName && <p className="font-display font-black text-gold-500 text-sm uppercase tracking-wider leading-none">{teamName}</p>}
-                    {playerName && <p className="text-white font-display font-bold text-sm uppercase">{playerName}</p>}
-                    {playerNumber && <p className="text-gray-400 text-xs font-display">#{playerNumber}</p>}
+                    <label className="block text-[10px] text-gray-500 uppercase tracking-widest mb-1 font-bold">Player Number</label>
+                    <input type="text" value={playerNumber} onChange={e => setPlayerNumber(e.target.value.replace(/\D/,'').slice(0,3))} maxLength={3}
+                      placeholder="e.g. 23"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#1B4D3E] transition-colors" />
                   </div>
-                </motion.div>
+                </div>
+              </div>
+            </div>
+
+            {/* Age category (sport-specific) */}
+            {currentProduct.ageCategories && currentProduct.ageCategories.length > 1 && (
+              <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+                <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">Age Category</p>
+                <div className="flex flex-wrap gap-2">
+                  {currentProduct.ageCategories.map(age => (
+                    <button key={age}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold border-2 border-gray-200 hover:border-[#1B4D3E] hover:text-[#1B4D3E] text-gray-600 transition-all">{age}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Size */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">Size</p>
+              <div className="flex flex-wrap gap-2">
+                {currentProduct.sizes.map(size => (
+                  <button key={size} onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-xl text-sm font-black uppercase tracking-wide border-2 transition-all ${
+                      selectedSize === size
+                        ? 'border-[#0A1628] bg-[#0A1628] text-white'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-400'
+                    }`}>{size}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">
+                Color — <span className="text-[#0A1628] normal-case">{currentProduct.colors.find(c => c.id === selectedColor)?.name}</span>
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                {currentProduct.colors.map(color => (
+                  <button key={color.id} onClick={() => { setSelectedColor(color.id); setViewSide('front'); }}
+                    title={color.name}
+                    className={`w-9 h-9 rounded-full border-4 transition-all ${
+                      selectedColor === color.id ? 'border-[#0A1628] scale-110 shadow-md' : 'border-gray-200 hover:border-gray-400'
+                    }`}
+                    style={{ backgroundColor: color.hex }}>
+                    {selectedColor === color.id && (
+                      <div className="flex items-center justify-center h-full">
+                        <div className={`w-2.5 h-2.5 rounded-full ${color.hex === '#FFFFFF' ? 'bg-gray-900' : 'bg-white'}`} />
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quantity */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-3">
+                Quantity {orderType === 'team' && <span className="text-[#1B4D3E]">— Team Bulk</span>}
+              </p>
+              <div className="flex items-center gap-4">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="w-11 h-11 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-xl transition-all">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="text-2xl font-black text-[#0A1628] w-10 text-center">{quantity}</span>
+                <button onClick={() => setQuantity(Math.min(999, quantity + 1))}
+                  className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-xl transition-all"
+                  style={{ background: 'linear-gradient(135deg,#C8A951,#E8CC7A)', color: '#0A1628' }}>
+                  <Plus className="w-4 h-4" />
+                </button>
+                {orderType === 'team' && quantity >= currentProduct.teamOrderMin && (
+                  <span className="text-xs text-[#1B4D3E] font-bold">✓ Team discount applied</span>
+                )}
+              </div>
+              {orderType === 'team' && quantity < currentProduct.teamOrderMin && (
+                <p className="text-xs text-gray-400 mt-2">Add {currentProduct.teamOrderMin - quantity} more for team pricing</p>
               )}
             </div>
 
-            {/* Custom Print Callout — always visible */}
-            <div className="card-surface p-4 border border-gold-500/20 bg-gold-500/5">
-              <p className="text-gold-500 font-display font-bold text-xs uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                <span>✦</span> Custom Print — Included on Every Order
-              </p>
-              <div className="grid grid-cols-2 gap-1.5">
-                {[
-                  'Team name on front & back',
-                  'Player name & number',
-                  'Upload your team logo / crest',
-                  'Choose primary & secondary colours',
-                  'Screen print, sublimation, or embroidery',
-                  'Individual athletes & full teams',
-                ].map(f => (
-                  <div key={f} className="flex items-start gap-1.5 text-[11px] text-gray-400">
-                    <span className="text-gold-500 mt-0.5 flex-shrink-0">→</span>{f}
+            {/* Price summary + Add to Cart */}
+            <div className="bg-[#0A1628] rounded-2xl p-5 text-white">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <p className="text-gray-400 text-xs">
+                    {orderType === 'team' && quantity >= currentProduct.teamOrderMin ? 'Team price' : 'Price'} × {quantity}
+                  </p>
+                  <p className="font-black text-2xl text-white">
+                    ${(orderType === 'team' && quantity >= currentProduct.teamOrderMin ? teamPrice : currentProduct.price) * quantity}
+                  </p>
+                </div>
+                {orderType === 'team' && quantity >= currentProduct.teamOrderMin && (
+                  <div className="text-right">
+                    <p className="text-[#C8A951] text-xs font-bold">15% bulk discount</p>
+                    <p className="text-gray-400 text-xs line-through">${currentProduct.price * quantity}</p>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Size + Color + Quantity */}
-            <div className="card-surface p-6 space-y-5">
-              {/* Size */}
-              <div>
-                <label className="block text-[10px] text-gray-400 uppercase tracking-widest font-display font-bold mb-2">Size</label>
-                <div className="flex flex-wrap gap-2">
-                  {currentProduct.sizes.map(size => (
-                    <button key={size} onClick={() => setSelectedSize(size)}
-                      className={`px-3 py-2 rounded-lg text-xs font-display font-bold uppercase tracking-wider transition-all border ${
-                        selectedSize === size ? 'btn-gold border-gold-500' : 'border-gray-300 text-gray-600 hover:border-[#1B4D3E] hover:text-[#1B4D3E]'
-                      }`}
-                    >{size}</button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Color */}
-              <div>
-                <label className="block text-[10px] text-gray-400 uppercase tracking-widest font-display font-bold mb-2">Color</label>
-                <div className="flex flex-wrap gap-2">
-                  {currentProduct.colors.map(color => (
-                    <button key={color.id} onClick={() => handleColorChange(color.id)} title={color.name}
-                      className={`relative w-9 h-9 rounded-full border-2 transition-all ${
-                        selectedColor === color.id ? 'border-gold-500 scale-110' : 'border-white/10 hover:border-white/30'
-                      }`}
-                      style={{ backgroundColor: color.hex }}
-                    >
-                      {selectedColor === color.id && (
-                        <div className={`absolute inset-0 flex items-center justify-center`}>
-                          <div className={`w-2.5 h-2.5 rounded-full ${color.id === 'white' ? 'bg-navy-900' : 'bg-white'}`} />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quantity */}
-              <div>
-                <label className="block text-[10px] text-gray-400 uppercase tracking-widest font-display font-bold mb-2">
-                  Quantity {orderType === 'team' && <span className="text-gold-500">(Team Bulk)</span>}
-                </label>
-                <div className="flex items-center gap-4">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 rounded-xl bg-navy-800 border border-white/10 hover:border-white/25 text-white flex items-center justify-center transition-all">
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="text-white font-display font-black text-2xl w-12 text-center">{quantity}</span>
-                  <button onClick={() => setQuantity(Math.min(999, quantity + 1))}
-                    className="w-10 h-10 rounded-xl btn-gold flex items-center justify-center">
-                    <Plus className="w-4 h-4" />
-                  </button>
-                  {orderType === 'team' && quantity >= 5 && (
-                    <span className="text-xs text-gold-500 font-display font-bold ml-2">✓ Team discount applied</span>
-                  )}
-                </div>
-                {orderType === 'team' && quantity < 5 && (
-                  <p className="text-xs text-gray-500 mt-2">Add {5 - quantity} more for team bulk pricing</p>
                 )}
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Delivery notice at bottom of configurator */}
-        <div className="mt-8 bg-navy-800 border border-white/5 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gold-500/10 border border-gold-500/20 flex-shrink-0 flex items-center justify-center">
-            <Package className="w-5 h-5 text-gold-500" />
-          </div>
-          <div className="flex-1">
-            <p className="font-display font-bold text-white uppercase tracking-wider text-sm">Delivery Policy</p>
-            <p className="text-gray-400 text-xs mt-0.5">
-              Standard production &amp; delivery: <strong className="text-white">2 weeks (± a few days)</strong> from order confirmation.
-              Orders placed within 2 weeks of your event will be flagged as <strong className="text-rush">RUSH ORDERS</strong> — delivery before the event date is <strong className="text-rush">NOT guaranteed</strong>.
-            </p>
+              <motion.button
+                whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
+                onClick={handleAddToCart}
+                className="w-full py-4 rounded-xl font-black text-base uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
+                style={{ background: addedToCart ? '#16A34A' : 'linear-gradient(135deg,#C8A951,#E8CC7A)', color: '#0A1628' }}
+              >
+                {addedToCart ? (
+                  <><Check className="w-5 h-5" /> Added to Cart!</>
+                ) : (
+                  <><ShoppingCart className="w-5 h-5" /> Add to Cart</>
+                )}
+              </motion.button>
+
+              <p className="text-center text-gray-500 text-xs mt-3">
+                📦 Standard 2-week delivery · Rush orders within 2 weeks of event not guaranteed
+              </p>
+            </div>
           </div>
         </div>
       </div>

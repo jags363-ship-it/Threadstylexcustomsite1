@@ -1,7 +1,7 @@
 import { getNearestEventRushStatus } from './lib/rushOrder';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, AlertCircle, CheckCircle, Package } from 'lucide-react';
+import { Package, AlertCircle, ShoppingCart, CheckCircle } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ProductConfiguration } from './components/ProductConfiguration';
