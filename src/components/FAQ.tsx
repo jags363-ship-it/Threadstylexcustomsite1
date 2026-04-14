@@ -4,36 +4,44 @@ import { ChevronDown } from 'lucide-react';
 
 const faqs = [
   {
+    q: 'Is ThreadStylez the official apparel provider for Islamic Games 2026?',
+    a: 'Yes. ThreadStylez (threadstylez.com / threadstylezbrands.com) is the officially designated apparel provider for Islamic Games 2026 — covering all events across the USA and Canada including New Jersey, Dallas, Chicago, Michigan, Houston, and more. This means your order meets the official quality and branding standards for team representation at the Games.',
+  },
+  {
     q: 'What is the standard delivery time?',
-    a: 'Standard production and delivery takes approximately 2 weeks (± a few days) from the time your order is confirmed and payment is received. This covers printing, quality check, packaging, and shipping.',
+    a: 'Standard production and delivery takes approximately 2 weeks (± a few days) from order confirmation and payment. This covers printing, quality check, packaging, and shipping. We strongly recommend ordering at least 3 weeks before your event date.',
   },
   {
-    q: 'What is a Rush Order?',
-    a: 'If your event is within 2 weeks of placing your order, it is automatically classified as a Rush Order. We will do our absolute best to fulfill it on time, but we CANNOT guarantee delivery before your event date. We strongly recommend ordering at least 3 weeks in advance.',
+    q: 'What is a Rush Order and is delivery guaranteed?',
+    a: 'If your event is within 2 weeks of placing your order, it is classified as a Rush Order. We will do everything possible to fulfill it, but we CANNOT guarantee delivery before your event date. For the Islamic Games events, order at least 3–4 weeks in advance to ensure on-time delivery.',
   },
   {
-    q: 'Can I order for my whole team?',
-    a: 'Absolutely. Select "Team Order" in the order type section. Team orders of 5+ items receive a 15% bulk discount. You can specify individual sizes and player details for each team member — or submit a roster sheet via email after ordering.',
+    q: 'Can I order apparel for my whole Islamic Games team?',
+    a: 'Absolutely. Select "Team Order" to get 15% bulk pricing on orders of 5 or more items. You can specify individual sizes and player details for each athlete. For large team rosters, email your roster sheet to sales@threadstylez.com after placing your order.',
+  },
+  {
+    q: 'What sports does Islamic Games 2026 cover?',
+    a: 'Islamic Games 2026 features basketball, soccer, volleyball, cricket, softball, flag football, track & field, swimming, tennis, table tennis, badminton, pickleball, cycling, 5K, archery, and more. ThreadStylez provides apparel for all sports with full customization.',
   },
   {
     q: 'What customization options are available?',
-    a: 'You can customize: Team Name, Player Name, Player Number, Team Logo (upload your own), Primary and Secondary colors, and Print Placements (front, back, sleeve, etc.). All items support full sublimation or screen printing depending on the product.',
+    a: 'You can customize: Team Name, Player Name & Number, Team Logo (upload your own), Primary & Secondary Colors, and Print Placement (front, back, sleeve, etc.). All items support full sublimation or screen printing. Halal-compliant, modest-cut options are available on request.',
   },
   {
-    q: 'Why is this the "Official IG Apparel Partner"?',
-    a: 'ThreadStylez is the officially designated apparel vendor for IG (Instagram) teams participating in National Games events. This means your order meets the official quality and branding standards required for team representation.',
+    q: 'What is ThreadStylezBrands.com?',
+    a: 'ThreadStylezBrands.com is the upcoming dedicated portal launching in 2026 specifically for Islamic Games and community sports event apparel. It will be the central hub for all Islamic Games team orders, event-specific collections, and official gear. Stay tuned for the launch!',
   },
   {
-    q: 'What file format should I upload for my logo?',
-    a: 'We recommend PNG with transparent background (300×300px minimum). SVG and JPG files are also accepted. For best print quality, provide high-resolution files at the largest size available.',
+    q: 'What file format should I upload for my team logo?',
+    a: 'We recommend PNG with a transparent background (300×300px minimum, higher res is better). SVG and JPG are also accepted. For the cleanest print results, provide the highest resolution file you have.',
   },
   {
-    q: 'Can I mix different sizes in a team order?',
-    a: 'Yes. After placing your order, contact our team at orders@threadstylez.com with your size breakdown per player. For large team orders, we recommend emailing a roster sheet.',
+    q: 'Can Islamic schools and youth organizations order?',
+    a: 'Yes. Islamic Games is open to Islamic schools, leagues, youth organizations, and sports academies. We offer special pricing for non-profit organizations and Islamic schools — contact us at sales@threadstylez.com for details.',
   },
   {
-    q: 'What is your return / exchange policy?',
-    a: 'Custom-printed orders cannot be returned unless there is a manufacturing defect. Blank/non-customized orders may be returned within 14 days. Please contact us within 72 hours of receiving your order if there is an issue.',
+    q: 'What is your return policy for custom orders?',
+    a: 'Custom-printed orders cannot be returned unless there is a manufacturing defect. Blank/non-customized items may be returned within 14 days. Contact us within 72 hours of delivery if there is any issue.',
   },
 ];
 

@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { motion } from 'framer-motion';
-import { Lock, CreditCard, ArrowLeft } from 'lucide-react';
+import { Lock, CreditCard, ArrowLeft, AlertTriangle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { RushOrderBanner } from '../components/RushOrderBanner';
+import { getNearestEventRushStatus } from '../lib/rushOrder';
 
 interface CheckoutFormData {
   email: string;
@@ -42,6 +44,9 @@ export function CheckoutPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Rush order status — computed once, never affects payment logic
+  const rushStatus = getNearestEventRushStatus();
 
   useEffect(() => {
     if (cart.length === 0) {
@@ -259,6 +264,13 @@ export function CheckoutPage() {
               Secure Checkout
             </h1>
           </div>
+
+          {/* Rush Order Warning — visual only, no payment logic change */}
+          {(rushStatus.isRush || rushStatus.warningLevel === 'caution') && (
+            <div className="px-6 pt-4">
+              <RushOrderBanner status={rushStatus} />
+            </div>
+          )}
 
           <div className="flex items-center justify-center gap-4 p-6 bg-gray-50 dark:bg-gray-700/50">
             {[1, 2, 3].map((s) => (
@@ -523,6 +535,19 @@ export function CheckoutPage() {
                     {error && (
                       <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
                         <p className="text-red-800 dark:text-red-200">{error}</p>
+                      </div>
+                    )}
+
+                    {/* Rush Order final acknowledgment — displayed in Step 3 before payment */}
+                    {rushStatus.isRush && (
+                      <div className="bg-[#3D0000] border border-red-900/60 rounded-xl p-4 flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-rush flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-display font-bold text-red-200 text-sm uppercase tracking-wider mb-1">Rush Order Acknowledgment</p>
+                          <p className="text-xs text-red-300 leading-relaxed">
+                            By completing this purchase you confirm you understand this is a <strong>RUSH ORDER</strong>. Standard production time is 2 weeks. Delivery before your event date is <strong>NOT guaranteed</strong>. No refunds will be issued for late delivery on rush orders.
+                          </p>
+                        </div>
                       </div>
                     )}
 

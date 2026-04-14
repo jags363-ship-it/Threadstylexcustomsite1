@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { CheckCircle, Package, Truck, Mail, Download, ShoppingBag, Home } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
+import { getNearestEventRushStatus } from '../lib/rushOrder';
 
 export function OrderSuccess() {
   const [searchParams] = useSearchParams();
   const [orderData, setOrderData] = useState<any>(null);
   const [isVerifying, setIsVerifying] = useState(true);
+  const rushStatus = getNearestEventRushStatus();
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -451,13 +453,33 @@ export function OrderSuccess() {
         </div>
 
         {/* Confirmation Email Notice */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-6">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-4">
           <div className="flex items-start gap-3">
             <Mail className="w-6 h-6 text-blue-600 dark:text-cyan-400 flex-shrink-0 mt-1" />
             <div>
               <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">Confirmation Email Sent</p>
               <p className="text-sm text-blue-700 dark:text-blue-300">
                 We've sent order confirmation and tracking details to <strong>{orderData.customerInfo.email}</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Delivery Timeline Notice */}
+        <div className={`rounded-xl p-5 mb-6 border ${rushStatus.isRush ? 'bg-[#3D0000] border-red-900/50' : 'bg-[#0A1628] border-white/10'}`}>
+          <div className="flex items-start gap-3">
+            <div className={`w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center ${rushStatus.isRush ? 'bg-rush' : 'bg-[#1B4D3E]'}`}>
+              <Package className={`w-4 h-4 ${rushStatus.isRush ? 'text-white' : 'text-green-300'}`} />
+            </div>
+            <div>
+              <p className={`font-bold text-sm uppercase tracking-wider mb-1 ${rushStatus.isRush ? 'text-red-200' : 'text-white'}`}>
+                {rushStatus.isRush ? '⚠ Rush Order — Delivery Not Guaranteed' : '✓ Production Underway'}
+              </p>
+              <p className={`text-xs leading-relaxed ${rushStatus.isRush ? 'text-red-300' : 'text-gray-400'}`}>
+                {rushStatus.isRush
+                  ? `This was placed as a Rush Order. Standard production is 2 weeks from confirmation. Delivery before your event is not guaranteed. Estimated arrival: ~${rushStatus.estimatedDeliveryDate}.`
+                  : `Standard production & delivery: ~2 weeks from order confirmation. Estimated arrival: ~${rushStatus.estimatedDeliveryDate}. We'll email you a tracking number once shipped.`
+                }
               </p>
             </div>
           </div>

@@ -1,6 +1,7 @@
+import { getNearestEventRushStatus } from './lib/rushOrder';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, AlertCircle, Package, CheckCircle, Clock } from 'lucide-react';
+import { ShoppingCart, AlertCircle, CheckCircle, Package } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ProductConfiguration } from './components/ProductConfiguration';
@@ -14,19 +15,10 @@ import { placements } from './data/placements';
 import { designs } from './data/designs';
 import { useCart } from './context/CartContext';
 import { CartModal } from './components/CartModal';
+import { IGPartnershipSection } from './components/IGPartnershipSection';
+import { RushOrderBanner } from './components/RushOrderBanner';
 
-// Delivery date calculator
-function getEstimatedDelivery(isRush: boolean): string {
-  const d = new Date();
-  d.setDate(d.getDate() + (isRush ? 10 : 14));
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
-
-function isRushOrder(): boolean {
-  const eventDate = new Date('2025-08-01');
-  const diff = (eventDate.getTime() - new Date().getTime()) / 86400000;
-  return diff <= 14 && diff > 0;
-}
+// Rush order logic — centralised in lib/rushOrder.ts
 
 function App() {
   // Product state (preserved from original)
@@ -61,8 +53,9 @@ function App() {
   const shippingCost = subtotal >= 35 ? 0 : SHIPPING_FEE;
   const totalPrice = subtotal + shippingCost;
 
-  const rush = isRushOrder();
-  const estimatedDelivery = getEstimatedDelivery(rush);
+  const rushStatus = getNearestEventRushStatus();
+  const rush = rushStatus.isRush;
+  const estimatedDelivery = rushStatus.estimatedDeliveryDate;
 
   const hasDesign = selectedDesign !== null || uploadedFile !== null;
   const isBlankSelected = selectedDesign === 'blank';
@@ -217,22 +210,9 @@ function App() {
                   </div>
                 </div>
 
-                {/* Delivery estimate */}
-                <div className={`mt-5 p-4 rounded-xl border flex items-start gap-3 ${rush ? 'border-rush/30 bg-rush/5' : 'border-gold-500/20 bg-gold-500/5'}`}>
-                  <div className="flex-shrink-0 mt-0.5">
-                    {rush ? <Clock className="w-4 h-4 text-rush" /> : <Package className="w-4 h-4 text-gold-500" />}
-                  </div>
-                  <div>
-                    <p className={`font-display font-bold text-xs uppercase tracking-wider ${rush ? 'text-rush' : 'text-gold-500'}`}>
-                      {rush ? '⚠ Rush Order' : 'Estimated Delivery'}
-                    </p>
-                    <p className="text-white font-body text-sm mt-0.5">
-                      {rush
-                        ? `Rush orders are not guaranteed before your event. Estimated: ~${estimatedDelivery}`
-                        : `~${estimatedDelivery} (2 weeks from order confirmation)`}
-                    </p>
-                    {rush && <p className="text-gray-400 text-xs mt-1">Rush delivery not guaranteed. Order early for best results.</p>}
-                  </div>
+                {/* Delivery estimate — from shared rush utility */}
+                <div className="mt-5">
+                  <RushOrderBanner status={rushStatus} />
                 </div>
               </motion.div>
             )}
@@ -280,6 +260,7 @@ function App() {
           </div>
         </section>
 
+        <IGPartnershipSection />
         <Reviews />
         <FAQ />
         <Footer />

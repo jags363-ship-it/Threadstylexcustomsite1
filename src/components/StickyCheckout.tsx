@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, AlertCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { ShoppingCart, AlertCircle, Zap } from 'lucide-react';
 
 interface StickyCheckoutProps {
   selectedDesign: string | null;
@@ -10,6 +9,8 @@ interface StickyCheckoutProps {
   onCheckout: () => void;
   isLoading: boolean;
   error: string | null;
+  orderType?: 'individual' | 'team';
+  teamName?: string;
 }
 
 export function StickyCheckout({
@@ -19,69 +20,55 @@ export function StickyCheckout({
   price,
   onCheckout,
   isLoading,
-  error
+  error,
+  orderType = 'individual',
+  teamName,
 }: StickyCheckoutProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      setIsVisible(scrollPosition > windowHeight * 0.5);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const hasDesign = selectedDesign !== null || uploadedFile !== null;
-  const total = (price * quantity).toFixed(2);
+  const show = hasDesign && price > 0;
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {show && (
         <motion.div
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          exit={{ y: 100 }}
-          className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t-2 border-gray-200 dark:border-gray-700 shadow-2xl z-50 md:hidden transition-colors"
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="fixed bottom-0 left-0 right-0 z-40 md:hidden"
         >
-          <div className="container mx-auto px-4 py-4">
-            <AnimatePresence>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex items-center gap-2 text-red-600 bg-red-50 dark:bg-red-900/30 px-4 py-2 rounded-xl mb-3 text-sm"
-                >
-                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                  <span className="font-medium">{error}</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">${total}</p>
+          <div className="bg-navy-800 border-t border-white/10 px-4 py-4 safe-bottom">
+            {error && (
+              <div className="flex items-center gap-2 text-rush text-xs mb-3 bg-rush/10 px-3 py-2 rounded-lg">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{error}</span>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+            )}
+
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <p className="text-gray-400 text-xs font-body">
+                  {orderType === 'team' && teamName ? teamName : 'Your order'} · {quantity} {quantity === 1 ? 'item' : 'items'}
+                </p>
+                <p className="text-white font-display font-black text-xl">${price.toFixed(2)}</p>
+              </div>
+              <button
                 onClick={onCheckout}
-                disabled={!hasDesign || isLoading}
-                className={`flex items-center gap-2 px-6 py-4 rounded-xl font-semibold text-lg shadow-lg transition-all ${
-                  hasDesign && !isLoading
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:shadow-xl'
-                    : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                }`}
+                disabled={isLoading}
+                className="btn-gold px-6 py-3.5 rounded-xl text-sm flex items-center gap-2 flex-shrink-0 disabled:opacity-50"
               >
-                <ShoppingCart className="w-5 h-5" />
-                {isLoading ? 'Processing...' : 'Checkout'}
-              </motion.button>
+                {isLoading ? (
+                  <span className="flex items-center gap-2"><Zap className="w-4 h-4 animate-spin" />Processing...</span>
+                ) : (
+                  <span className="flex items-center gap-2"><ShoppingCart className="w-4 h-4" />Add to Cart</span>
+                )}
+              </button>
             </div>
+
+            {/* Delivery micro-notice */}
+            <p className="text-center text-gray-600 text-[10px] mt-2">
+              📦 Standard 2-week delivery · Rush orders not guaranteed
+            </p>
           </div>
         </motion.div>
       )}
