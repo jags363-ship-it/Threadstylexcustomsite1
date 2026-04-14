@@ -3,81 +3,77 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 const faqs = [
-  {
-    q: 'Is ThreadStylez the official apparel provider for Islamic Games 2026?',
-    a: 'Yes. ThreadStylez (threadstylez.com / threadstylezbrands.com) is the officially designated apparel provider for Islamic Games 2026 — covering all events across the USA and Canada including New Jersey, Dallas, Chicago, Michigan, Houston, and more. This means your order meets the official quality and branding standards for team representation at the Games.',
-  },
-  {
-    q: 'What is the standard delivery time?',
-    a: 'Standard production and delivery takes approximately 2 weeks (± a few days) from order confirmation and payment. This covers printing, quality check, packaging, and shipping. We strongly recommend ordering at least 3 weeks before your event date.',
-  },
-  {
-    q: 'What is a Rush Order and is delivery guaranteed?',
-    a: 'If your event is within 2 weeks of placing your order, it is classified as a Rush Order. We will do everything possible to fulfill it, but we CANNOT guarantee delivery before your event date. For the Islamic Games events, order at least 3–4 weeks in advance to ensure on-time delivery.',
-  },
-  {
-    q: 'Can I order apparel for my whole Islamic Games team?',
-    a: 'Absolutely. Select "Team Order" to get 15% bulk pricing on orders of 5 or more items. You can specify individual sizes and player details for each athlete. For large team rosters, email your roster sheet to sales@threadstylez.com after placing your order.',
-  },
-  {
-    q: 'What sports does Islamic Games 2026 cover?',
-    a: 'Islamic Games 2026 features basketball, soccer, volleyball, cricket, softball, flag football, track & field, swimming, tennis, table tennis, badminton, pickleball, cycling, 5K, archery, and more. ThreadStylez provides apparel for all sports with full customization.',
-  },
-  {
-    q: 'What customization options are available?',
-    a: 'You can customize: Team Name, Player Name & Number, Team Logo (upload your own), Primary & Secondary Colors, and Print Placement (front, back, sleeve, etc.). All items support full sublimation or screen printing. Halal-compliant, modest-cut options are available on request.',
-  },
-  {
-    q: 'What is ThreadStylezBrands.com?',
-    a: 'ThreadStylezBrands.com is the upcoming dedicated portal launching in 2026 specifically for Islamic Games and community sports event apparel. It will be the central hub for all Islamic Games team orders, event-specific collections, and official gear. Stay tuned for the launch!',
-  },
-  {
-    q: 'What file format should I upload for my team logo?',
-    a: 'We recommend PNG with a transparent background (300×300px minimum, higher res is better). SVG and JPG are also accepted. For the cleanest print results, provide the highest resolution file you have.',
-  },
-  {
-    q: 'Can Islamic schools and youth organizations order?',
-    a: 'Yes. Islamic Games is open to Islamic schools, leagues, youth organizations, and sports academies. We offer special pricing for non-profit organizations and Islamic schools — contact us at sales@threadstylez.com for details.',
-  },
-  {
-    q: 'What is your return policy for custom orders?',
-    a: 'Custom-printed orders cannot be returned unless there is a manufacturing defect. Blank/non-customized items may be returned within 14 days. Contact us within 72 hours of delivery if there is any issue.',
-  },
+  { q: 'Is ThreadStylez the official apparel provider for Islamic Games 2026?', a: 'Yes. ThreadStylez (threadstylez.com / threadstylezbrands.com) is the officially designated apparel provider for Islamic Games 2026 — covering all events across the USA and Canada including New Jersey, Dallas, Chicago, Michigan, Houston, and more.' },
+  { q: 'What is the standard delivery time?', a: 'Standard production and delivery takes approximately 2 weeks from order confirmation. We strongly recommend ordering at least 3 weeks before your event date.' },
+  { q: 'What is a Rush Order?', a: 'If your event is within 2 weeks of placing your order, it is a Rush Order. We cannot guarantee delivery before your event. Order 3–4 weeks in advance to ensure on-time delivery.' },
+  { q: 'Can I order for my whole team?', a: 'Yes. Select "Team Order" for 15% bulk pricing on 5+ items. For large rosters, email sales@threadstylez.com after ordering.' },
+  { q: 'What customization is available?', a: 'Team Name, Player Name & Number, Team Logo upload, Primary & Secondary Colors, and print placement (front, back, sleeve). All items support sublimation, screen printing, or embroidery. Modest-cut options available.' },
+  { q: 'What file format for team logos?', a: 'PNG with transparent background recommended (300×300px min). SVG and JPG also accepted.' },
+  { q: 'What is the return policy?', a: 'Custom-printed orders cannot be returned unless there is a manufacturing defect. Blank items may be returned within 14 days. Contact us within 72 hours of delivery for any issues.' },
 ];
 
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-20 bg-white border-t border-gray-100">
-      <div className="max-w-3xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="section-label mb-3">Have Questions?</p>
-          <h2 className="step-heading" style={{color:"#0A1628"}}>FREQUENTLY ASKED</h2>
+    <section id="faq" className="py-10 border-t border-gray-100" style={{ background: '#F8F7F4' }}>
+      <div className="max-w-xl mx-auto px-4">
+
+        <div className="text-center mb-6">
+          <p style={{ color: '#1B4D3E', fontSize: '10px', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: '4px' }}>Help</p>
+          <h2 style={{ color: '#0A1628', fontSize: '18px', fontWeight: 700, margin: 0 }}>Frequently Asked Questions</h2>
         </div>
 
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {faqs.map((faq, i) => (
-            <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">
+            <div key={i} style={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: '10px', overflow: 'hidden' }}>
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 p-5 text-left bg-white hover:bg-gray-50 transition-colors"
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  gap: '12px', padding: '12px 16px', textAlign: 'left', background: 'none', border: 'none',
+                  cursor: 'pointer',
+                  backgroundColor: open === i ? '#F0F4F0' : 'white',
+                }}
               >
-                <span className="font-display font-bold text-white text-sm uppercase tracking-wide">{faq.q}</span>
-                <motion.div animate={{ rotate: open === i ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                  <ChevronDown className={`w-4 h-4 flex-shrink-0 ${open === i ? 'text-gold-500' : 'text-gray-500'}`} />
+                {/* QUESTION — forced dark color inline so nothing can override it */}
+                <span style={{
+                  color: '#111827',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  lineHeight: '1.4',
+                  fontFamily: 'Barlow, sans-serif',
+                }}>
+                  {faq.q}
+                </span>
+                <motion.div
+                  animate={{ rotate: open === i ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  style={{ flexShrink: 0 }}
+                >
+                  <ChevronDown style={{ width: '14px', height: '14px', color: open === i ? '#1B4D3E' : '#9CA3AF' }} />
                 </motion.div>
               </button>
+
               <AnimatePresence>
                 {open === i && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden"
+                    transition={{ duration: 0.18 }}
+                    style={{ overflow: 'hidden' }}
                   >
-                    <p className="px-5 pb-5 text-gray-600 text-sm font-body leading-relaxed border-t border-gray-100 pt-4">
+                    {/* ANSWER — also forced inline */}
+                    <p style={{
+                      padding: '10px 16px 14px',
+                      color: '#4B5563',
+                      fontSize: '12px',
+                      lineHeight: '1.6',
+                      borderTop: '1px solid #F3F4F6',
+                      margin: 0,
+                      fontFamily: 'Barlow, sans-serif',
+                    }}>
                       {faq.a}
                     </p>
                   </motion.div>
@@ -86,6 +82,13 @@ export function FAQ() {
             </div>
           ))}
         </div>
+
+        <p style={{ textAlign: 'center', color: '#9CA3AF', fontSize: '11px', marginTop: '16px' }}>
+          Questions? Email{' '}
+          <a href="mailto:sales@threadstylez.com" style={{ color: '#1B4D3E', fontWeight: 600 }}>
+            sales@threadstylez.com
+          </a>
+        </p>
       </div>
     </section>
   );

@@ -55,11 +55,11 @@ export function Header({ onCartClick }: HeaderProps) {
               onError={(e) => { (e.target as HTMLImageElement).src = '/image.png'; }}
             />
             <div className="hidden sm:block border-l-2 border-[#C8A951] pl-4">
-              <p className="text-base font-black tracking-widest uppercase leading-none text-[#C8A951]"
+              <p className="text-sm font-bold tracking-widest uppercase leading-none text-[#C8A951]"
                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
                 Islamic Games 2026
               </p>
-              <p className="text-sm font-bold leading-tight mt-1 text-gray-700"
+              <p className="text-xs font-medium leading-tight mt-1 text-gray-600"
                  style={{ fontFamily: "'Barlow', sans-serif" }}>
                 Official Apparel Portal
               </p>

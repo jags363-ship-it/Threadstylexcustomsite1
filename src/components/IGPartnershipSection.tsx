@@ -50,7 +50,7 @@ export function IGPartnershipSection() {
           </a>
 
           <div className="text-center">
-            <div className="text-gray-600 text-3xl font-display font-black">×</div>
+            <div className="text-gray-600 text-3xl font-display font-bold">×</div>
             <p className="text-[10px] text-gray-600 uppercase tracking-widest mt-1">Official Provider</p>
           </div>
 
@@ -73,7 +73,7 @@ export function IGPartnershipSection() {
           <div className="hidden sm:block w-px h-16 bg-white/10" />
 
           <div className="text-center sm:text-left">
-            <p className="font-display font-black text-white text-lg uppercase tracking-wide">
+            <p className="font-display font-bold text-white text-lg uppercase tracking-wide">
               ThreadStylezBrands.com
             </p>
             <p className="text-gray-400 text-sm mt-1">
@@ -101,7 +101,7 @@ export function IGPartnershipSection() {
               transition={{ delay: i * 0.08 }}
               className="bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm"
             >
-              <div className="font-display font-black text-[#C8A951] text-3xl leading-none mb-1">{s.val}</div>
+              <div className="font-display font-bold text-[#C8A951] text-3xl leading-none mb-1">{s.val}</div>
               <div className="text-gray-500 text-xs uppercase tracking-wider font-body">{s.label}</div>
             </motion.div>
           ))}
@@ -126,7 +126,7 @@ export function IGPartnershipSection() {
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-[#4CAF7D] flex-shrink-0" />
-                    <h3 className="font-display font-black text-white text-lg uppercase tracking-wide leading-none">{ev.city}</h3>
+                    <h3 className="font-display font-bold text-white text-lg uppercase tracking-wide leading-none">{ev.city}</h3>
                   </div>
                   <ExternalLink className="w-3.5 h-3.5 text-gray-600 group-hover:text-gold-500 flex-shrink-0 transition-colors" />
                 </div>
@@ -172,7 +172,7 @@ export function IGPartnershipSection() {
               <div className="w-10 h-10 rounded-xl bg-[#1B4D3E]/40 border border-[#2D7A55]/30 flex items-center justify-center mb-4">
                 <Icon className="w-5 h-5 text-[#4CAF7D]" />
               </div>
-              <h4 className="font-display font-black text-gray-900 text-base uppercase tracking-wide mb-2">{title}</h4>
+              <h4 className="font-display font-bold text-gray-900 text-base uppercase tracking-wide mb-2">{title}</h4>
               <p className="text-gray-600 text-xs font-body leading-relaxed">{desc}</p>
             </div>
           ))}

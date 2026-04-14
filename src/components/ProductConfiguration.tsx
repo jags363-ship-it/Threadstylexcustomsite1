@@ -159,7 +159,7 @@ export function ProductConfiguration({
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
             <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#1B4D3E] mb-2">Step 1 — Choose Your Sport</p>
-            <h2 className="font-black text-4xl md:text-5xl text-[#0A1628] uppercase" style={{fontFamily:"'Barlow Condensed',sans-serif"}}>
+            <h2 className="font-extrabold text-3xl md:text-4xl text-[#0A1628]" style={{fontFamily:"'Barlow',sans-serif"}}>
               SELECT YOUR SPORT
             </h2>
             <p className="text-gray-600 mt-3 text-base">Pick your sport to see the right apparel options for your team</p>
@@ -190,8 +190,8 @@ export function ProductConfiguration({
                   className="bg-white rounded-2xl p-5 text-center border-2 border-transparent hover:border-[#1B4D3E] shadow-sm hover:shadow-md transition-all group"
                 >
                   <div className="text-4xl mb-2">{SPORT_ICONS[sport] || '🏅'}</div>
-                  <p className="font-black text-sm uppercase tracking-wide text-[#0A1628] group-hover:text-[#1B4D3E]"
-                     style={{ fontFamily: "'Barlow Condensed',sans-serif" }}>
+                  <p className="font-bold text-sm text-[#0A1628] group-hover:text-[#1B4D3E]"
+                     style={{ fontFamily: "'Barlow',sans-serif" }}>
                     {sport}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">{count} items</p>
@@ -228,7 +228,7 @@ export function ProductConfiguration({
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
               <p className="text-xs tracking-[0.3em] uppercase font-bold text-[#1B4D3E] mb-1">Step 2 — Select Apparel</p>
-              <h2 className="font-black text-3xl text-[#0A1628] uppercase" style={{fontFamily:"'Barlow Condensed',sans-serif"}}>
+              <h2 className="font-extrabold text-2xl text-[#0A1628]" style={{fontFamily:"'Barlow',sans-serif"}}>
                 {selectedSport ? `${selectedSport} Apparel` : 'All Apparel'}
               </h2>
               <p className="text-gray-500 text-sm">{displayedProducts.length} items — click any to customize</p>
@@ -353,8 +353,7 @@ export function ProductConfiguration({
             {/* Upload logo section — NO gallery designs */}
             <div className="bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-200">
-                <h3 className="font-black text-base uppercase tracking-wide text-[#0A1628]"
-                    style={{fontFamily:"'Barlow Condensed',sans-serif"}}>Upload Your Team Logo / Artwork</h3>
+                <h3 className="font-semibold text-base text-[#0A1628]">Upload Your Team Logo / Artwork</h3>
                 <p className="text-xs text-gray-500 mt-0.5">PNG, JPG, or SVG · Max 5MB · Transparent background recommended</p>
               </div>
               <div className="p-5">
@@ -414,8 +413,7 @@ export function ProductConfiguration({
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div>
                   <p className="text-xs text-[#1B4D3E] font-bold uppercase tracking-wider">{currentProduct.categoryLabel}</p>
-                  <h2 className="font-black text-2xl text-[#0A1628] uppercase leading-tight mt-0.5"
-                      style={{fontFamily:"'Barlow Condensed',sans-serif"}}>{currentProduct.name}</h2>
+                  <h2 className="font-bold text-xl text-[#0A1628] leading-tight mt-0.5">{currentProduct.name}</h2>
                 </div>
                 {savingsPercent > 0 && (
                   <span className="bg-[#C8A951] text-[#0A1628] text-xs font-black px-2.5 py-1 rounded-full flex-shrink-0">{savingsPercent}% OFF</span>
@@ -446,8 +444,7 @@ export function ProductConfiguration({
                       orderType === id ? 'border-[#1B4D3E] bg-[#1B4D3E]/5' : 'border-gray-200 hover:border-gray-300'
                     }`}>
                     <Icon className={`w-6 h-6 ${orderType === id ? 'text-[#1B4D3E]' : 'text-gray-400'}`} />
-                    <p className={`font-black text-sm uppercase ${orderType === id ? 'text-[#1B4D3E]' : 'text-gray-700'}`}
-                       style={{fontFamily:"'Barlow Condensed',sans-serif"}}>{label}</p>
+                    <p className={`font-semibold text-sm ${orderType === id ? 'text-[#1B4D3E]' : 'text-gray-700'}`}>{label}</p>
                     <p className="text-gray-500 text-[10px]">{sub}</p>
                     {orderType === id && <Check className="w-3.5 h-3.5 text-[#1B4D3E]" />}
                   </button>
@@ -501,7 +498,7 @@ export function ProductConfiguration({
               <div className="flex flex-wrap gap-2">
                 {currentProduct.sizes.map(size => (
                   <button key={size} onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-xl text-sm font-black uppercase tracking-wide border-2 transition-all ${
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all ${
                       selectedSize === size
                         ? 'border-[#0A1628] bg-[#0A1628] text-white'
                         : 'border-gray-200 text-gray-600 hover:border-gray-400'
@@ -580,7 +577,7 @@ export function ProductConfiguration({
               <motion.button
                 whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
                 onClick={handleAddToCart}
-                className="w-full py-4 rounded-xl font-black text-base uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
+                className="w-full py-4 rounded-xl font-bold text-base uppercase tracking-wide flex items-center justify-center gap-2 transition-all"
                 style={{ background: addedToCart ? '#16A34A' : 'linear-gradient(135deg,#C8A951,#E8CC7A)', color: '#0A1628' }}
               >
                 {addedToCart ? (
