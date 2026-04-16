@@ -17,12 +17,12 @@ const IG_EVENTS = [
 
 // Bright, well-lit sport product and action photos — light backgrounds
 const SLIDES = [
-  { src: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=900&q=90&auto=format&fit=crop&brightness=10', label: 'Basketball' },
-  { src: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=900&q=90&auto=format&fit=crop', label: 'Soccer' },
-  { src: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=900&q=90&auto=format&fit=crop', label: 'Volleyball' },
-  { src: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=900&q=90&auto=format&fit=crop', label: 'Track & Field' },
-  { src: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=900&q=90&auto=format&fit=crop', label: 'Tennis' },
-  { src: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=900&q=90&auto=format&fit=crop', label: 'Martial Arts' },
+  { src: 'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=900', label: 'Basketball' },
+  { src: 'https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?auto=compress&cs=tinysrgb&w=900', label: 'Soccer' },
+  { src: 'https://images.pexels.com/photos/3649578/pexels-photo-3649578.jpeg?auto=compress&cs=tinysrgb&w=900', label: 'Volleyball' },
+  { src: 'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=900', label: 'Track & Field' },
+  { src: 'https://images.pexels.com/photos/8224716/pexels-photo-8224716.jpeg?auto=compress&cs=tinysrgb&w=900', label: 'Tennis' },
+  { src: 'https://images.pexels.com/photos/4428291/pexels-photo-4428291.jpeg?auto=compress&cs=tinysrgb&w=900', label: 'Martial Arts' },
 ];
 
 export function Hero() {

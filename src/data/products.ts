@@ -52,18 +52,18 @@ const TS = {
   heavy_orange:  'https://threadstylez.com/wp-content/uploads/2023/11/Orange-2-1.jpg',
   heavy_oxford:  'https://threadstylez.com/wp-content/uploads/2023/11/Oxford-2.jpg',
   cap:           'https://threadstylez.com/wp-content/uploads/2024/10/TSBH-main-3.png',
-  longsleeve_black: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=85',
-  longsleeve_white: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=600&q=85',
-  socks_crew:    'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=600&q=85',
-  socks_ankle:   'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=600&q=85',
-  socks_perf:    'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=600&q=85',
-  flatbrim_cap:  'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=600&q=85',
-  baseball_cap:  'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85',
-  joggers_black: 'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&q=85',
-  joggers_grey:  'https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=600&q=85',
-  shorts_black:  'https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=600&q=85',
-  perf_top_black:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85',
-  perf_top_white:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85',
+  longsleeve_black: 'https://images.pexels.com/photos/4427634/pexels-photo-4427634.jpeg?auto=compress&cs=tinysrgb&w=600',
+  longsleeve_white: 'https://images.pexels.com/photos/4427634/pexels-photo-4427634.jpeg?auto=compress&cs=tinysrgb&w=600',
+  socks_crew:    'https://images.pexels.com/photos/6311612/pexels-photo-6311612.jpeg?auto=compress&cs=tinysrgb&w=600',
+  socks_ankle:   'https://images.pexels.com/photos/6311612/pexels-photo-6311612.jpeg?auto=compress&cs=tinysrgb&w=600',
+  socks_perf:    'https://images.pexels.com/photos/6311612/pexels-photo-6311612.jpeg?auto=compress&cs=tinysrgb&w=600',
+  flatbrim_cap:  'https://images.pexels.com/photos/1351365/pexels-photo-1351365.jpeg?auto=compress&cs=tinysrgb&w=600',
+  baseball_cap:  'https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=600',
+  joggers_black: 'https://images.pexels.com/photos/4753987/pexels-photo-4753987.jpeg?auto=compress&cs=tinysrgb&w=600',
+  joggers_grey:  'https://images.pexels.com/photos/4753987/pexels-photo-4753987.jpeg?auto=compress&cs=tinysrgb&w=600',
+  shorts_black:  'https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=600',
+  perf_top_black:'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600',
+  perf_top_white:'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600',
   tote_black:    '/blank-placeholder.svg',
   tote_white:    '/blank-placeholder.svg',
   // IG Official branded product photos
@@ -77,42 +77,42 @@ const TS = {
 // ── Per-product accurate material/sport images ────────────────
 const IG = {
   // Basketball — mesh polyester sublimation jerseys
-  bball_mens_jersey:   'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=85',
-  bball_mens_ss:       'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600&q=85',
-  bball_womens_jersey: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=600&q=85',
-  bball_shorts:        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=85',
-  bball_kit:           'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&q=85',
+  bball_mens_jersey:   'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=600',
+  bball_mens_ss:       'https://images.pexels.com/photos/2277981/pexels-photo-2277981.jpeg?auto=compress&cs=tinysrgb&w=600',
+  bball_womens_jersey: 'https://images.pexels.com/photos/3230808/pexels-photo-3230808.jpeg?auto=compress&cs=tinysrgb&w=600',
+  bball_shorts:        'https://images.pexels.com/photos/3621104/pexels-photo-3621104.jpeg?auto=compress&cs=tinysrgb&w=600',
+  bball_kit:           'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Soccer — polyester sublimation kits
-  soccer_mens:         'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600&q=85',
-  soccer_womens:       'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=600&q=85',
-  soccer_shorts:       'https://images.unsplash.com/photo-1617296538902-887900d9b592?w=600&q=85',
-  soccer_kit:          'https://images.unsplash.com/photo-1529516548873-9ce57c8f155e?w=600&q=85',
-  soccer_gk:           'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&q=85',
+  soccer_mens:         'https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?auto=compress&cs=tinysrgb&w=600',
+  soccer_womens:       'https://images.pexels.com/photos/3621079/pexels-photo-3621079.jpeg?auto=compress&cs=tinysrgb&w=600',
+  soccer_shorts:       'https://images.pexels.com/photos/3621174/pexels-photo-3621174.jpeg?auto=compress&cs=tinysrgb&w=600',
+  soccer_kit:          'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=600',
+  soccer_gk:           'https://images.pexels.com/photos/3148452/pexels-photo-3148452.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Volleyball — sublimation polyester kit
-  volleyball:          'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&q=85',
+  volleyball:          'https://images.pexels.com/photos/3649578/pexels-photo-3649578.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Flag football — sublimation jersey + shorts
-  flag_football:       'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=600&q=85',
+  flag_football:       'https://images.pexels.com/photos/1618200/pexels-photo-1618200.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Cricket — whites cotton/poly
-  cricket_whites:      'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=600&q=85',
-  cricket_tee:         'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&q=85',
+  cricket_whites:      'https://images.pexels.com/photos/3452280/pexels-photo-3452280.jpeg?auto=compress&cs=tinysrgb&w=600',
+  cricket_tee:         'https://images.pexels.com/photos/9660/business-woman-face-portrait.jpg?auto=compress&cs=tinysrgb&w=600',
   // Softball — dryfit moisture-wicking polyester
-  softball:            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85',
+  softball:            'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Track — lightweight polyester singlet & modest long sleeve
-  track_singlet:       'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&q=85',
-  track_modest:        'https://images.unsplash.com/photo-1594882645126-14020914d58d?w=600&q=85',
+  track_singlet:       'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=600',
+  track_modest:        'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Martial arts — spandex/polyester compression rashguard & fight shorts
-  rashguard:           'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=85',
-  fight_shorts:        'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=600&q=85',
+  rashguard:           'https://images.pexels.com/photos/4428291/pexels-photo-4428291.jpeg?auto=compress&cs=tinysrgb&w=600',
+  fight_shorts:        'https://images.pexels.com/photos/260447/pexels-photo-260447.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Racket sports — moisture-wicking polyester pique polo
-  racket_polo:         'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=600&q=85',
+  racket_polo:         'https://images.pexels.com/photos/8224716/pexels-photo-8224716.jpeg?auto=compress&cs=tinysrgb&w=600',
   // 5K — moisture-wicking polyester event tee
-  fivek_tee:           'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=600&q=85',
+  fivek_tee:           'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Modest wear — polyester/spandex hijab, full-sleeve jersey, track pants
-  sports_hijab:        'https://images.unsplash.com/photo-1594882645126-14020914d58d?w=600&q=85',
-  modest_jersey:       'https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=600&q=85',
-  modest_pants:        'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=85',
+  sports_hijab:        'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=600',
+  modest_jersey:       'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=600',
+  modest_pants:        'https://images.pexels.com/photos/3621184/pexels-photo-3621184.jpeg?auto=compress&cs=tinysrgb&w=600',
   // Tote bag — canvas merchandise
-  tote:                'https://images.unsplash.com/photo-1597484662317-c89c3df82f48?w=600&q=85',
+  tote:                'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600',
 };
 
 const COLORS = {
@@ -766,7 +766,7 @@ export const products: Product[] = [
     colors: allColors(TS.cap),
     description: 'Structured 6-panel snapback with embroidered team logo on front panel.',
     features: ['6-Panel Structured','Embroidered Logo','Snapback Closure','All Colors Available'],
-    thumbnail: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=85',
+    thumbnail: 'https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=600',
     category: 'hat', categoryLabel: 'Snapback Cap',
     sports: ['All Sports'], teamOrderMin: 2,
     badge: 'All Sports', customPrint: true,

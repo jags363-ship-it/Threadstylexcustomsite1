@@ -14,22 +14,22 @@ export interface Design {
 
 // Free high-quality sports images (Unsplash/Pexels CDN — no watermark, free to use)
 const SPORTS_IMAGES = {
-  basketball:   'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80',
-  soccer:       'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=400&q=80',
-  volleyball:   'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=400&q=80',
-  swimming:     'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&q=80',
-  track:        'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&q=80',
-  cricket:      'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&q=80',
-  flagfootball: 'https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=400&q=80',
-  tennis:       'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=400&q=80',
-  badminton:    'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=400&q=80',
-  martial:      'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=400&q=80',
-  weightlift:   'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=80',
-  cycling:      'https://images.unsplash.com/photo-1534787238916-9ba6764efd4f?w=400&q=80',
-  teamwear:     'https://images.unsplash.com/photo-1529516548873-9ce57c8f155e?w=400&q=80',
-  modest:       'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80',
-  ceremony:     'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&q=80',
-  training:     'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&q=80',
+  basketball:   'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=400',
+  soccer:       'https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?auto=compress&cs=tinysrgb&w=400',
+  volleyball:   'https://images.pexels.com/photos/3649578/pexels-photo-3649578.jpeg?auto=compress&cs=tinysrgb&w=400',
+  swimming:     'https://images.pexels.com/photos/1263348/pexels-photo-1263348.jpeg?auto=compress&cs=tinysrgb&w=400',
+  track:        'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=400',
+  cricket:      'https://images.pexels.com/photos/3452280/pexels-photo-3452280.jpeg?auto=compress&cs=tinysrgb&w=400',
+  flagfootball: 'https://images.pexels.com/photos/1618200/pexels-photo-1618200.jpeg?auto=compress&cs=tinysrgb&w=400',
+  tennis:       'https://images.pexels.com/photos/8224716/pexels-photo-8224716.jpeg?auto=compress&cs=tinysrgb&w=400',
+  badminton:    'https://images.pexels.com/photos/3660204/pexels-photo-3660204.jpeg?auto=compress&cs=tinysrgb&w=400',
+  martial:      'https://images.pexels.com/photos/4428291/pexels-photo-4428291.jpeg?auto=compress&cs=tinysrgb&w=400',
+  weightlift:   'https://images.pexels.com/photos/1552252/pexels-photo-1552252.jpeg?auto=compress&cs=tinysrgb&w=400',
+  cycling:      'https://images.pexels.com/photos/2116475/pexels-photo-2116475.jpeg?auto=compress&cs=tinysrgb&w=400',
+  teamwear:     'https://images.pexels.com/photos/1432039/pexels-photo-1432039.jpeg?auto=compress&cs=tinysrgb&w=400',
+  modest:       'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=400',
+  ceremony:     'https://images.pexels.com/photos/976866/pexels-photo-976866.jpeg?auto=compress&cs=tinysrgb&w=400',
+  training:     'https://images.pexels.com/photos/260447/pexels-photo-260447.jpeg?auto=compress&cs=tinysrgb&w=400',
 };
 
 export const designs: Design[] = [
