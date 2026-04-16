@@ -1,21 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Fonts ────────────────────────────────────────────────────
+   Barlow Condensed = headlines only
+   Inter = all body text, labels, buttons, descriptions
+   ────────────────────────────────────────────────────────── */
 
 @layer base {
   :root {
     --gold: #C8A951;
     --green-ig: #1B4D3E;
-    --green-ig-mid: #2D7A55;
     --navy: #0A1628;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+
   body {
     background-color: #F8F7F4;
     color: #111827;
-    font-family: 'Barlow', sans-serif;
+    /* Inter for ALL body text — clear, modern, readable */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Only headings use Barlow Condensed */
+  h1, h2, h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    line-height: 1.05;
   }
 }
 
@@ -23,12 +40,29 @@
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Subtle grid texture */
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(27,77,62,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(27,77,62,0.04) 1px, transparent 1px);
-    background-size: 72px 72px;
+  /* Headline class — Barlow Condensed heavy */
+  .font-display { font-family: 'Barlow Condensed', sans-serif !important; }
+
+  /* Body text class — Inter */
+  .font-body { font-family: 'Inter', sans-serif !important; }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1B4D3E;
+  }
+
+  /* Big heading utility */
+  .step-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.0;
+    color: #0A1628;
   }
 
   /* Gold gradient text */
@@ -39,15 +73,7 @@
     background-clip: text;
   }
 
-  /* Green gradient text */
-  .green-text {
-    background: linear-gradient(120deg, #1B4D3E 0%, #2D7A55 50%, #4CAF7D 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Card surfaces — light */
+  /* White card */
   .card-surface {
     background: #FFFFFF;
     border: 1px solid #E5E7EB;
@@ -56,115 +82,69 @@
   }
   .card-surface:hover {
     border-color: #C8A951;
-    box-shadow: 0 4px 20px rgba(200,169,81,0.15);
-    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(200,169,81,0.12);
   }
 
-  /* Dark card — for sections with dark bg */
-  .card-dark {
-    background: linear-gradient(135deg, #0D1E36 0%, #0A1628 100%);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 1rem;
-    transition: border-color 0.2s ease;
-  }
-  .card-dark:hover { border-color: rgba(200,169,81,0.3); }
-
-  /* Gold CTA button */
+  /* Gold button */
   .btn-gold {
     background: linear-gradient(135deg, #C8A951 0%, #E8CC7A 50%, #C8A951 100%);
-    background-size: 200% 200%;
     color: #060E1A;
-    font-weight: 800;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.1em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     transition: all 0.2s ease;
     border: none;
   }
-  .btn-gold:hover {
-    background-position: right center;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(200,169,81,0.4);
-  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,169,81,0.35); }
 
   /* Green button */
   .btn-green {
-    background: linear-gradient(135deg, #1B4D3E 0%, #2D7A55 100%);
+    background: linear-gradient(135deg, #1B4D3E, #2D7A55);
     color: #fff;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     transition: all 0.2s ease;
     border: none;
   }
-  .btn-green:hover {
-    background: linear-gradient(135deg, #2D7A55 0%, #3D9A6A 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(27,77,62,0.35);
-  }
+  .btn-green:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(27,77,62,0.35); }
 
   /* Outline button */
   .btn-outline {
     border: 2px solid #1B4D3E;
     color: #1B4D3E;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    transition: all 0.2s ease;
     background: transparent;
+    transition: all 0.2s ease;
   }
-  .btn-outline:hover {
-    background: #1B4D3E;
-    color: white;
-    transform: translateY(-1px);
-  }
-
-  /* Section labels */
-  .section-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: #1B4D3E;
-    font-weight: 700;
-  }
-
-  /* Big headings */
-  .step-heading {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: clamp(2.2rem, 5vw, 3.5rem);
-    line-height: 0.95;
-    color: #0A1628;
-    letter-spacing: -0.01em;
-  }
+  .btn-outline:hover { background: #1B4D3E; color: white; transform: translateY(-1px); }
 
   /* Modest badge */
   .badge-modest {
     background: linear-gradient(135deg, #1B4D3E, #2D7A55);
     color: #A7F3D0;
     font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 2px 8px;
     border-radius: 20px;
-    border: 1px solid rgba(76,175,125,0.3);
   }
 
-  /* Gold shimmer animation */
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-  .gold-shimmer {
-    background: linear-gradient(90deg, #B8903E 0%, #E8CC7A 30%, #F5DFA0 50%, #E8CC7A 70%, #B8903E 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shimmer 3s linear infinite;
+  /* Grid bg */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(27,77,62,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27,77,62,0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
   }
 }
