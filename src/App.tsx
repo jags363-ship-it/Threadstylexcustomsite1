@@ -47,7 +47,7 @@ function App() {
 
   const basePrice = currentProduct.price * quantity;
   const placementPrice = selectedPlacementObjects.reduce((sum, p) => sum + p.addOn, 0) * quantity;
-  const teamDiscount = orderType === 'team' && quantity >= 5 ? basePrice * 0.15 : 0;
+  const teamDiscount = orderType === 'team' && quantity >= 2 ? basePrice * 0.15 : 0;
   const subtotal = basePrice + placementPrice - teamDiscount;
   const SHIPPING_FEE = 7.99;
   const shippingCost = subtotal >= 35 ? 0 : SHIPPING_FEE;

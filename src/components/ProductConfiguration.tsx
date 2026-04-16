@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, CheckCircle, RotateCw, Upload, Check, X, AlertCircle, Users, User, ChevronRight, ShoppingCart } from 'lucide-react';
 import { useState, useRef, useCallback } from 'react';
-import { products, getProductsBySport, getProductsByCategory, SPORTS_LIST, CATEGORIES_LIST } from '../data/products';
+import { products, getProductsBySport, getProductsByCategory, getIGMerchProducts, getJerseyPageProducts, SPORTS_LIST, CATEGORIES_LIST } from '../data/products';
 import { getPlacementsForProduct } from '../data/placements';
 import { useCart } from '../context/CartContext';
 import { designs } from '../data/designs';
@@ -26,9 +26,8 @@ const SPORT_ICONS: Record<string, string> = {
   'Flag Football': '🏈', 'Cricket': '🏏', 'Softball': '🥎',
   'Track & Field': '🏃', 'Martial Arts': '🥋', 'Tennis': '🎾',
   'Table Tennis': '🏓', 'Archery': '🏹', 'Arm Wrestling': '💪',
-  'Fitness Course': '🏋️', 'Pickleball': '🏸', '5K Run for Sudan': '🏃',
+  'Fitness Course': '🏋️', 'Pickleball': '🏸', '5K Run': '🏃',
   'Bike Ride': '🚴', 'Badminton': '🏸', 'Ultimate Frisbee': '🥏',
-  'Swimming': '🏊',
 };
 
 export function ProductConfiguration({
@@ -58,9 +57,17 @@ export function ProductConfiguration({
   const currentImage = viewSide === 'back' && currentColor.backImage ? currentColor.backImage : currentColor.image;
   const savingsPercent = Math.round(((currentProduct.originalPrice - currentProduct.price) / currentProduct.originalPrice) * 100);
   const teamPrice = +(currentProduct.price * 0.85).toFixed(2);
-  const displayedProducts = selectedSport
-    ? getProductsBySport(selectedSport).filter(p => activeCategory === 'all' || p.category === activeCategory)
-    : getProductsByCategory(activeCategory === 'all' ? 'all' : activeCategory);
+  // IG Merch: only show in standalone IG Merch section, never mixed into sport pages
+  // For jersey listings, apply Men's → Women's → Other → ordering
+  const displayedProducts = activeCategory === 'ig-merch'
+    ? getIGMerchProducts()
+    : selectedSport
+      ? activeCategory === 'jersey'
+        ? getJerseyPageProducts(selectedSport)
+        : getProductsBySport(selectedSport).filter(p => activeCategory === 'all' || p.category === activeCategory)
+      : activeCategory === 'jersey'
+        ? getJerseyPageProducts()
+        : getProductsByCategory(activeCategory === 'all' ? 'all' : activeCategory).filter(p => p.category !== 'ig-merch');
 
   const handleSelectSport = (sport: string) => {
     setSelectedSport(sport);
@@ -165,16 +172,16 @@ export function ProductConfiguration({
             <p className="text-gray-600 mt-3 text-base">Pick your sport to see the right apparel options for your team</p>
           </div>
 
-          {/* Islamic Games Merch shortcut */}
+          {/* IG Merch standalone shortcut — 10% larger than sport cards */}
           <div className="mb-8 flex justify-center">
             <motion.button
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               onClick={() => { setSelectedSport(''); setActiveCategory('ig-merch'); setStep(2); }}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl font-black text-lg uppercase tracking-wide shadow-lg border-2 border-[#C8A951]"
+              className="flex items-center gap-3 px-[2.2rem] py-[1.1rem] rounded-2xl font-black text-[1.21rem] uppercase tracking-wide shadow-lg border-2 border-[#C8A951]"
               style={{ background: 'linear-gradient(135deg,#0A1628,#1B4D3E)', color: '#C8A951', fontFamily: "'Barlow Condensed',sans-serif" }}
             >
               🏅 Islamic Games Official Merchandise
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-[1.375rem] h-[1.375rem]" />
             </motion.button>
           </div>
 
@@ -546,12 +553,12 @@ export function ProductConfiguration({
                   style={{ background: 'linear-gradient(135deg,#C8A951,#E8CC7A)', color: '#0A1628' }}>
                   <Plus className="w-4 h-4" />
                 </button>
-                {orderType === 'team' && quantity >= currentProduct.teamOrderMin && (
+              {orderType === 'team' && quantity >= currentProduct.teamOrderMin && (
                   <span className="text-xs text-[#1B4D3E] font-bold">✓ Team discount applied</span>
                 )}
               </div>
               {orderType === 'team' && quantity < currentProduct.teamOrderMin && (
-                <p className="text-xs text-gray-400 mt-2">Add {currentProduct.teamOrderMin - quantity} more for team pricing</p>
+                <p className="text-xs text-gray-400 mt-2">Add {currentProduct.teamOrderMin - quantity} more for team pricing (min 2 units)</p>
               )}
             </div>
 
