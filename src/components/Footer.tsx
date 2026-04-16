@@ -15,7 +15,8 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#0A1628] border-t-4 border-[#C8A951] pt-16 pb-8">
+    <footer className="border-t-4 border-[#C8A951]"
+      style={{ background: "#0F1F14" }} pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Main partnership banner */}
@@ -151,10 +152,10 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-gray-600 text-xs">© {year} ThreadStylez / ThreadStylezBrands.com · Official Islamic Games 2026 Apparel Provider. All rights reserved.</p>
+          <p className="text-gray-400 text-xs">© {year} ThreadStylez / ThreadStylezBrands.com · Official Islamic Games 2026 Apparel Provider. All rights reserved.</p>
           <div className="flex items-center gap-2">
             <Shield className="w-3.5 h-3.5 text-gold-500" />
-            <span className="text-gray-600 text-xs">Secure checkout via Stripe</span>
+            <span className="text-gray-400 text-xs">Secure checkout via Stripe</span>
           </div>
           <a href="https://threadstylez.com" target="_blank" rel="noopener noreferrer"
             className="btn-outline px-4 py-2 rounded-lg text-xs flex items-center gap-1.5">

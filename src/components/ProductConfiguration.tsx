@@ -225,11 +225,20 @@ export function ProductConfiguration({
     return (
       <section id="products" className="py-16 bg-[#F0F4F8]">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-            <button onClick={() => setStep(1)} className="hover:text-[#1B4D3E] font-semibold">All Sports</button>
-            {selectedSport && <><ChevronRight className="w-4 h-4" /><span className="font-bold text-[#0A1628]">{SPORT_ICONS[selectedSport]} {selectedSport}</span></>}
-            {activeCategory === 'ig-merch' && !selectedSport && <><ChevronRight className="w-4 h-4" /><span className="font-bold text-[#0A1628]">🏅 IG Merchandise</span></>}
+          {/* Back button + Breadcrumb */}
+          <div className="flex items-center gap-3 mb-8">
+            <button
+              onClick={() => setStep(1)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide transition-all hover:-translate-x-1"
+              style={{ background: '#1B4D3E', color: 'white', fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
+            >
+              ← Back to Sports
+            </button>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <button onClick={() => setStep(1)} className="hover:text-[#1B4D3E] font-semibold">All Sports</button>
+              {selectedSport && <><ChevronRight className="w-4 h-4" /><span className="font-bold text-[#0A1628]">{SPORT_ICONS[selectedSport]} {selectedSport}</span></>}
+              {activeCategory === 'ig-merch' && !selectedSport && <><ChevronRight className="w-4 h-4" /><span className="font-bold text-[#0A1628]">🏅 IG Merchandise</span></>}
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -314,15 +323,24 @@ export function ProductConfiguration({
   return (
     <section id="customization-panel" className="py-16 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-8 flex-wrap">
-          <button onClick={() => setStep(1)} className="hover:text-[#1B4D3E] font-semibold">All Sports</button>
-          <ChevronRight className="w-4 h-4" />
-          <button onClick={() => setStep(2)} className="hover:text-[#1B4D3E] font-semibold">
-            {selectedSport || 'All Apparel'}
+        {/* Back button + Breadcrumb */}
+        <div className="flex items-center gap-3 mb-8 flex-wrap">
+          <button
+            onClick={() => setStep(2)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide transition-all hover:-translate-x-1"
+            style={{ background: '#1B4D3E', color: 'white', fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.08em' }}
+          >
+            ← Back to Products
           </button>
-          <ChevronRight className="w-4 h-4" />
-          <span className="font-bold text-[#0A1628]">{currentProduct.name}</span>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <button onClick={() => setStep(1)} className="hover:text-[#1B4D3E] font-semibold">All Sports</button>
+            <ChevronRight className="w-4 h-4" />
+            <button onClick={() => setStep(2)} className="hover:text-[#1B4D3E] font-semibold">
+              {selectedSport || 'All Apparel'}
+            </button>
+            <ChevronRight className="w-4 h-4" />
+            <span className="font-bold text-[#0A1628]">{currentProduct.name}</span>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-10">
