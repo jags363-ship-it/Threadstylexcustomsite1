@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, CheckCircle, RotateCw, Upload, Check, X, AlertCircle, Users, User, ChevronRight, ShoppingCart } from 'lucide-react';
 import { useState, useRef, useCallback } from 'react';
-import { products, getProductsBySport, getProductsByCategory, getIGMerchProducts, getJerseyPageProducts, SPORTS_LIST, CATEGORIES_LIST } from '../data/products';
+import { products, getProductsBySport, getProductsByCategory, getIGMerchProducts, getJerseyPageProducts, getSportswearProducts, getTeamApparelProducts, SPORTS_LIST, CATEGORIES_LIST } from '../data/products';
 import { getPlacementsForProduct } from '../data/placements';
 import { useCart } from '../context/CartContext';
 import { designs } from '../data/designs';
@@ -23,11 +23,12 @@ interface Props {
 // Sport icons map
 const SPORT_ICONS: Record<string, string> = {
   'Basketball': '🏀', 'Soccer': '⚽', 'Volleyball': '🏐',
-  'Flag Football': '🏈', 'Cricket': '🏏', 'Softball': '🥎',
-  'Track & Field': '🏃', 'Martial Arts': '🥋', 'Tennis': '🎾',
-  'Table Tennis': '🏓', 'Archery': '🏹', 'Arm Wrestling': '💪',
-  'Fitness Course': '🏋️', 'Pickleball': '🏸', '5K Run': '🏃',
+  'Flag Football': '🏈', 'Cricket': '🏏', 'Softball/Pickleball': '🥎',
+  'Track & Field': '🏃', 'Tennis': '🎾',
+  'Table Tennis': '🏓', 'Archery': '🏹',
+  'Fitness Course': '🏋️', '5K Run': '🏃',
   'Bike Ride': '🚴', 'Badminton': '🏸', 'Ultimate Frisbee': '🥏',
+  'All Sports': '🏅',
 };
 
 export function ProductConfiguration({
@@ -57,17 +58,16 @@ export function ProductConfiguration({
   const currentImage = viewSide === 'back' && currentColor.backImage ? currentColor.backImage : currentColor.image;
   const savingsPercent = Math.round(((currentProduct.originalPrice - currentProduct.price) / currentProduct.originalPrice) * 100);
   const teamPrice = +(currentProduct.price * 0.85).toFixed(2);
-  // IG Merch: only show in standalone IG Merch section, never mixed into sport pages
-  // For jersey listings, apply Men's → Women's → Other → ordering
+  // IG Merch: only show in standalone IG Merch section
   const displayedProducts = activeCategory === 'ig-merch'
     ? getIGMerchProducts()
-    : selectedSport
-      ? activeCategory === 'jersey'
-        ? getJerseyPageProducts(selectedSport)
-        : getProductsBySport(selectedSport).filter(p => activeCategory === 'all' || p.category === activeCategory)
-      : activeCategory === 'jersey'
-        ? getJerseyPageProducts()
-        : getProductsByCategory(activeCategory === 'all' ? 'all' : activeCategory).filter(p => p.category !== 'ig-merch');
+    : activeCategory === 'sportswear'
+      ? getSportswearProducts(selectedSport || undefined)
+      : activeCategory === 'team-apparel'
+        ? getTeamApparelProducts(selectedSport || undefined)
+        : selectedSport
+          ? getProductsBySport(selectedSport)
+          : getProductsByCategory('all').filter(p => p.category !== 'ig-merch');
 
   const handleSelectSport = (sport: string) => {
     setSelectedSport(sport);
@@ -169,24 +169,34 @@ export function ProductConfiguration({
             <h2 className="font-extrabold text-3xl md:text-4xl text-[#0A1628]" style={{fontFamily:"'Barlow',sans-serif"}}>
               SELECT YOUR SPORT
             </h2>
-            <p className="text-gray-600 mt-3 text-base">Pick your sport to see the right apparel options for your team</p>
+            <p className="text-gray-600 mt-3 text-base">Pick your sport to see Sportswear, Team Apparel, and IG Merch options</p>
           </div>
 
-          {/* IG Merch standalone shortcut — 10% larger than sport cards */}
-          <div className="mb-8 flex justify-center">
-            <motion.button
-              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={() => { setSelectedSport(''); setActiveCategory('ig-merch'); setStep(2); }}
-              className="flex items-center gap-3 px-[2.2rem] py-[1.1rem] rounded-2xl font-black text-[1.21rem] uppercase tracking-wide shadow-lg border-2 border-[#C8A951]"
-              style={{ background: 'linear-gradient(135deg,#0A1628,#1B4D3E)', color: '#C8A951', fontFamily: "'Barlow Condensed',sans-serif" }}
-            >
-              🏅 Islamic Games Official Merchandise
-              <ChevronRight className="w-[1.375rem] h-[1.375rem]" />
-            </motion.button>
+          {/* 3-section flow tags */}
+          <div className="flex justify-center gap-3 mb-8 flex-wrap">
+            {[
+              { emoji: '🏃', label: '1. Sportswear', cat: 'sportswear' },
+              { emoji: '🏆', label: '2. Team Apparel', cat: 'team-apparel' },
+              { emoji: '🏅', label: '3. Islamic Games Merch', cat: 'ig-merch' },
+            ].map(({ emoji, label, cat }) => (
+              <motion.button
+                key={cat}
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                onClick={() => { setSelectedSport(''); setActiveCategory(cat); setStep(2); }}
+                className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide shadow border-2 transition-all ${
+                  cat === 'ig-merch'
+                    ? 'border-[#C8A951] text-[#C8A951]'
+                    : 'border-[#1B4D3E] text-[#1B4D3E]'
+                } bg-white hover:bg-[#0A1628] hover:text-white hover:border-transparent`}
+                style={{ fontFamily: "'Barlow Condensed',sans-serif" }}
+              >
+                {emoji} {label} <ChevronRight className="w-4 h-4" />
+              </motion.button>
+            ))}
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {SPORTS_LIST.map((sport) => {
+            {SPORTS_LIST.filter(s => s !== 'All Sports').map((sport) => {
               const count = getProductsBySport(sport).length;
               return (
                 <motion.button
@@ -255,7 +265,7 @@ export function ProductConfiguration({
             </button>
           </div>
 
-          {/* Category filter tabs */}
+          {/* Category filter tabs — 3 section flow */}
           <div className="flex flex-wrap gap-2 mb-8">
             {[{ id: 'all', label: 'All', emoji: '🏅' }, ...CATEGORIES_LIST].map(cat => (
               <button key={cat.id} onClick={() => setActiveCategory(cat.id)}

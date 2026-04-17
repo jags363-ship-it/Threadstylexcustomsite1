@@ -8,7 +8,7 @@ const events = [
   { city: 'New Jersey', date: 'June 6–7, 2026', sports: 'Basketball · Soccer · Volleyball · Cricket', url: 'https://islamic-games.com/new-jersey/' },
   { city: 'Dallas, TX', date: 'June 13–14, 2026', sports: 'Basketball · Soccer · Flag Football · Track', url: 'https://islamic-games.com/dallas/' },
   { city: 'Chicago, IL', date: 'July 17–18, 2026', sports: 'Basketball · Soccer · Volleyball · Cricket', url: 'https://islamic-games.com/chicago/' },
-  { city: 'Michigan', date: 'Sept 6–7, 2026', sports: 'Basketball · Soccer · Volleyball · Swimming', url: 'https://islamic-games.com/michigan/' },
+  { city: 'Michigan', date: 'Sept 6–7, 2026', sports: 'Basketball · Soccer · Volleyball · More TBA', url: 'https://islamic-games.com/michigan/' },
   { city: 'Houston, TX', date: 'Sept/Oct 2026', sports: 'Basketball · Soccer · Track · More TBA', url: 'https://islamic-games.com/houston/' },
 ];
 
@@ -21,14 +21,16 @@ const stats = [
 
 export function IGPartnershipSection() {
   return (
-    <section className="py-20 bg-[#F0F4F2] border-y border-[#2D7A55]/20">
+    <section className="py-20 bg-white border-y border-gray-200">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Section label */}
         <div className="text-center mb-14">
-          <p className="section-label mb-3">Official Partnership</p>
-          <h2 className="step-heading mb-4" style={{color:"#0A1628"}}>THREADSTYLEZ × ISLAMIC GAMES 2026</h2>
-          <p className="text-gray-600 font-body max-w-2xl mx-auto">
+          <p className="text-xs tracking-[0.25em] uppercase font-bold text-[#1B4D3E] mb-3">Official Partnership</p>
+          <h2 className="font-display font-black text-[#0A1628] text-3xl md:text-4xl mb-4 uppercase tracking-wide">
+            THREADSTYLEZ × ISLAMIC GAMES 2026
+          </h2>
+          <p className="text-gray-600 font-body max-w-2xl mx-auto text-base">
             ThreadStylez is proud to be the official apparel provider for Islamic Games 2026 — North America's largest and most celebrated Muslim sports festival, uniting athletes, families, and communities in the spirit of faith, health, and sportsmanship.
           </p>
         </div>
@@ -38,7 +40,7 @@ export function IGPartnershipSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-14 p-8 rounded-2xl border border-[#2D7A55]/20 bg-[#1B4D3E]/8"
+          className="flex flex-col sm:flex-row items-center justify-center gap-8 mb-14 p-8 rounded-2xl border border-[#1B4D3E]/15 bg-[#F0F8F4]"
         >
           <a href="https://threadstylez.com" target="_blank" rel="noopener noreferrer" className="flex-shrink-0">
             <img
@@ -50,8 +52,8 @@ export function IGPartnershipSection() {
           </a>
 
           <div className="text-center">
-            <div className="text-gray-600 text-3xl font-display font-bold">×</div>
-            <p className="text-[10px] text-gray-600 uppercase tracking-widest mt-1">Official Provider</p>
+            <div className="text-gray-400 text-3xl font-display font-bold">×</div>
+            <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Official Provider</p>
           </div>
 
           <a href="https://islamic-games.com" target="_blank" rel="noopener noreferrer" className="flex-shrink-0">
@@ -70,20 +72,20 @@ export function IGPartnershipSection() {
             />
           </a>
 
-          <div className="hidden sm:block w-px h-16 bg-white/10" />
+          <div className="hidden sm:block w-px h-16 bg-gray-200" />
 
           <div className="text-center sm:text-left">
-            <p className="font-display font-bold text-white text-lg uppercase tracking-wide">
+            <p className="font-display font-bold text-[#0A1628] text-lg uppercase tracking-wide">
               ThreadStylezBrands.com
             </p>
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-gray-500 text-sm mt-1">
               Dedicated Islamic Games apparel portal — launching 2026
             </p>
             <a
               href="https://threadstylezbrands.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-gold-500 hover:text-gold-400 text-xs font-display font-bold uppercase tracking-wider mt-2 transition-colors"
+              className="inline-flex items-center gap-1.5 text-[#C8A951] hover:text-[#B8903E] text-xs font-bold uppercase tracking-wider mt-2 transition-colors"
             >
               threadstylezbrands.com <ExternalLink className="w-3 h-3" />
             </a>
@@ -109,7 +111,7 @@ export function IGPartnershipSection() {
 
         {/* 2026 Event grid */}
         <div className="mb-10">
-          <p className="section-label mb-6 text-center">2026 Event Schedule — Order Apparel for Each Location</p>
+          <p className="text-xs tracking-[0.25em] uppercase font-bold text-[#1B4D3E] mb-6 text-center">2026 Event Schedule — Order Apparel for Each Location</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {events.map((ev, i) => (
               <motion.a
@@ -121,27 +123,27 @@ export function IGPartnershipSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.07 }}
-                className="group card-surface p-5 hover:border-[#2D7A55]/50 transition-all block"
+                className="group bg-white border border-gray-200 hover:border-[#1B4D3E] rounded-2xl p-5 transition-all block shadow-sm hover:shadow-md"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#4CAF7D] flex-shrink-0" />
-                    <h3 className="font-display font-bold text-white text-lg uppercase tracking-wide leading-none">{ev.city}</h3>
+                    <MapPin className="w-4 h-4 text-[#1B4D3E] flex-shrink-0" />
+                    <h3 className="font-display font-bold text-[#0A1628] text-lg uppercase tracking-wide leading-none">{ev.city}</h3>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-gray-600 group-hover:text-gold-500 flex-shrink-0 transition-colors" />
+                  <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#C8A951] flex-shrink-0 transition-colors" />
                 </div>
-                <p className="text-gold-500 font-display font-bold text-sm mb-2">{ev.date}</p>
+                <p className="text-[#C8A951] font-display font-bold text-sm mb-2">{ev.date}</p>
                 <p className="text-gray-500 text-xs">{ev.sports}</p>
               </motion.a>
             ))}
 
             {/* Coming soon card */}
-            <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-5 flex items-center justify-center">
+            <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-5 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-gray-600 text-2xl mb-2">+</div>
-                <p className="font-display font-bold text-gray-600 text-sm uppercase tracking-wide">More cities TBA</p>
+                <div className="text-gray-400 text-2xl mb-2">+</div>
+                <p className="font-display font-bold text-gray-500 text-sm uppercase tracking-wide">More cities TBA</p>
                 <a href="https://islamic-games.com" target="_blank" rel="noopener noreferrer"
-                  className="text-[10px] text-gray-600 hover:text-gold-500 mt-1 inline-flex items-center gap-1 transition-colors">
+                  className="text-[10px] text-gray-400 hover:text-[#1B4D3E] mt-1 inline-flex items-center gap-1 transition-colors">
                   Check islamic-games.com <ExternalLink className="w-2.5 h-2.5" />
                 </a>
               </div>
@@ -155,24 +157,24 @@ export function IGPartnershipSection() {
             {
               icon: Shirt,
               title: 'All Sports Covered',
-              desc: 'Custom jerseys, hoodies, tracksuits, singlets, and accessories for every Islamic Games sport — basketball, soccer, cricket, track, swimming, volleyball, and more.',
+              desc: 'Custom sportswear, team jerseys, hijabs, and accessories for every Islamic Games sport — basketball, soccer, cricket, track, volleyball, and more.',
             },
             {
               icon: Users,
               title: 'Teams & Individuals',
-              desc: 'Whether you\'re ordering for yourself or for 100+ athletes, we handle it all. Team bulk pricing (15% off 5+ items) and individual custom orders both supported.',
+              desc: "Whether you're ordering for yourself or for 100+ athletes, we handle it all. Team bulk pricing (15% off) and individual custom orders both supported.",
             },
             {
               icon: Trophy,
               title: 'Official Quality',
-              desc: 'As the official provider, all ThreadStylez apparel meets the Islamic Games\' standards for quality, durability, and professional presentation on the field.',
+              desc: "As the official provider, all ThreadStylez apparel meets the Islamic Games' standards for quality, durability, and professional presentation on the field.",
             },
           ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-[#1B4D3E]/40 border border-[#2D7A55]/30 flex items-center justify-center mb-4">
-                <Icon className="w-5 h-5 text-[#4CAF7D]" />
+            <div key={title} className="bg-[#F8FAF9] border border-[#1B4D3E]/15 rounded-2xl p-5 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-[#1B4D3E]/10 border border-[#1B4D3E]/20 flex items-center justify-center mb-4">
+                <Icon className="w-5 h-5 text-[#1B4D3E]" />
               </div>
-              <h4 className="font-display font-bold text-gray-900 text-base uppercase tracking-wide mb-2">{title}</h4>
+              <h4 className="font-display font-bold text-[#0A1628] text-base uppercase tracking-wide mb-2">{title}</h4>
               <p className="text-gray-600 text-xs font-body leading-relaxed">{desc}</p>
             </div>
           ))}

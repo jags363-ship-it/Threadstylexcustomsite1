@@ -97,8 +97,10 @@ export const uploadDesignFile = async (file: File): Promise<string> => {
 export const createPrintfulOrder = async (orderData: PrintfulOrderData) => {
   try {
     const printfulProductId = PRODUCT_MAPPING[orderData.productId];
-    const printfulSize = SIZE_MAPPING[orderData.size];
-    const printfulColor = COLOR_MAPPING[orderData.color];
+    void 0; // was printfulSize
+  // const _printfulSize = SIZE_MAPPING[orderData.size];
+    void 0; // was printfulColor
+  // const _printfulColor = COLOR_MAPPING[orderData.color];
 
     if (!printfulProductId) {
       throw new Error(`Product not mapped: ${orderData.productId}`);

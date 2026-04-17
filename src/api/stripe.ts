@@ -271,7 +271,7 @@ export const createCheckoutSession = async (data: CheckoutData) => {
     // ═══════════════════════════════════════
     console.log('💳 Redirecting to Stripe...');
     
-    const { error } = await stripe.redirectToCheckout({ sessionId });
+    const { error } = await (stripe as any).redirectToCheckout({ sessionId });
 
     if (error) {
       console.error('❌ Stripe redirect error:', error);

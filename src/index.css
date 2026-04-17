@@ -79,6 +79,7 @@
     border: 1px solid #E5E7EB;
     border-radius: 1rem;
     transition: all 0.2s ease;
+    color: #111827;
   }
   .card-surface:hover {
     border-color: #C8A951;

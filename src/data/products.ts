@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────
-// THREADSTYLEZ — FULL APPAREL CATALOGUE v11
-// All changes from Threadstylez update prompt applied
+// NATIONAL GAMES PORTAL — APPAREL CATALOGUE v15
+// Flow: 1) Sportswear  2) Team Apparel  3) Islamic Games Merch
 // ─────────────────────────────────────────────────────────────
 
 export interface Product {
@@ -23,96 +23,42 @@ export interface Product {
   customPrint: true;
 }
 
+const IMG = {
+  dry_fit_ls_unisex:   '/Long Sleeve Performance Top - Unisex.jpeg',
+  dry_fit_ls_women:    '/Long Sleeve Athletic Top - Women.jpeg',
+  dry_fit_ss:          '/Athletic Performance Top - Short Sleeve.jpeg',
+  shorts:              '/Athletic Shorts.jpeg',
+  joggers:             '/Athletic Joggers - Men.jpeg',
+  leggings:            '/Athletic Leggings - Men.jpeg',
+  hijab:               '/Sports Hijab.jpeg',
+  hijab_hat:           '/Sports Hijab w. Hat.jpeg',
+  ls_undershirt:       '/Long Sleeve Cooling Undershirt - Women.jpeg',
+  cotton_ss:           '/Athletic Performance Top - Short Sleeve.jpeg',
+  bball_jersey:        '/Basketball Game Jersey (Sleeveless).jpeg',
+  bball_shorts:        '/Basketball Shorts.jpeg',
+  soccer_jersey_u:     '/Soccer Jersey - Unisex.jpeg',
+  soccer_jersey_w:     '/Soccer Jersey - Women.jpeg',
+  football_jersey:     '/Football Jersey.jpeg',
+  softball_jersey_m:   '/Softball Jersey - Men.jpeg',
+  softball_jersey_w:   '/Softball Jersey -Women.jpeg',
+  ig_hoodie_black:     '/IG_Hoodie_Front.jpg',
+  ig_hoodie_grey:      '/IG_Hoodie_Gray_Front.jpg',
+  ig_hoodie_hgrey:     '/IG_Hoodie_Heather_Grey_Front.jpg',
+  ig_hoodie_back:      '/IG_Hoodie_Back.jpg',
+  ig_sweatshirt:       '/IG_Sweatshirt_Front_Black.jpg',
+};
+
 const TS = {
-  hoodie_black:  'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-TSPH.png',
   hoodie_white:  'https://threadstylez.com/wp-content/uploads/2023/11/Front-White-TSPH.png',
-  hoodie_grey:   'https://threadstylez.com/wp-content/uploads/2023/11/Front-Grey-TSPH.png',
-  hoodie_red:    'https://threadstylez.com/wp-content/uploads/2023/11/Front-Red-TSPH.png',
-  hoodie_bh:     'https://threadstylez.com/wp-content/uploads/2023/11/Front-Black-Heather-TSPH.png',
-  hoodie_back_b: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-Black-TSPH.png',
-  hoodie_back_w: 'https://threadstylez.com/wp-content/uploads/2023/11/Back-White-TSPH.png',
-  crew_black:    'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Black-.jpg',
-  crew_white:    'https://threadstylez.com/wp-content/uploads/2024/09/TSS-White-.jpg',
   crew_grey:     'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Grey-2.jpg',
+  crew_white:    'https://threadstylez.com/wp-content/uploads/2024/09/TSS-White-.jpg',
   crew_bh:       'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Heather-Black.jpg',
   crew_back_b:   'https://threadstylez.com/wp-content/uploads/2024/09/TSS-Black-.jpg',
   pants_black:   'https://threadstylez.com/wp-content/uploads/2023/12/Main-Front.png',
-  pants_white:   'https://threadstylez.com/wp-content/uploads/2023/12/WHITE.png',
   pants_grey:    'https://threadstylez.com/wp-content/uploads/2023/12/Heather-Grey.png',
-  pants_red:     'https://threadstylez.com/wp-content/uploads/2023/12/Red.png',
   tee_black:     'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black.jpg',
-  tee_black_b:   'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black-Back.jpg',
   tee_white:     'https://threadstylez.com/wp-content/uploads/2024/08/TST-White.jpg',
-  heavy_black:   'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-Side.jpg',
-  heavy_white:   'https://threadstylez.com/wp-content/uploads/2023/11/TSCT-White-Main.jpg',
-  heavy_navy:    'https://threadstylez.com/wp-content/uploads/2023/11/NAvy-2-1.jpg',
-  heavy_red:     'https://threadstylez.com/wp-content/uploads/2023/11/Red-3-1.jpg',
-  heavy_charcoal:'https://threadstylez.com/wp-content/uploads/2023/11/cHARCOAL-2-1.jpg',
-  heavy_ash:     'https://threadstylez.com/wp-content/uploads/2023/11/Ash-2-1.jpg',
-  heavy_orange:  'https://threadstylez.com/wp-content/uploads/2023/11/Orange-2-1.jpg',
-  heavy_oxford:  'https://threadstylez.com/wp-content/uploads/2023/11/Oxford-2.jpg',
-  cap:           'https://threadstylez.com/wp-content/uploads/2024/10/TSBH-main-3.png',
-  longsleeve_black: 'https://images.pexels.com/photos/4427634/pexels-photo-4427634.jpeg?auto=compress&cs=tinysrgb&w=600',
-  longsleeve_white: 'https://images.pexels.com/photos/4427634/pexels-photo-4427634.jpeg?auto=compress&cs=tinysrgb&w=600',
-  socks_crew:    'https://images.pexels.com/photos/6311612/pexels-photo-6311612.jpeg?auto=compress&cs=tinysrgb&w=600',
-  socks_ankle:   'https://images.pexels.com/photos/6311612/pexels-photo-6311612.jpeg?auto=compress&cs=tinysrgb&w=600',
-  socks_perf:    'https://images.pexels.com/photos/6311612/pexels-photo-6311612.jpeg?auto=compress&cs=tinysrgb&w=600',
-  flatbrim_cap:  'https://images.pexels.com/photos/1351365/pexels-photo-1351365.jpeg?auto=compress&cs=tinysrgb&w=600',
-  baseball_cap:  'https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=600',
-  joggers_black: 'https://images.pexels.com/photos/4753987/pexels-photo-4753987.jpeg?auto=compress&cs=tinysrgb&w=600',
-  joggers_grey:  'https://images.pexels.com/photos/4753987/pexels-photo-4753987.jpeg?auto=compress&cs=tinysrgb&w=600',
-  shorts_black:  'https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=600',
-  perf_top_black:'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600',
-  perf_top_white:'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600',
-  tote_black:    '/blank-placeholder.svg',
-  tote_white:    '/blank-placeholder.svg',
-  // IG Official branded product photos
-  ig_hoodie_black_front:   '/IG_Hoodie_Front.jpg',
-  ig_hoodie_grey_front:    '/IG_Hoodie_Gray_Front.jpg',
-  ig_hoodie_hgrey_front:   '/IG_Hoodie_Heather_Grey_Front.jpg',
-  ig_hoodie_back:          '/IG_Hoodie_Back.jpg',
-  ig_sweatshirt_black:     '/IG_Sweatshirt_Front_Black.jpg',
-};
-
-// ── Per-product accurate material/sport images ────────────────
-const IG = {
-  // Basketball — mesh polyester sublimation jerseys
-  bball_mens_jersey:   'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=600',
-  bball_mens_ss:       'https://images.pexels.com/photos/2277981/pexels-photo-2277981.jpeg?auto=compress&cs=tinysrgb&w=600',
-  bball_womens_jersey: 'https://images.pexels.com/photos/3230808/pexels-photo-3230808.jpeg?auto=compress&cs=tinysrgb&w=600',
-  bball_shorts:        'https://images.pexels.com/photos/3621104/pexels-photo-3621104.jpeg?auto=compress&cs=tinysrgb&w=600',
-  bball_kit:           'https://images.pexels.com/photos/1752757/pexels-photo-1752757.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Soccer — polyester sublimation kits
-  soccer_mens:         'https://images.pexels.com/photos/274422/pexels-photo-274422.jpeg?auto=compress&cs=tinysrgb&w=600',
-  soccer_womens:       'https://images.pexels.com/photos/3621079/pexels-photo-3621079.jpeg?auto=compress&cs=tinysrgb&w=600',
-  soccer_shorts:       'https://images.pexels.com/photos/3621174/pexels-photo-3621174.jpeg?auto=compress&cs=tinysrgb&w=600',
-  soccer_kit:          'https://images.pexels.com/photos/47730/the-ball-stadion-football-the-pitch-47730.jpeg?auto=compress&cs=tinysrgb&w=600',
-  soccer_gk:           'https://images.pexels.com/photos/3148452/pexels-photo-3148452.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Volleyball — sublimation polyester kit
-  volleyball:          'https://images.pexels.com/photos/3649578/pexels-photo-3649578.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Flag football — sublimation jersey + shorts
-  flag_football:       'https://images.pexels.com/photos/1618200/pexels-photo-1618200.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Cricket — whites cotton/poly
-  cricket_whites:      'https://images.pexels.com/photos/3452280/pexels-photo-3452280.jpeg?auto=compress&cs=tinysrgb&w=600',
-  cricket_tee:         'https://images.pexels.com/photos/9660/business-woman-face-portrait.jpg?auto=compress&cs=tinysrgb&w=600',
-  // Softball — dryfit moisture-wicking polyester
-  softball:            'https://images.pexels.com/photos/4397840/pexels-photo-4397840.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Track — lightweight polyester singlet & modest long sleeve
-  track_singlet:       'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=600',
-  track_modest:        'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Martial arts — spandex/polyester compression rashguard & fight shorts
-  rashguard:           'https://images.pexels.com/photos/4428291/pexels-photo-4428291.jpeg?auto=compress&cs=tinysrgb&w=600',
-  fight_shorts:        'https://images.pexels.com/photos/260447/pexels-photo-260447.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Racket sports — moisture-wicking polyester pique polo
-  racket_polo:         'https://images.pexels.com/photos/8224716/pexels-photo-8224716.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // 5K — moisture-wicking polyester event tee
-  fivek_tee:           'https://images.pexels.com/photos/2526878/pexels-photo-2526878.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Modest wear — polyester/spandex hijab, full-sleeve jersey, track pants
-  sports_hijab:        'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=600',
-  modest_jersey:       'https://images.pexels.com/photos/3621183/pexels-photo-3621183.jpeg?auto=compress&cs=tinysrgb&w=600',
-  modest_pants:        'https://images.pexels.com/photos/3621184/pexels-photo-3621184.jpeg?auto=compress&cs=tinysrgb&w=600',
-  // Tote bag — canvas merchandise
-  tote:                'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600',
+  tee_black_b:   'https://threadstylez.com/wp-content/uploads/2024/08/TST-Black-Back.jpg',
 };
 
 const COLORS = {
@@ -124,726 +70,268 @@ const COLORS = {
   maroon:    { id:'maroon',    name:'Maroon',       hex:'#7F1D1D' },
   forest:    { id:'forest',    name:'Forest Green', hex:'#166534' },
   kelly:     { id:'kelly',     name:'Kelly Green',  hex:'#16A34A' },
-  green:     { id:'green',     name:'Green',        hex:'#22C55E' },
   purple:    { id:'purple',    name:'Purple',       hex:'#7C3AED' },
   gold:      { id:'gold',      name:'Gold',         hex:'#C8A951' },
   orange:    { id:'orange',    name:'Orange',       hex:'#EA580C' },
   grey:      { id:'grey',      name:'Heather Grey', hex:'#9CA3AF' },
   charcoal:  { id:'charcoal',  name:'Charcoal',     hex:'#374151' },
-  brown:     { id:'brown',     name:'Chocolate',    hex:'#4B2E20' },
   lightblue: { id:'lightblue', name:'Light Blue',   hex:'#38BDF8' },
   pink:      { id:'pink',      name:'Pink',         hex:'#EC4899' },
   teal:      { id:'teal',      name:'Teal',         hex:'#0D9488' },
-  cardinal:  { id:'cardinal',  name:'Cardinal',     hex:'#9F1239' },
-  oxford:    { id:'oxford',    name:'Oxford Grey',  hex:'#6B7280' },
 };
 
-function allColors(img: string) {
-  return Object.values(COLORS).map(col => ({ ...col, image: img }));
-}
-function sportColors(img: string, ...keys: (keyof typeof COLORS)[]) {
+type ColorKey = keyof typeof COLORS;
+
+function sportColors(img: string, ...keys: ColorKey[]) {
   return keys.map(k => ({ ...COLORS[k], image: img }));
 }
 
-const SOCCER_M_AGES = ['U6','U8','U10','U12','U14','U16','Open','30+'];
-const SOCCER_F_AGES = ['U6','U8','U10','U12','U14','15+'];
-const BBALL_M_AGES  = ['U10','U13','14-17','Open'];
-const BBALL_F_AGES  = ['U10','U13','14+'];
-const OPEN_AGES     = ['Open'];
-const IND_AGES      = ['6-9','10-12','13-16','17-19','19-30','30-45','45+'];
+const STD_COLORS: ColorKey[] = ['black','white','navy','royal','red','forest','kelly','purple','gold','grey','charcoal','lightblue','pink','teal'];
+const STD_SIZES = ['XS','S','M','L','XL','2XL','3XL'];
+
+const ALL_SPORTS_LIST = [
+  'Basketball','Volleyball','Soccer','Flag Football','Cricket',
+  'Softball/Pickleball','Track & Field','Tennis','Table Tennis',
+  'Archery','Fitness Course','5K Run','Bike Ride','Badminton',
+  'Ultimate Frisbee','All Sports',
+];
 
 export const products: Product[] = [
 
-  // ═══════════════════════════════════════
-  // BASKETBALL — Men's → Women's → Other → (IG Merch standalone)
-  // ═══════════════════════════════════════
+  // ══════════════════════════════════════════════════════════
+  // SECTION 1 — SPORTSWEAR
+  // ══════════════════════════════════════════════════════════
   {
-    id: 'basketball-jersey-mens',
-    name: "Men's Basketball Game Jersey (Sleeveless)",
-    price: 35, originalPrice: 48,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.bball_mens_jersey,'black','white','navy','royal','red','kelly','purple','gold'),
-    description: "Men's sleeveless mesh basketball jersey with full sublimation. Name, number, and team logo included. Official style available.",
-    features: ['Full Sublimation Print','Moisture-Wicking Mesh','Name, Number, Logo','Official Style Available','Min 2 per order'],
-    thumbnail: IG.bball_mens_jersey,
-    category: 'jersey', categoryLabel: "Men's Basketball Jersey",
-    sports: ['Basketball'], ageCategories: BBALL_M_AGES, teamOrderMin: 2,
-    badge: 'Official Style', customPrint: true,
+    id: 'dry-fit-ls-unisex',
+    name: 'Dry Fit Long Sleeve Performance Top (Unisex)',
+    price: 30, originalPrice: 42, sizes: STD_SIZES,
+    colors: sportColors(IMG.dry_fit_ls_unisex, ...STD_COLORS),
+    description: 'Unisex long sleeve moisture-wicking performance top. Custom team name, number, and logo. Available for all sports.',
+    features: ['100% Moisture-Wicking Polyester','Long Sleeve Coverage','Custom Name, Number & Logo','UPF 30+ Sun Protection','All Team Colors Available'],
+    thumbnail: IMG.dry_fit_ls_unisex,
+    category: 'sportswear', categoryLabel: 'Dry Fit Long Sleeve (Unisex)',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Unisex', customPrint: true,
   },
   {
-    id: 'basketball-jersey-mens-ss',
-    name: "Men's Basketball Short Sleeve Jersey",
-    price: 35, originalPrice: 48,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.bball_mens_ss,'black','white','navy','royal','red','kelly','purple','gold'),
-    description: "Men's short sleeve basketball jersey. Full sublimation with name, number, and team logo. Great for cooler gyms or player preference.",
-    features: ['Short Sleeve Cut','Full Sublimation','Moisture-Wicking Mesh','Name, Number, Logo','Official Style Available'],
-    thumbnail: IG.bball_mens_ss,
-    category: 'jersey', categoryLabel: "Men's Basketball Jersey (Short Sleeve)",
-    sports: ['Basketball'], ageCategories: BBALL_M_AGES, teamOrderMin: 2,
-    badge: 'Short Sleeve', customPrint: true,
+    id: 'dry-fit-ls-women',
+    name: "Dry Fit Long Sleeve Athletic Top (Women's)",
+    price: 30, originalPrice: 42, sizes: STD_SIZES,
+    colors: sportColors(IMG.dry_fit_ls_women, ...STD_COLORS),
+    description: "Women's cut long sleeve dry-fit performance top. Modest full coverage. Custom print available.",
+    features: ["Women's Athletic Cut",'Full Sleeve Coverage','Moisture-Wicking','Modest Design','Custom Name, Number & Logo'],
+    thumbnail: IMG.dry_fit_ls_women,
+    category: 'sportswear', categoryLabel: "Dry Fit Long Sleeve (Women's)",
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: "Women's", modest: true, customPrint: true,
   },
   {
-    id: 'basketball-jersey-womens',
-    name: "Women's Basketball Game Jersey",
-    price: 35, originalPrice: 48,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.bball_womens_jersey,'black','white','navy','royal','red','kelly','purple','gold'),
-    description: "Women's cut basketball jersey with full sublimation. Name, number, and team logo included. Official style available.",
-    features: ["Women's Cut",'Full Sublimation Print','Moisture-Wicking Mesh','Name, Number, Logo','Official Style Available'],
-    thumbnail: IG.bball_womens_jersey,
-    category: 'jersey', categoryLabel: "Women's Basketball Jersey",
-    sports: ['Basketball'], ageCategories: BBALL_F_AGES, teamOrderMin: 2,
-    badge: 'Official Style', customPrint: true,
+    id: 'dry-fit-ss',
+    name: 'Dry Fit Short Sleeve Performance Top',
+    price: 25, originalPrice: 35, sizes: STD_SIZES,
+    colors: sportColors(IMG.dry_fit_ss, ...STD_COLORS),
+    description: 'Lightweight short sleeve dry-fit shirt. Perfect for all court and field sports. Custom team print.',
+    features: ['100% Moisture-Wicking Polyester','Breathable Mesh Panels','Custom Team Colors','Name & Number Optional','Unisex Cut'],
+    thumbnail: IMG.dry_fit_ss,
+    category: 'sportswear', categoryLabel: 'Dry Fit Short Sleeve',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Dry Fit', customPrint: true,
   },
   {
-    id: 'basketball-shorts',
-    name: 'Basketball Game Shorts',
-    price: 28, originalPrice: 38,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.bball_shorts,'black','white','navy','royal','red','kelly','purple','gold'),
-    description: 'Wide-cut basketball shorts matching the game jersey. Full sublimation available.',
-    features: ['Moisture-Wicking Mesh','Elastic Waist + Drawcord','Full Sublimation','Pairs with Jersey'],
-    thumbnail: IG.bball_shorts,
-    category: 'shorts', categoryLabel: 'Basketball Shorts',
-    sports: ['Basketball'], ageCategories: [...BBALL_M_AGES, ...BBALL_F_AGES], teamOrderMin: 2,
-    badge: 'Basketball', customPrint: true,
+    id: 'athletic-shorts',
+    name: 'Athletic Performance Shorts',
+    price: 22, originalPrice: 32, sizes: STD_SIZES,
+    colors: sportColors(IMG.shorts, ...STD_COLORS),
+    description: 'Lightweight athletic shorts for all sports. Elastic waist with drawcord. Full sublimation custom print.',
+    features: ['Moisture-Wicking Polyester','Elastic Waist + Drawcord','Side Pockets','Custom Color & Logo','5" Inseam'],
+    thumbnail: IMG.shorts,
+    category: 'sportswear', categoryLabel: 'Athletic Shorts',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Shorts', customPrint: true,
   },
   {
-    id: 'basketball-kit',
-    name: 'Basketball Full Team Kit (Jersey + Shorts)',
-    price: 58, originalPrice: 80,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.bball_kit,'black','white','navy','royal','red','kelly','purple'),
-    description: 'Complete basketball kit with jersey + shorts. Name, number, team logo included. Official style available.',
-    features: ['Jersey + Shorts Set','Full Sublimation','Name, Number, Logo','Male & Female Cuts','Official Style Available'],
-    thumbnail: IG.bball_kit,
-    category: 'jersey', categoryLabel: 'Basketball Full Kit',
-    sports: ['Basketball'], ageCategories: [...BBALL_M_AGES, ...BBALL_F_AGES], teamOrderMin: 2,
-    badge: 'Full Kit', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // SOCCER — Men's → Women's → Other
-  // ═══════════════════════════════════════
-  {
-    id: 'soccer-jersey-mens',
-    name: "Men's Soccer Match Jersey",
-    price: 32, originalPrice: 45,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.soccer_mens,'black','white','navy','royal','red','forest','kelly','orange','purple','gold'),
-    description: "Men's custom soccer match jersey with full sublimation. Home/away options. Name, number, logo, country flag. Official style available.",
-    features: ['Full Sublimation','Home & Away Options','Name, Number, Flag, Logo','Official Style Available'],
-    thumbnail: IG.soccer_mens,
-    category: 'jersey', categoryLabel: "Men's Soccer Jersey",
-    sports: ['Soccer'], ageCategories: SOCCER_M_AGES, teamOrderMin: 2,
-    badge: 'Official Style', customPrint: true,
-  },
-  {
-    id: 'soccer-jersey-womens',
-    name: "Women's Soccer Match Jersey",
-    price: 32, originalPrice: 45,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.soccer_womens,'black','white','navy','royal','red','forest','kelly','orange','purple','gold'),
-    description: "Women's soccer jersey with full sublimation. Long-sleeve modest version available. Name, number, logo, country flag. Official style available.",
-    features: ["Women's Cut",'Full Sublimation','Long-Sleeve Modest Version Available','Name, Number, Flag, Logo','Official Style Available'],
-    thumbnail: IG.soccer_womens,
-    category: 'jersey', categoryLabel: "Women's Soccer Jersey",
-    sports: ['Soccer'], ageCategories: SOCCER_F_AGES, teamOrderMin: 2,
-    badge: 'Official Style', modest: true, customPrint: true,
-  },
-  {
-    id: 'soccer-shorts',
-    name: 'Soccer Match Shorts',
-    price: 22, originalPrice: 30,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.soccer_shorts,'black','white','navy','royal','red','forest','kelly','orange'),
-    description: 'Lightweight soccer shorts to match your team jersey. Elastic waist with drawcord. Custom color and logo.',
-    features: ['100% Polyester','Elastic Waist + Drawcord','Custom Color & Logo','Pairs with Match Jersey'],
-    thumbnail: IG.soccer_shorts,
-    category: 'shorts', categoryLabel: 'Soccer Shorts',
-    sports: ['Soccer'], ageCategories: [...SOCCER_M_AGES, ...SOCCER_F_AGES], teamOrderMin: 2,
-    badge: 'Soccer', customPrint: true,
-  },
-  {
-    id: 'soccer-kit',
-    name: 'Soccer Full Match Kit (Jersey + Shorts)',
-    price: 48, originalPrice: 68,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.soccer_kit,'black','white','navy','royal','red','forest','kelly','orange','gold'),
-    description: 'Complete soccer match kit — jersey + shorts. Full sublimation with name, number, country flag, team logo. Official style available.',
-    features: ['Jersey + Shorts Set','Full Sublimation','Name, Number, Flag, Logo','Home & Away Option','Official Style Available'],
-    thumbnail: IG.soccer_kit,
-    category: 'jersey', categoryLabel: 'Soccer Full Kit',
-    sports: ['Soccer'], ageCategories: [...SOCCER_M_AGES, ...SOCCER_F_AGES], teamOrderMin: 2,
-    badge: 'Full Kit', modest: true, customPrint: true,
-  },
-  {
-    id: 'soccer-gk',
-    name: 'Soccer Goalkeeper Kit',
-    price: 55, originalPrice: 75,
-    sizes: ['XS','S','M','L','XL','2XL'],
-    colors: sportColors(IG.soccer_gk,'black','royal','forest','orange','purple'),
-    description: 'Padded goalkeeper jersey and shorts set in contrast colorway. Long sleeve. Custom print.',
-    features: ['Padded Elbows & Shoulders','Contrast Colorway','Long Sleeve','Full Sublimation Print'],
-    thumbnail: IG.soccer_gk,
-    category: 'jersey', categoryLabel: 'Goalkeeper Kit',
-    sports: ['Soccer'], ageCategories: [...SOCCER_M_AGES, ...SOCCER_F_AGES], teamOrderMin: 2,
-    badge: 'Goalkeeper', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // VOLLEYBALL
-  // ═══════════════════════════════════════
-  {
-    id: 'volleyball-kit',
-    name: 'Volleyball Team Kit (Jersey + Shorts)',
-    price: 52, originalPrice: 72,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.volleyball,'black','white','navy','royal','red','kelly','purple','gold'),
-    description: "Volleyball jersey + shorts kit. Women's modest version (long shorts + sleeved jersey) available. Full sublimation.",
-    features: ['Jersey + Shorts Set','Full Sublimation','Modest Version Available','Name, Number, Logo'],
-    thumbnail: IG.volleyball,
-    category: 'jersey', categoryLabel: 'Volleyball Kit',
-    sports: ['Volleyball'], ageCategories: OPEN_AGES, teamOrderMin: 2,
-    badge: 'Full Kit', modest: true, customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // FLAG FOOTBALL
-  // ═══════════════════════════════════════
-  {
-    id: 'flagfootball-kit',
-    name: 'Flag Football Jersey + Shorts',
-    price: 52, originalPrice: 72,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.flag_football,'black','white','navy','royal','red','kelly','orange','gold'),
-    description: 'Flag football jersey and wide-cut shorts. Flag belt loops built into shorts. Full sublimation.',
-    features: ['Jersey + Shorts','Flag Belt Loops','Full Sublimation','Name, Number, Logo'],
-    thumbnail: IG.flag_football,
-    category: 'jersey', categoryLabel: 'Flag Football Kit',
-    sports: ['Flag Football'], ageCategories: OPEN_AGES, teamOrderMin: 2,
-    badge: 'Full Kit', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // CRICKET
-  // ═══════════════════════════════════════
-  {
-    id: 'cricket-whites',
-    name: 'Cricket Match Whites Kit',
-    price: 65, originalPrice: 88,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [{ ...COLORS.white, image: IG.cricket_whites }],
-    description: 'Traditional cricket whites — long-sleeve shirt and trousers. Team logo embroidered or printed.',
-    features: ['Traditional White','Long Sleeve Option','Team Name & Logo','Full Match Kit'],
-    thumbnail: IG.cricket_whites,
-    category: 'jersey', categoryLabel: 'Cricket Whites',
-    sports: ['Cricket'], ageCategories: OPEN_AGES, teamOrderMin: 2,
-    badge: 'Full Kit', customPrint: true,
-  },
-  {
-    id: 'cricket-training',
-    name: 'Cricket Training Tee',
-    price: 25, originalPrice: 35,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.cricket_tee,'black','white','navy','royal','red','forest'),
-    description: 'Custom cricket training tee for practice and warm-ups.',
-    features: ['Moisture-Wicking Polyester','Custom Team Colors','Name & Number Optional'],
-    thumbnail: IG.cricket_tee,
-    category: 'tshirt', categoryLabel: 'Cricket Tee',
-    sports: ['Cricket'], ageCategories: OPEN_AGES, teamOrderMin: 2,
-    badge: 'Cricket', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // SOFTBALL — dryfit shirts only (no official style, no jersey)
-  // ═══════════════════════════════════════
-  {
-    id: 'softball-dryfit',
-    name: 'Softball Performance Dryfit Shirt',
-    price: 25, originalPrice: 35,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.softball,'black','white','navy','royal','red','kelly','orange','grey'),
-    description: 'Custom dryfit performance shirt for softball. Moisture-wicking fabric with custom team name and number.',
-    features: ['100% Moisture-Wicking Polyester','Custom Team Colors','Name & Number Optional'],
-    thumbnail: IG.softball,
-    category: 'tshirt', categoryLabel: 'Softball Dryfit Shirt',
-    sports: ['Softball'], ageCategories: OPEN_AGES, teamOrderMin: 2,
-    badge: 'Softball', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // TRACK & FIELD
-  // ═══════════════════════════════════════
-  {
-    id: 'track-singlet',
-    name: 'Athletics Sprint Singlet',
-    price: 28, originalPrice: 40,
-    sizes: ['XS','S','M','L','XL','2XL'],
-    colors: sportColors(IG.track_singlet,'black','white','navy','royal','red','kelly','gold','orange'),
-    description: 'Lightweight competition singlet for track & field. Full sublimation with country flag, name, and number.',
-    features: ['Lightweight 3.5oz Polyester','Full Sublimation','Country Flag Option','Body-Mapped Ventilation'],
-    thumbnail: IG.track_singlet,
-    category: 'jersey', categoryLabel: 'Athletics Singlet',
-    sports: ['Track & Field'], ageCategories: IND_AGES, teamOrderMin: 2,
-    badge: 'Individual OK', customPrint: true,
-  },
-  {
-    id: 'track-long-sleeve',
-    name: 'Athletics Long-Sleeve Modest Jersey',
-    price: 32, originalPrice: 45,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.track_modest,'black','white','navy','royal','red','kelly','teal'),
-    description: 'Full-sleeve modest athletics jersey for Muslim women athletes competing in Track & Field.',
-    features: ['Full Sleeve Coverage','Non-Transparent','Moisture-Wicking','Custom Print'],
-    thumbnail: IG.track_modest,
-    category: 'jersey', categoryLabel: 'Modest Athletics Jersey',
-    sports: ['Track & Field'], ageCategories: IND_AGES, teamOrderMin: 2,
-    badge: 'Modest Wear', modest: true, customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // MARTIAL ARTS
-  // ═══════════════════════════════════════
-  {
-    id: 'martial-rashguard',
-    name: 'Martial Arts Compression Rashguard',
-    price: 35, originalPrice: 48,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.rashguard,'black','navy','royal','red','forest','purple','gold'),
-    description: 'Long-sleeve compression rashguard for judo, wrestling, BJJ, and MMA. Full sublimation.',
-    features: ['85% Polyester / 15% Spandex','Long Sleeve','Four-Way Stretch','Anti-Microbial','Custom Print'],
-    thumbnail: IG.rashguard,
-    category: 'jersey', categoryLabel: 'Rashguard',
-    sports: ['Martial Arts'], ageCategories: IND_AGES, teamOrderMin: 2,
-    badge: 'Individual OK', customPrint: true,
-  },
-  {
-    id: 'martial-fight-shorts',
-    name: 'MMA / Grappling Fight Shorts',
-    price: 38, originalPrice: 52,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.fight_shorts,'black','navy','royal','red','forest','purple'),
-    description: 'Flexible fight shorts with split hem for maximum mobility.',
-    features: ['Split Hem for Mobility','Hook-and-Loop + Drawcord','Full Sublimation','Custom Logo'],
-    thumbnail: IG.fight_shorts,
-    category: 'shorts', categoryLabel: 'Fight Shorts',
-    sports: ['Martial Arts'], ageCategories: IND_AGES, teamOrderMin: 2,
-    badge: 'Individual OK', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // RACKET SPORTS
-  // ═══════════════════════════════════════
-  {
-    id: 'racket-polo',
-    name: 'Racket Sports Performance Polo',
-    price: 32, originalPrice: 45,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.racket_polo,'black','white','navy','royal','red','kelly','gold'),
-    description: 'Breathable performance polo for tennis, table tennis, badminton, and pickleball.',
-    features: ['Moisture-Wicking Polyester Pique','Stretch Fabric','UV Protection','Team Logo'],
-    thumbnail: IG.racket_polo,
-    category: 'jersey', categoryLabel: 'Racket Sports Polo',
-    sports: ['Tennis','Table Tennis','Badminton','Pickleball'], ageCategories: IND_AGES, teamOrderMin: 2,
-    badge: 'Individual OK', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // 5K RUN (renamed from "5K Run for Sudan")
-  // ═══════════════════════════════════════
-  {
-    id: 'fivek-tee',
-    name: '5K Run Event Tee',
-    price: 22, originalPrice: 30,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.fivek_tee,'black','white','navy','royal','red','kelly','grey','green'),
-    description: 'Custom event tee for the 5K Run. Lightweight moisture-wicking fabric with event logo and participant name.',
-    features: ['Moisture-Wicking Polyester','Custom Event Logo','Name Optional','All Colors Available'],
-    thumbnail: IG.fivek_tee,
-    category: 'tshirt', categoryLabel: '5K Run Tee',
-    sports: ['5K Run'], ageCategories: IND_AGES, teamOrderMin: 2,
-    badge: '5K Run', customPrint: true,
-  },
-
-  // ═══════════════════════════════════════
-  // ALL SPORTS — CORE APPAREL
-  // ═══════════════════════════════════════
-
-  // Hoodie — price unified at $40, all standard colors
-  {
-    id: 'hoodie',
-    name: 'Custom Team Pullover Hoodie',
-    price: 40, originalPrice: 55,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-      { ...COLORS.white,    image: TS.hoodie_white,  backImage: TS.hoodie_back_w },
-      { ...COLORS.grey,     image: TS.hoodie_grey,   backImage: TS.hoodie_back_b },
-      { ...COLORS.charcoal, image: TS.hoodie_bh,     backImage: TS.hoodie_back_b },
-      { ...COLORS.navy,     image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-      { ...COLORS.royal,    image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-      { ...COLORS.green,    image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-      { ...COLORS.forest,   image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-      { ...COLORS.red,      image: TS.hoodie_red,    backImage: TS.hoodie_back_b },
-      { ...COLORS.purple,   image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-      { ...COLORS.gold,     image: TS.hoodie_grey,   backImage: TS.hoodie_back_b },
-      { ...COLORS.maroon,   image: TS.hoodie_red,    backImage: TS.hoodie_back_b },
-      { ...COLORS.cardinal, image: TS.hoodie_red,    backImage: TS.hoodie_back_b },
-      { ...COLORS.orange,   image: TS.hoodie_red,    backImage: TS.hoodie_back_b },
-      { ...COLORS.teal,     image: TS.hoodie_black,  backImage: TS.hoodie_back_b },
-    ],
-    description: 'Premium 8.5oz fleece hoodie. All standard colors: Black, White, Grey, Green, Blue, Royal Blue and more. Full custom print.',
-    features: ['65% Premium Cotton / 35% Polyester','3-Panel Hood with Drawcord','Pouch Pocket','Custom Name, Number & Logo','Black, White, Grey, Green, Blue, Royal Blue available'],
-    thumbnail: TS.hoodie_black,
-    category: 'hoodie', categoryLabel: 'Hoodie',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Crewneck sweatshirt — back-view image added
-  {
-    id: 'crewneck',
-    name: 'Custom Team Crewneck Sweatshirt',
-    price: 32, originalPrice: 45,
-    sizes: ['XS','S','M','L','XL','2XL','3XL','4XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.white,    image: TS.crew_white, backImage: TS.crew_back_b },
-      { ...COLORS.grey,     image: TS.crew_grey,  backImage: TS.crew_back_b },
-      { ...COLORS.charcoal, image: TS.crew_bh,    backImage: TS.crew_back_b },
-      { ...COLORS.navy,     image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.royal,    image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.red,      image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.forest,   image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.green,    image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.purple,   image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.maroon,   image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.cardinal, image: TS.crew_black, backImage: TS.crew_back_b },
-      { ...COLORS.gold,     image: TS.crew_grey,  backImage: TS.crew_back_b },
-      { ...COLORS.orange,   image: TS.crew_black, backImage: TS.crew_back_b },
-    ],
-    description: 'Classic crewneck sweatshirt for training camp and travel wear. Front & back view available.',
-    features: ['65% Ring-Spun Cotton / 35% Polyester','Reactive-Dyed','Cuffed Hem','Custom Print Ready','Front & Back View Available'],
-    thumbnail: TS.crew_black,
-    category: 'sweatshirt', categoryLabel: 'Crewneck',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  {
-    id: 'sweatpants',
-    name: 'Custom Team Sweatpants',
-    price: 38, originalPrice: 52,
-    sizes: ['S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.pants_black },
-      { ...COLORS.white,    image: TS.pants_white },
-      { ...COLORS.grey,     image: TS.pants_grey  },
-      { ...COLORS.red,      image: TS.pants_red   },
-      { ...COLORS.charcoal, image: TS.pants_black },
-      { ...COLORS.navy,     image: TS.pants_black },
-      { ...COLORS.royal,    image: TS.pants_black },
-      { ...COLORS.forest,   image: TS.pants_black },
-      { ...COLORS.green,    image: TS.pants_black },
-      { ...COLORS.purple,   image: TS.pants_black },
-      { ...COLORS.maroon,   image: TS.pants_red   },
-      { ...COLORS.cardinal, image: TS.pants_red   },
-      { ...COLORS.gold,     image: TS.pants_grey  },
-      { ...COLORS.orange,   image: TS.pants_red   },
-      { ...COLORS.teal,     image: TS.pants_black },
-    ],
-    description: 'Premium fleece sweatpants with elastic waistband, side pockets, and cuffed hem.',
-    features: ['65% Ring-Spun Cotton / 35% Polyester','Elastic Waist + Drawcord','Side & Back Pockets','Custom Logo & Name'],
-    thumbnail: TS.pants_black,
-    category: 'sweatpants', categoryLabel: 'Sweatpants',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Heavy cotton tee — grey, navy, royal blue, green added
-  {
-    id: 'tshirt-heavy',
-    name: 'Custom Heavy Cotton Tee',
-    price: 22, originalPrice: 30,
-    sizes: ['S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.heavy_black    },
-      { ...COLORS.white,    image: TS.heavy_white    },
-      { ...COLORS.grey,     image: TS.heavy_ash      },
-      { ...COLORS.navy,     image: TS.heavy_navy     },
-      { ...COLORS.royal,    image: TS.heavy_navy     },
-      { ...COLORS.green,    image: TS.heavy_black    },
-      { ...COLORS.forest,   image: TS.heavy_black    },
-      { ...COLORS.red,      image: TS.heavy_red      },
-      { ...COLORS.charcoal, image: TS.heavy_charcoal },
-      { ...COLORS.orange,   image: TS.heavy_orange   },
-      { ...COLORS.oxford,   image: TS.heavy_oxford   },
-      { ...COLORS.maroon,   image: TS.heavy_red      },
-      { ...COLORS.purple,   image: TS.heavy_black    },
-      { ...COLORS.gold,     image: TS.heavy_ash      },
-      { ...COLORS.teal,     image: TS.heavy_black    },
-    ],
-    description: 'Heavyweight 6oz cotton tee. Now available in Grey, Navy, Royal Blue, Green, and more.',
-    features: ['6oz 65% Cotton / 35% Polyester','Tear-Away Label','Custom Print Ready','Grey, Navy, Royal Blue, Green + more'],
-    thumbnail: TS.heavy_black,
-    category: 'tshirt', categoryLabel: 'Heavy Tee',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Long sleeve tee — new
-  {
-    id: 'longsleeve-tee',
-    name: 'Custom Long Sleeve T-Shirt',
-    price: 28, originalPrice: 38,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.longsleeve_black },
-      { ...COLORS.white,    image: TS.longsleeve_white },
-      { ...COLORS.grey,     image: TS.longsleeve_black },
-      { ...COLORS.navy,     image: TS.longsleeve_black },
-      { ...COLORS.royal,    image: TS.longsleeve_black },
-      { ...COLORS.green,    image: TS.longsleeve_black },
-      { ...COLORS.forest,   image: TS.longsleeve_black },
-      { ...COLORS.red,      image: TS.longsleeve_black },
-      { ...COLORS.charcoal, image: TS.longsleeve_black },
-      { ...COLORS.maroon,   image: TS.longsleeve_black },
-    ],
-    description: 'Performance-friendly long sleeve tee. Great for layering and modest coverage. Custom team print available.',
-    features: ['60% Cotton / 40% Polyester','Long Sleeve Coverage','Moisture-Friendly Blend','Custom Name, Number & Logo'],
-    thumbnail: TS.longsleeve_black,
-    category: 'longsleeve', categoryLabel: 'Long Sleeve Tee',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Performance top — expanded
-  {
-    id: 'performance-top',
-    name: 'Athletic Performance Top',
-    price: 30, originalPrice: 42,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.perf_top_black },
-      { ...COLORS.white,    image: TS.perf_top_white },
-      { ...COLORS.navy,     image: TS.perf_top_black },
-      { ...COLORS.royal,    image: TS.perf_top_black },
-      { ...COLORS.red,      image: TS.perf_top_black },
-      { ...COLORS.forest,   image: TS.perf_top_black },
-      { ...COLORS.green,    image: TS.perf_top_black },
-      { ...COLORS.charcoal, image: TS.perf_top_black },
-    ],
-    description: 'Moisture-wicking, athletic-cut performance top. Ergonomic seams, anti-odor treatment, 4-way stretch.',
-    features: ['100% Moisture-Wicking Polyester','Athletic Cut — Ergonomic Seams','4-Way Stretch','Anti-Odor Treatment','Custom Team Print'],
-    thumbnail: TS.perf_top_black,
-    category: 'tshirt', categoryLabel: 'Performance Top',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Joggers — new
-  {
-    id: 'joggers',
+    id: 'athletic-joggers',
     name: 'Athletic Joggers',
-    price: 38, originalPrice: 52,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.joggers_black },
-      { ...COLORS.grey,     image: TS.joggers_grey  },
-      { ...COLORS.charcoal, image: TS.joggers_black },
-      { ...COLORS.navy,     image: TS.joggers_black },
-      { ...COLORS.royal,    image: TS.joggers_black },
-      { ...COLORS.green,    image: TS.joggers_black },
-      { ...COLORS.forest,   image: TS.joggers_black },
-      { ...COLORS.maroon,   image: TS.joggers_black },
-    ],
-    description: 'Slim-tapered athletic joggers. Great for warm-ups, travel, and casual training days.',
-    features: ['Slim-Tapered Fit','Elastic Cuff + Drawcord Waist','Side Pockets','Custom Logo Optional','Soft-Touch Fleece Interior'],
-    thumbnail: TS.joggers_black,
-    category: 'joggers', categoryLabel: 'Joggers',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Standalone activewear shorts — new
-  {
-    id: 'activewear-shorts',
-    name: 'Athletic Activewear Shorts',
-    price: 26, originalPrice: 36,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.shorts_black },
-      { ...COLORS.grey,     image: TS.shorts_black },
-      { ...COLORS.navy,     image: TS.shorts_black },
-      { ...COLORS.royal,    image: TS.shorts_black },
-      { ...COLORS.red,      image: TS.shorts_black },
-      { ...COLORS.green,    image: TS.shorts_black },
-      { ...COLORS.charcoal, image: TS.shorts_black },
-    ],
-    description: 'Versatile activewear shorts. Lightweight, quick-dry fabric. Works standalone or paired with any jersey.',
-    features: ['100% Quick-Dry Polyester','Elastic Waist + Drawcord','Side Pockets','Custom Logo Optional'],
-    thumbnail: TS.shorts_black,
-    category: 'shorts', categoryLabel: 'Activewear Shorts',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Socks — crew, ankle, performance (new)
-  {
-    id: 'socks-crew',
-    name: 'Athletic Crew Socks',
-    price: 8, originalPrice: 12,
-    sizes: ['S/M','L/XL'],
-    colors: sportColors(TS.socks_crew,'black','white','navy','royal','red','grey','green'),
-    description: 'Classic crew length athletic socks. Cushioned sole, reinforced heel and toe.',
-    features: ['80% Cotton / 20% Nylon','Cushioned Sole','Reinforced Heel & Toe','Custom Team Color'],
-    thumbnail: TS.socks_crew,
-    category: 'socks', categoryLabel: 'Crew Socks',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
+    price: 35, originalPrice: 48, sizes: STD_SIZES,
+    colors: sportColors(IMG.joggers, ...STD_COLORS),
+    description: 'Performance joggers with tapered ankle cuffs. Great for warm-ups, training, and travel.',
+    features: ['Moisture-Wicking Fabric','Tapered Ankle Cuffs','Zippered Pockets','Custom Color & Logo','Elastic Waist + Drawcord'],
+    thumbnail: IMG.joggers,
+    category: 'sportswear', categoryLabel: 'Athletic Joggers',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Joggers', customPrint: true,
   },
   {
-    id: 'socks-ankle',
-    name: 'Athletic Ankle Socks',
-    price: 7, originalPrice: 10,
-    sizes: ['S/M','L/XL'],
-    colors: sportColors(TS.socks_ankle,'black','white','navy','royal','red','grey','green'),
-    description: 'Low-cut ankle socks. Perfect for warm weather and running.',
-    features: ['80% Cotton / 20% Nylon','Low-Cut Ankle Height','Arch Support Band','Custom Team Color'],
-    thumbnail: TS.socks_ankle,
-    category: 'socks', categoryLabel: 'Ankle Socks',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
+    id: 'athletic-leggings',
+    name: 'Athletic Compression Leggings',
+    price: 32, originalPrice: 45, sizes: STD_SIZES,
+    colors: sportColors(IMG.leggings, ...STD_COLORS),
+    description: 'High-waist compression leggings for training and competition. Non-transparent fabric. Custom team print.',
+    features: ['High Waist Design','Non-Transparent','4-Way Stretch Fabric','Moisture-Wicking','Custom Color & Logo'],
+    thumbnail: IMG.leggings,
+    category: 'sportswear', categoryLabel: 'Athletic Leggings',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Leggings', modest: true, customPrint: true,
   },
-  {
-    id: 'socks-performance',
-    name: 'Performance Athletic Socks',
-    price: 12, originalPrice: 18,
-    sizes: ['S/M','L/XL'],
-    colors: sportColors(TS.socks_perf,'black','white','navy','royal','red','grey','green'),
-    description: 'High-performance moisture-wicking socks with compression arch support and anti-blister lining.',
-    features: ['Moisture-Wicking Blend','Compression Arch Support','Anti-Blister Lining','Odor Control','Custom Team Color'],
-    thumbnail: TS.socks_perf,
-    category: 'socks', categoryLabel: 'Performance Socks',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Headwear — flat brim + baseball cap (general/sport catalog, NOT IG Merch)
-  {
-    id: 'flatbrim-cap',
-    name: 'Custom Flat Brim Cap',
-    price: 25, originalPrice: 35,
-    sizes: ['One Size'],
-    colors: allColors(TS.flatbrim_cap),
-    description: 'Structured flat brim snapback cap. 6-panel design with embroidered team logo.',
-    features: ['6-Panel Structured','Flat Brim','Snapback Closure','Embroidered Logo','All Colors Available'],
-    thumbnail: TS.flatbrim_cap,
-    category: 'hat', categoryLabel: 'Flat Brim Cap',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-  {
-    id: 'baseball-cap',
-    name: 'Custom Baseball Cap',
-    price: 22, originalPrice: 32,
-    sizes: ['One Size'],
-    colors: allColors(TS.baseball_cap),
-    description: 'Classic curved-brim baseball cap with adjustable strap. Embroidered team logo on front.',
-    features: ['6-Panel Unstructured','Curved Brim','Adjustable Strap Back','Embroidered Logo','All Colors Available'],
-    thumbnail: TS.baseball_cap,
-    category: 'hat', categoryLabel: 'Baseball Cap',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-  {
-    id: 'snapback-cap',
-    name: 'Custom Team Snapback Cap',
-    price: 22, originalPrice: 30,
-    sizes: ['One Size'],
-    colors: allColors(TS.cap),
-    description: 'Structured 6-panel snapback with embroidered team logo on front panel.',
-    features: ['6-Panel Structured','Embroidered Logo','Snapback Closure','All Colors Available'],
-    thumbnail: 'https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=600',
-    category: 'hat', categoryLabel: 'Snapback Cap',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'All Sports', customPrint: true,
-  },
-
-  // Modest wear
   {
     id: 'sports-hijab',
     name: 'Performance Sports Hijab',
-    price: 18, originalPrice: 25,
-    sizes: ['One Size'],
-    colors: sportColors(IG.sports_hijab,'black','white','navy','royal','red','forest','kelly','teal','purple','gold','grey','charcoal','lightblue','pink'),
-    description: 'Lightweight, breathable sports hijab. Secure non-slip fit. Team color matching available.',
-    features: ['95% Polyester / 5% Spandex','Moisture-Wicking','Secure Non-Slip Design','Team Color Matching'],
-    thumbnail: IG.sports_hijab,
-    category: 'modest', categoryLabel: 'Sports Hijab',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'Modest Wear', modest: true, customPrint: true,
+    price: 18, originalPrice: 25, sizes: ['One Size'],
+    colors: sportColors(IMG.hijab, 'black','white','navy','royal','red','forest','kelly','teal','purple','gold','grey','charcoal','lightblue','pink'),
+    description: 'Lightweight, breathable sports hijab with secure non-slip fit. Team color matching available.',
+    features: ['95% Polyester / 5% Spandex','Moisture-Wicking','Secure Non-Slip Design','Team Color Matching','14+ Colors Available'],
+    thumbnail: IMG.hijab,
+    category: 'sportswear', categoryLabel: 'Sports Hijab',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Modest Wear', modest: true, customPrint: true,
   },
   {
-    id: 'modest-jersey-women',
-    name: "Women's Full-Sleeve Modest Jersey",
-    price: 40, originalPrice: 55,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.modest_jersey,'black','white','navy','royal','red','forest','teal','purple','gold'),
-    description: 'Full-sleeve jersey for Muslim women athletes. Non-transparent, breathable, fully customizable.',
-    features: ['Full Sleeve Coverage','Non-Transparent Fabric','Moisture-Wicking','Custom Name, Number, Logo'],
-    thumbnail: IG.modest_jersey,
-    category: 'modest', categoryLabel: "Women's Modest Jersey",
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'Modest Wear', modest: true, customPrint: true,
+    id: 'ls-undershirt',
+    name: 'Long Sleeve Cooling Undershirt',
+    price: 22, originalPrice: 30, sizes: STD_SIZES,
+    colors: sportColors(IMG.ls_undershirt, ...STD_COLORS),
+    description: 'Cooling compression undershirt worn under jerseys for full arm coverage. Essential for modest athletes.',
+    features: ['Cooling Compression Fabric','Worn Under Jersey','Full Arm Coverage','Non-Transparent','Moisture-Wicking'],
+    thumbnail: IMG.ls_undershirt,
+    category: 'sportswear', categoryLabel: 'Long Sleeve Undershirt',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Undershirt', modest: true, customPrint: true,
   },
   {
-    id: 'modest-track-pants',
-    name: "Women's Modest Track Pants",
-    price: 35, originalPrice: 48,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: sportColors(IG.modest_pants,'black','navy','royal','forest','charcoal','teal','purple'),
-    description: 'Non-transparent, breathable full-length track pants. Loose modest fit with elastic waist.',
-    features: ['Non-Transparent','Loose Modest Fit','Elastic Waist + Drawcord','Side Pockets','Custom Color & Logo'],
-    thumbnail: IG.modest_pants,
-    category: 'modest', categoryLabel: "Women's Track Pants",
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'Modest Wear', modest: true, customPrint: true,
+    id: 'cotton-ss-shirt',
+    name: 'Cotton Short Sleeve T-Shirt',
+    price: 20, originalPrice: 28, sizes: STD_SIZES,
+    colors: sportColors(IMG.cotton_ss, ...STD_COLORS),
+    description: 'Classic cotton-blend short sleeve shirt. Custom team print. Great for fans, volunteers, and casual wear.',
+    features: ['55% Cotton / 45% Polyester','Custom Team Logo & Colors','Unisex Cut','Screen Print or DTG','Sizes XS–3XL'],
+    thumbnail: IMG.cotton_ss,
+    category: 'sportswear', categoryLabel: 'Cotton Short Sleeve Shirt',
+    sports: ALL_SPORTS_LIST, teamOrderMin: 2, badge: 'Cotton Tee', customPrint: true,
   },
 
-  // ═══════════════════════════════════════════════════════════
-  // IG MERCH — STANDALONE SECTION ONLY
-  // Hat removed. Tote bag added. Hoodie price unified at $40.
-  // IG Merch does NOT appear in individual sport pages.
-  // ═══════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════
+  // SECTION 2 — TEAM APPAREL (sport-specific jerseys)
+  // ══════════════════════════════════════════════════════════
+
+  // Basketball
   {
-    id: 'ig-hoodie-black',
+    id: 'basketball-jersey-sleeveless',
+    name: 'Basketball Game Jersey (Sleeveless)',
+    price: 35, originalPrice: 48, sizes: STD_SIZES,
+    colors: sportColors(IMG.bball_jersey,'black','white','navy','royal','red','kelly','purple','gold'),
+    description: 'Official sleeveless basketball jersey with full sublimation. Team name, number, and logo included.',
+    features: ['Full Sublimation Print','Moisture-Wicking Mesh','Name, Number & Logo','Official IG Style Available','Min 2 per order'],
+    thumbnail: IMG.bball_jersey,
+    category: 'team-apparel', categoryLabel: 'Basketball Jersey (Sleeveless)',
+    sports: ['Basketball'], teamOrderMin: 2, badge: 'Basketball', customPrint: true,
+  },
+  {
+    id: 'basketball-shorts-team',
+    name: 'Basketball Game Shorts',
+    price: 28, originalPrice: 38, sizes: STD_SIZES,
+    colors: sportColors(IMG.bball_shorts,'black','white','navy','royal','red','kelly','purple','gold'),
+    description: 'Wide-cut basketball shorts matching the game jersey. Full sublimation available.',
+    features: ['Moisture-Wicking Mesh','Elastic Waist + Drawcord','Full Sublimation','Pairs with Jersey'],
+    thumbnail: IMG.bball_shorts,
+    category: 'team-apparel', categoryLabel: 'Basketball Shorts',
+    sports: ['Basketball'], teamOrderMin: 2, badge: 'Basketball', customPrint: true,
+  },
+
+  // Soccer
+  {
+    id: 'soccer-jersey-unisex',
+    name: 'Soccer Jersey (Unisex)',
+    price: 32, originalPrice: 45, sizes: STD_SIZES,
+    colors: sportColors(IMG.soccer_jersey_u,'black','white','navy','royal','red','forest','kelly','orange','purple','gold'),
+    description: 'Custom unisex soccer jersey. Full sublimation with name, number, and team logo. Official IG style available.',
+    features: ['Full Sublimation','Home & Away Options','Name, Number & Logo','Official IG Style Available'],
+    thumbnail: IMG.soccer_jersey_u,
+    category: 'team-apparel', categoryLabel: 'Soccer Jersey (Unisex)',
+    sports: ['Soccer'], teamOrderMin: 2, badge: 'Soccer', customPrint: true,
+  },
+  {
+    id: 'soccer-jersey-women',
+    name: "Soccer Jersey (Women's)",
+    price: 32, originalPrice: 45, sizes: STD_SIZES,
+    colors: sportColors(IMG.soccer_jersey_w,'black','white','navy','royal','red','forest','kelly','orange','purple','gold'),
+    description: "Women's soccer jersey with full sublimation. Long-sleeve modest version available.",
+    features: ["Women's Cut",'Full Sublimation','Modest Long-Sleeve Version Available','Name, Number & Logo'],
+    thumbnail: IMG.soccer_jersey_w,
+    category: 'team-apparel', categoryLabel: "Soccer Jersey (Women's)",
+    sports: ['Soccer'], teamOrderMin: 2, badge: 'Soccer', modest: true, customPrint: true,
+  },
+
+  // Flag Football
+  {
+    id: 'football-jersey',
+    name: 'Football Jersey',
+    price: 38, originalPrice: 52, sizes: STD_SIZES,
+    colors: sportColors(IMG.football_jersey,'black','white','navy','royal','red','kelly','orange','gold'),
+    description: 'Custom football jersey with full sublimation. Name, number, and team logo.',
+    features: ['Full Sublimation','Heavy-Duty Mesh','Name, Number & Logo','Flag Belt Compatible'],
+    thumbnail: IMG.football_jersey,
+    category: 'team-apparel', categoryLabel: 'Football Jersey',
+    sports: ['Flag Football'], teamOrderMin: 2, badge: 'Flag Football', customPrint: true,
+  },
+
+  // Softball/Pickleball
+  {
+    id: 'softball-jersey-men',
+    name: "Softball Jersey (Men's)",
+    price: 35, originalPrice: 48, sizes: STD_SIZES,
+    colors: sportColors(IMG.softball_jersey_m,'black','white','navy','royal','red','kelly','orange','grey'),
+    description: "Men's custom softball jersey. Full sublimation with team name, number, and logo.",
+    features: ['Full Sublimation Print','Moisture-Wicking','Name, Number & Logo','Classic Softball Cut'],
+    thumbnail: IMG.softball_jersey_m,
+    category: 'team-apparel', categoryLabel: "Softball Jersey (Men's)",
+    sports: ['Softball/Pickleball'], teamOrderMin: 2, badge: 'Softball', customPrint: true,
+  },
+  {
+    id: 'softball-jersey-women',
+    name: "Softball Jersey (Women's)",
+    price: 35, originalPrice: 48, sizes: STD_SIZES,
+    colors: sportColors(IMG.softball_jersey_w,'black','white','navy','royal','red','kelly','orange','grey'),
+    description: "Women's custom softball jersey. Full sublimation with team name, number, and logo.",
+    features: ["Women's Cut",'Full Sublimation Print','Moisture-Wicking','Name, Number & Logo'],
+    thumbnail: IMG.softball_jersey_w,
+    category: 'team-apparel', categoryLabel: "Softball Jersey (Women's)",
+    sports: ['Softball/Pickleball'], teamOrderMin: 2, badge: 'Softball', customPrint: true,
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // SECTION 3 — ISLAMIC GAMES MERCH
+  // ══════════════════════════════════════════════════════════
+  {
+    id: 'ig-hoodie',
     name: 'Islamic Games Official Hoodie',
-    price: 40, originalPrice: 55,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    price: 40, originalPrice: 55, sizes: STD_SIZES,
     colors: [
-      { ...COLORS.black,    image: TS.ig_hoodie_black_front,  backImage: TS.ig_hoodie_back },
-      { ...COLORS.charcoal, image: TS.ig_hoodie_hgrey_front,  backImage: TS.ig_hoodie_back },
-      { ...COLORS.grey,     image: TS.ig_hoodie_grey_front,   backImage: TS.ig_hoodie_back },
-      { ...COLORS.white,    image: TS.hoodie_white,           backImage: TS.ig_hoodie_back },
-      { ...COLORS.navy,     image: TS.ig_hoodie_black_front,  backImage: TS.ig_hoodie_back },
-      { ...COLORS.royal,    image: TS.ig_hoodie_black_front,  backImage: TS.ig_hoodie_back },
-      { ...COLORS.green,    image: TS.ig_hoodie_black_front,  backImage: TS.ig_hoodie_back },
+      { ...COLORS.black,    image: IMG.ig_hoodie_black, backImage: IMG.ig_hoodie_back },
+      { ...COLORS.charcoal, image: IMG.ig_hoodie_hgrey, backImage: IMG.ig_hoodie_back },
+      { ...COLORS.grey,     image: IMG.ig_hoodie_grey,  backImage: IMG.ig_hoodie_back },
+      { ...COLORS.white,    image: TS.hoodie_white,     backImage: IMG.ig_hoodie_back },
+      { ...COLORS.navy,     image: IMG.ig_hoodie_black, backImage: IMG.ig_hoodie_back },
+      { ...COLORS.royal,    image: IMG.ig_hoodie_black, backImage: IMG.ig_hoodie_back },
+      { ...COLORS.kelly,    image: IMG.ig_hoodie_black, backImage: IMG.ig_hoodie_back },
     ],
-    description: 'Official Islamic Games 2026 merchandise hoodie. IG logo printed on chest. "I\'m Strong Inside! I\'m Strong Outside!" on back. Black, White, Grey, Green, Blue, Royal Blue available.',
-    features: ['Official IG 2026 Logo on Chest','Back Print: "I\'m Strong Inside! I\'m Strong Outside!"','65% Cotton / 35% Polyester','Pouch Pocket','Sizes XS–3XL'],
-    thumbnail: TS.ig_hoodie_black_front,
+    description: "Official Islamic Games 2026 merchandise hoodie. IG logo on chest. \"I'm Strong Inside! I'm Strong Outside!\" on back.",
+    features: ['Official IG 2026 Logo on Chest',"Back Print: \"I'm Strong Inside! I'm Strong Outside!\"",'65% Cotton / 35% Polyester','Pouch Pocket','Sizes XS–3XL'],
+    thumbnail: IMG.ig_hoodie_black,
     category: 'ig-merch', categoryLabel: 'IG Merch',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'IG Official', customPrint: true,
+    sports: ['All Sports'], teamOrderMin: 2, badge: 'IG Official', customPrint: true,
+  },
+  {
+    id: 'ig-sweatshirt',
+    name: 'Islamic Games Official Crewneck Sweatshirt',
+    price: 35, originalPrice: 48, sizes: STD_SIZES,
+    colors: [
+      { ...COLORS.black,    image: IMG.ig_sweatshirt, backImage: TS.crew_back_b },
+      { ...COLORS.grey,     image: TS.crew_grey,       backImage: TS.crew_back_b },
+      { ...COLORS.charcoal, image: TS.crew_bh,         backImage: TS.crew_back_b },
+      { ...COLORS.white,    image: TS.crew_white,      backImage: TS.crew_back_b },
+    ],
+    description: 'Official Islamic Games 2026 crewneck sweatshirt with IG logo on chest.',
+    features: ['Official IG 2026 Logo on Chest','65% Cotton / 35% Polyester','Cuffed Hem','Sizes XS–3XL'],
+    thumbnail: IMG.ig_sweatshirt,
+    category: 'ig-merch', categoryLabel: 'IG Merch',
+    sports: ['All Sports'], teamOrderMin: 2, badge: 'IG Official', customPrint: true,
   },
   {
     id: 'ig-tshirt',
     name: 'Islamic Games Official T-Shirt',
-    price: 20, originalPrice: 28,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
+    price: 20, originalPrice: 28, sizes: STD_SIZES,
     colors: [
       { ...COLORS.white, image: TS.tee_white, backImage: TS.tee_black_b },
       { ...COLORS.black, image: TS.tee_black, backImage: TS.tee_black_b },
@@ -854,91 +342,42 @@ export const products: Product[] = [
     features: ['Official IG 2026 Logo','55% Cotton / 45% Polyester','Front chest logo + back event print','Sizes XS–3XL'],
     thumbnail: TS.tee_white,
     category: 'ig-merch', categoryLabel: 'IG Merch',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'IG Official', customPrint: true,
-  },
-  {
-    id: 'ig-sweatshirt',
-    name: 'Islamic Games Official Crewneck Sweatshirt',
-    price: 35, originalPrice: 48,
-    sizes: ['XS','S','M','L','XL','2XL','3XL'],
-    colors: [
-      { ...COLORS.black,    image: TS.ig_sweatshirt_black, backImage: TS.crew_back_b },
-      { ...COLORS.grey,     image: TS.crew_grey,           backImage: TS.crew_back_b },
-      { ...COLORS.charcoal, image: TS.crew_bh,             backImage: TS.crew_back_b },
-      { ...COLORS.white,    image: TS.crew_white,          backImage: TS.crew_back_b },
-    ],
-    description: 'Official Islamic Games 2026 crewneck sweatshirt with IG logo on chest. Classic fleece feel, great for athletes and fans. Front & back view available.',
-    features: ['Official IG 2026 Logo on Chest','65% Cotton / 35% Polyester','Cuffed Hem','Sizes XS–3XL','Front & Back View'],
-    thumbnail: TS.ig_sweatshirt_black,
-    category: 'ig-merch', categoryLabel: 'IG Merch',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'IG Official', customPrint: true,
+    sports: ['All Sports'], teamOrderMin: 2, badge: 'IG Official', customPrint: true,
   },
   {
     id: 'ig-sweatpants',
     name: 'Islamic Games Official Sweatpants',
-    price: 32, originalPrice: 45,
-    sizes: ['S','M','L','XL','2XL','3XL'],
+    price: 32, originalPrice: 45, sizes: ['S','M','L','XL','2XL','3XL'],
     colors: [
       { ...COLORS.black, image: TS.pants_black },
       { ...COLORS.grey,  image: TS.pants_grey  },
     ],
-    description: 'Official Islamic Games 2026 sweatpants with IG logo on the leg. Pairs with the IG hoodie or crewneck.',
+    description: 'Official Islamic Games 2026 sweatpants with IG logo on the leg.',
     features: ['Official IG 2026 Logo on Leg','65% Cotton / 35% Polyester','Elastic Waist + Drawcord','Side Pockets'],
     thumbnail: TS.pants_black,
     category: 'ig-merch', categoryLabel: 'IG Merch',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'IG Official', customPrint: true,
-  },
-  // Tote bag — replaces removed hat
-  {
-    id: 'ig-tote',
-    name: 'Islamic Games Official Tote Bag',
-    price: 15, originalPrice: 22,
-    sizes: ['One Size'],
-    colors: [
-      { ...COLORS.black, image: TS.tote_black },
-      { ...COLORS.white, image: TS.tote_white },
-      { ...COLORS.navy,  image: TS.tote_black },
-    ],
-    description: 'Heavy-duty canvas tote bag with Islamic Games 2026 logo. Perfect for event days, gear, and fan merchandise.',
-    features: ['12oz Canvas','IG 2026 Logo Print','Reinforced Handles','15"x16" Size'],
-    thumbnail: IG.tote,
-    category: 'ig-merch', categoryLabel: 'IG Merch',
-    sports: ['All Sports'], teamOrderMin: 2,
-    badge: 'IG Official', customPrint: true,
+    sports: ['All Sports'], teamOrderMin: 2, badge: 'IG Official', customPrint: true,
   },
 ];
 
 export const productInfo = products[0];
 
-// Sports list: Swimming removed, 5K Run for Sudan → 5K Run
 export const SPORTS_LIST = [
-  'Basketball','Soccer','Volleyball','Flag Football','Cricket',
-  'Softball','Track & Field','Martial Arts','Tennis','Table Tennis',
-  'Archery','Arm Wrestling','Fitness Course','Pickleball',
-  '5K Run','Bike Ride','Badminton','Ultimate Frisbee',
+  'Basketball','Volleyball','Soccer','Flag Football','Cricket',
+  'Softball/Pickleball','Track & Field','Tennis','Table Tennis',
+  'Archery','Fitness Course','5K Run','Bike Ride','Badminton',
+  'Ultimate Frisbee','All Sports',
 ];
 
 export const ALL_SPORTS = SPORTS_LIST;
 
+// Three-section category flow
 export const CATEGORIES_LIST = [
-  { id: 'ig-merch',   label: 'IG Merchandise',   emoji: '🏅' },
-  { id: 'jersey',     label: 'Jerseys & Kits',    emoji: '🏆' },
-  { id: 'shorts',     label: 'Shorts',             emoji: '🩳' },
-  { id: 'hoodie',     label: 'Hoodies',            emoji: '🧥' },
-  { id: 'sweatshirt', label: 'Crewnecks',          emoji: '👕' },
-  { id: 'sweatpants', label: 'Sweatpants',         emoji: '🏃' },
-  { id: 'joggers',    label: 'Joggers',            emoji: '🏃' },
-  { id: 'tshirt',     label: 'T-Shirts',           emoji: '👕' },
-  { id: 'longsleeve', label: 'Long Sleeve Tees',   emoji: '👕' },
-  { id: 'socks',      label: 'Socks',              emoji: '🧦' },
-  { id: 'hat',        label: 'Caps & Headwear',    emoji: '🧢' },
-  { id: 'modest',     label: 'Modest Wear',        emoji: '🧕' },
+  { id: 'sportswear',   label: 'Sportswear',         emoji: '🏃' },
+  { id: 'team-apparel', label: 'Team Apparel',        emoji: '🏆' },
+  { id: 'ig-merch',     label: 'Islamic Games Merch', emoji: '🏅' },
 ];
 
-// IG Merch is NEVER mixed into sport-specific pages
 export function getProductsBySport(sport: string): Product[] {
   if (!sport || sport === 'All Sports') return products.filter(p => p.category !== 'ig-merch');
   return products.filter(p =>
@@ -946,22 +385,21 @@ export function getProductsBySport(sport: string): Product[] {
     (p.sports.includes(sport) || p.sports.includes('All Sports'))
   );
 }
-
 export function getProductsByCategory(cat: string): Product[] {
   if (!cat || cat === 'all') return products;
   return products.filter(p => p.category === cat);
 }
-
 export function getIGMerchProducts(): Product[] {
   return products.filter(p => p.category === 'ig-merch');
 }
-
-// Jersey page sort: Men's → Women's → Other → (IG Merch separate)
+export function getSportswearProducts(sport?: string): Product[] {
+  if (!sport || sport === 'All Sports') return products.filter(p => p.category === 'sportswear');
+  return products.filter(p => p.category === 'sportswear' && (p.sports.includes(sport) || p.sports.includes('All Sports')));
+}
+export function getTeamApparelProducts(sport?: string): Product[] {
+  if (!sport || sport === 'All Sports') return products.filter(p => p.category === 'team-apparel');
+  return products.filter(p => p.category === 'team-apparel' && p.sports.includes(sport));
+}
 export function getJerseyPageProducts(sport?: string): Product[] {
-  const pool = sport ? getProductsBySport(sport) : products.filter(p => p.category !== 'ig-merch');
-  const mens   = pool.filter(p => p.category === 'jersey' && p.name.toLowerCase().includes("men's"));
-  const womens = pool.filter(p => p.category === 'jersey' && p.name.toLowerCase().includes("women's"));
-  const other_jerseys = pool.filter(p => p.category === 'jersey' && !p.name.toLowerCase().includes("men's") && !p.name.toLowerCase().includes("women's"));
-  const rest   = pool.filter(p => p.category !== 'jersey');
-  return [...mens, ...womens, ...other_jerseys, ...rest];
+  return getTeamApparelProducts(sport);
 }

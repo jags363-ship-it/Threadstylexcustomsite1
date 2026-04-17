@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Lock } from 'lucide-react';
 import { createCheckoutSession } from '../api/stripe';
-import { useCart } from '../context/CartContext';
 
 interface CheckoutModalProps {
   isOpen: boolean;

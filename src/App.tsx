@@ -117,7 +117,7 @@ function App() {
     <div className="min-h-screen bg-[#F8F7F4]">
       <Header onCartClick={() => setShowCart(true)} />
 
-      <div className="pt-[108px]"> {/* offset for fixed header + IG strip */}
+      <div className="pt-[128px]"> {/* offset for fixed header + IG strip */}
         <Hero />
         
         <ProductConfiguration
@@ -146,7 +146,7 @@ function App() {
         />
 
         {/* Order Summary + Add to Cart */}
-        <section className="py-12 bg-white border-t border-gray-100">
+        <section className="py-12 bg-[#F8F7F4] border-t border-gray-100">
           <div className="max-w-3xl mx-auto px-4">
             <AnimatePresence>
               {error && (
