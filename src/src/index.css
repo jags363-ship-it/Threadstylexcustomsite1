@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Fonts ────────────────────────────────────────────────────
+   Barlow Condensed = headlines only
+   Barlow = all body text, labels, buttons, descriptions
+   ────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    --gold: #C8A951;
+    --green-ig: #1B4D3E;
+    --navy: #0A1628;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #F8F7F4;
+    color: #111827;
+    /* Barlow for ALL body text — clear, modern, readable */
+    font-family: 'Barlow', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Only headings use Barlow Condensed */
+  h1, h2, h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    line-height: 1.05;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Headline class — Barlow Condensed heavy */
+  .font-display { font-family: 'Barlow Condensed', sans-serif !important; }
+
+  /* Body text class — Barlow */
+  .font-body { font-family: 'Barlow', sans-serif !important; }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1B4D3E;
+  }
+
+  /* Big heading utility */
+  .step-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.0;
+    color: #0A1628;
+  }
+
+  /* Gold gradient text */
+  .gold-text {
+    background: linear-gradient(120deg, #B8903E 0%, #E8CC7A 40%, #C8A951 70%, #F5DFA0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* White card */
+  .card-surface {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+    color: #111827;
+  }
+  .card-surface:hover {
+    border-color: #C8A951;
+    box-shadow: 0 4px 20px rgba(200,169,81,0.12);
+  }
+
+  /* Gold button */
+  .btn-gold {
+    background: linear-gradient(135deg, #C8A951 0%, #E8CC7A 50%, #C8A951 100%);
+    color: #060E1A;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    border: none;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,169,81,0.35); }
+
+  /* Green button */
+  .btn-green {
+    background: linear-gradient(135deg, #1B4D3E, #2D7A55);
+    color: #fff;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    border: none;
+  }
+  .btn-green:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(27,77,62,0.35); }
+
+  /* Outline button */
+  .btn-outline {
+    border: 2px solid #1B4D3E;
+    color: #1B4D3E;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: transparent;
+    transition: all 0.2s ease;
+  }
+  .btn-outline:hover { background: #1B4D3E; color: white; transform: translateY(-1px); }
+
+  /* Modest badge */
+  .badge-modest {
+    background: linear-gradient(135deg, #1B4D3E, #2D7A55);
+    color: #A7F3D0;
+    font-size: 0.6rem;
+    font-weight: 600;
+    font-family: 'Barlow', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  /* Grid bg */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(27,77,62,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27,77,62,0.04) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+}
